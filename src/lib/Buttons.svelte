@@ -1,5 +1,4 @@
-<script>
-</script>
+<script></script>
 
 <div>
     <button>Update Skills</button>
@@ -14,7 +13,7 @@
         width: 175px;
         height: 35px;
 
-        background-color: #009879;
+        background-color: rgb(84, 121, 215);
         color: white;
 
         cursor: pointer;

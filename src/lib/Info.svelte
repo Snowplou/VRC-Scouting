@@ -1,12 +1,11 @@
 <script>
-    import { loop_guard, query_selector_all, select_multiple_value } from "svelte/internal";
-    import { teams, categories, filters, dbUpdated } from "../database";
-    import teamSelected from "../App.svelte"
+    import { teams, categories, dbUpdated } from "../database";
+    export let teamSelected = ""
 
-    function selectedTeam(id){
-        teamSelected = id
+    function selectedTeam(id) {
+        teamSelected = id;
     }
-    
+
     let unfiltered_Team_Ranks = [];
     let team_Ranks = [];
     let categoryList = ["Name", "Rank", "Rating"];
@@ -34,7 +33,8 @@
                         unfiltered_Team_Ranks[i][category] = "❌";
                     }
                 } else {
-                    unfiltered_Team_Ranks[i][category] = val == undefined ? 0 : val;
+                    unfiltered_Team_Ranks[i][category] =
+                        val == undefined ? 0 : val;
                 }
             }
 
@@ -46,26 +46,7 @@
         }
         categoryList.push("Notes");
 
-        if (/*filters*/false) {
-            for (let team in unfiltered_Team_Ranks) {
-                let teamInfo = unfiltered_Team_Ranks[team];
-                allFilters: for (let filter of Object.keys($filters)) {
-                    conditionsInFilter: for(let value of Object.keys($filters[filter])){
-                        let condition = $filters[filter][value]
-                        if(condition == "equal to" && teamInfo[filter] != value) break allFilters
-                        if(condition == "not equal to" && teamInfo[filter] == value) break allFilters
-                        if(condition == "greater than" && teamInfo[filter] <= value) break allFilters
-                        if(condition == "less than" && teamInfo[filter] >= value) break allFilters
-                        if(condition == "greater than or equal to" && teamInfo[filter] < value) break allFilters
-                        if(condition == "less than or equal to" && teamInfo[filter] > value) break allFilters
-                    }
-                    team_Ranks.push(teamInfo)
-                }
-            }
-        }
-        else{
-            team_Ranks = [...unfiltered_Team_Ranks]
-        }
+        team_Ranks = [...unfiltered_Team_Ranks];
 
         team_Ranks = team_Ranks.sort((a, b) => {
             if (a.Rating != "Not Ranked" && b.Rating != "Not Ranked") {
@@ -85,7 +66,6 @@
             }
         });
     });
-    
 </script>
 
 <div class="fixTableHead">
@@ -134,19 +114,20 @@
     .fixTableHead thead th {
         position: sticky;
         top: 0;
+        font-family: "Outfit", sans-serif;
+        font-weight: 600;
     }
     table {
         border-collapse: collapse;
     }
     th {
-        background: #009879;
+        background: rgb(84, 121, 215);
     }
 
     .styled-table {
         border-collapse: collapse;
         margin: 10px 0;
         font-size: 0.9em;
-        font-family: sans-serif;
         min-width: 400px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         margin-left: auto;
@@ -156,7 +137,7 @@
     }
 
     .styled-table thead tr {
-        background-color: #009879;
+        background-color: rgb(84, 121, 215);
         color: #ffffff;
         text-align: left;
     }
@@ -165,14 +146,10 @@
         padding: 12px 15px;
     }
     .styled-table tbody tr {
-        border-bottom: 1px solid #dddddd;
+        border-bottom: 1px #dddddd;
     }
 
     .styled-table tbody tr:nth-of-type(even) {
         background-color: #f3f3f3;
-    }
-
-    .styled-table tbody tr:last-of-type {
-        border-bottom: 2px solid #009879;
     }
 </style>

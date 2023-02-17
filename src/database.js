@@ -20,7 +20,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
 export let teams = {}
-export let filters = writable({})
 export let categories = writable({})
 
 export function updateDb(path, data){
@@ -35,14 +34,6 @@ export function dbUpdated(callback){
 const dbRefTeams = ref(db, "teams")
 onValue(dbRefTeams, snapshot => {
 	teams = snapshot.val()
-	for(let i = 0; i < callbacks.length; i++){
-		callbacks[i]()
-	}
-});
-
-const dbRefFilters = ref(db, "filters")
-onValue(dbRefFilters, snapshot => {
-	filters.set(snapshot.val())
 	for(let i = 0; i < callbacks.length; i++){
 		callbacks[i]()
 	}

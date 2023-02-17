@@ -2,15 +2,15 @@
     import Buttons from "./lib/Buttons.svelte";
     import Editor from "./lib/Editor.svelte";
     import Info from "./lib/Info.svelte";
-    export let selectedTeam = ""
+    export let teamSelected = ""
   
 </script>
 
 <main>
 
   <Buttons />
-  <Info />
-  <Editor />
+  <Info bind:teamSelected/>
+  <Editor bind:teamSelected/>
   
 </main>
 

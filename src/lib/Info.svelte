@@ -12,22 +12,22 @@
     dbUpdated(() => {
         categoryList = ["Name", "Rank", "Rating"];
         let i = 0;
-        for (const team in teams) {
+        for (const team in $teams) {
             unfiltered_Team_Ranks[i] = {
                 Name: team,
-                Rank: teams[team].Rank == -1 ? "N/A" : teams[team].Rank,
+                Rank: $teams[team].Rank == -1 ? "N/A" : $teams[team].Rank,
                 Rating:
-                    teams[team].Rating == 0 ? "Not Ranked" : teams[team].Rating,
-                Notes: teams[team].Notes == "" ? "No Notes" : teams[team].Notes,
+                    $teams[team].Rating == 0 ? "Not Ranked" : $teams[team].Rating,
+                Notes: $teams[team].Notes == "" ? "No Notes" : $teams[team].Notes,
             };
 
             for (let category in $categories) {
-                let val = teams[team][category];
+                let val = $teams[team][category];
                 if ($categories[category].type == "Boolean") {
-                    let boolVal = teams[team][category];
-                    if (boolVal == "none" || boolVal == undefined) {
+                    let boolVal = $teams[team][category];
+                    if (boolVal == "" || boolVal == undefined) {
                         unfiltered_Team_Ranks[i][category] = "❔";
-                    } else if (boolVal) {
+                    } else if (boolVal == "true") {
                         unfiltered_Team_Ranks[i][category] = "✅";
                     } else {
                         unfiltered_Team_Ranks[i][category] = "❌";
@@ -109,7 +109,7 @@
 <style>
     .fixTableHead {
         overflow-y: auto;
-        height: 71vh;
+        height: 85vh;
     }
     .fixTableHead thead th {
         position: sticky;

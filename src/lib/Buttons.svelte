@@ -1,23 +1,20 @@
 <script></script>
 
 <div>
-    <button>Update Skills</button>
-    <button>Modify Categories</button>
+    <button>Skills</button>
+    <button>Categories</button>
+    <button>Filters</button>
 </div>
 
 <style>
     button {
         padding: 10px;
         margin: 2vmin;
-
-        width: 175px;
+        width: 160px;
         height: 35px;
-
         background-color: rgb(84, 121, 215);
         color: white;
-
         cursor: pointer;
-
         border-style: none;
         border-radius: 1000px;
     }

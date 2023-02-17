@@ -19,7 +19,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize Realtime Database and get a reference to the service
 const db = getDatabase();
 
-export let teams = {}
+export let teams = writable({})
 export let categories = writable({})
 
 export function updateDb(path, data){
@@ -33,7 +33,7 @@ export function dbUpdated(callback){
 
 const dbRefTeams = ref(db, "teams")
 onValue(dbRefTeams, snapshot => {
-	teams = snapshot.val()
+	teams.set(snapshot.val())
 	for(let i = 0; i < callbacks.length; i++){
 		callbacks[i]()
 	}

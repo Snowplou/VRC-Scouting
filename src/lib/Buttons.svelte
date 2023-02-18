@@ -67,6 +67,10 @@
         cursor: pointer;
         border-style: none;
         border-radius: 1000px;
+        font-size: 110%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
     }
 
     div {

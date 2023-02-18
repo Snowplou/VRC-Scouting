@@ -1,10 +1,17 @@
 <script>
     import { teams, categories, updateDb } from "../database";
     export let showCategories = false;
+    export let selectedOption = ""
+    export let showFilters = false;
 
     async function invalid(elm) {
         elm.innerHTML = "Invalid";
         setTimeout(() => (elm.innerHTML = "Add"), 1000);
+    }
+
+    function optionPressed(category){
+        selectedOption = category
+        showCategories = false
     }
 
     function addCategory(elm) {
@@ -116,6 +123,9 @@
                             <option value="Boolean">Boolean</option>
                             <option value="Dropdown">Dropdown</option>
                         </select>
+                        {#if $categories[category].type == "Dropdown"}
+                        <button class="options" on:click={() => optionPressed(category)} on:keypress={() => optionPressed(category)}>Options</button>
+                        {/if}
                         <img
                             class="remove"
                             src="redX.png"
@@ -151,6 +161,14 @@
         border-radius: 10px;
         cursor: pointer;
         text-align: center;
+    }
+
+    .options {
+        background-color: rgb(181, 190, 214);
+        height: 25px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
     }
 
     .rename {

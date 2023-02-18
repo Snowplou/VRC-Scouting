@@ -1,6 +1,8 @@
 <script>
     import { teams, updateDb } from "../database";
-    export let showCategories = false;
+    export let showCategories = false
+    export let selectedOption = ""
+    export let showFilters = false
     export let teamSelected = ""
     let updating = false
     const ROBOT_EVENTS_KEY =
@@ -8,7 +10,10 @@
 
     function toggleShowCategories(){
         showCategories = !showCategories
-        if(showCategories) teamSelected = ""
+        if(showCategories){
+            teamSelected = ""
+            selectedOption = ""
+        }
     }
 
     async function updateSkills() {

@@ -2,12 +2,15 @@
     import { teams, categories, dbUpdated } from "../database";
     export let teamSelected = "";
     export let showCategories = false;
+    export let selectedOption = ""
+    export let showFilters = false
 
     function selectedTeam(id) {
         if (teamSelected) teamSelected = "";
         else {
             teamSelected = id;
             showCategories = false;
+            selectedOption = ""
         }
     }
 

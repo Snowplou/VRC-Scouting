@@ -165,7 +165,7 @@
         overflow-y: scroll;
         position: relative;
         bottom: 100px;
-        height: 72vh;
+        height: 70vh;
         top: -1vh;
     }
 

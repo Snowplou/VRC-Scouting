@@ -21,6 +21,7 @@
             type: "String"
         }
         updateDb(`categories/${name}`, categoryInfo)
+        elm.target.parentNode.children[0].value = ""
     }
 
     function updateType(category, elm) {
@@ -112,9 +113,12 @@
 
     #add {
         background-color: rgb(181, 190, 214);
+        height: 30px;
+        width: 45px;
         border: none;
         border-radius: 10px;
         cursor: pointer;
+        text-align: center;
     }
 
     .rename {

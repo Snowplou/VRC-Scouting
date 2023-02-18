@@ -1,17 +1,15 @@
 <script>
     import { teams, categories, updateDb } from "../database";
-    export let showCategories = false;
-    export let selectedOption = ""
-    export let showFilters = false;
+    export let selectedOption = "";
 
-    function addOption(elm){
-        let name = elm.target.parentNode.children[0].value
-        if(!name) return
-        if($categories[selectedOption].Options){
-            if($categories[selectedOption].Options[name]) return
+    function addOption(elm) {
+        let name = elm.target.parentNode.children[0].value;
+        if (!name) return;
+        if ($categories[selectedOption].Options) {
+            if ($categories[selectedOption].Options[name]) return;
         }
-        updateDb(`categories/${selectedOption}/Options/${name}`, name)
-        elm.target.parentNode.children[0].value = ""
+        updateDb(`categories/${selectedOption}/Options/${name}`, name);
+        elm.target.parentNode.children[0].value = "";
     }
 
     function updateOption(option, elm) {
@@ -22,7 +20,10 @@
         }
 
         updateDb(`categories/${selectedOption}/Options/${option}`, null);
-        updateDb(`categories/${selectedOption}/Options/${newOption}`, newOption);
+        updateDb(
+            `categories/${selectedOption}/Options/${newOption}`,
+            newOption
+        );
 
         for (let team in $teams) {
             if ($teams[team][selectedOption] == option) {
@@ -47,57 +48,56 @@
             updateDb(`categories/${selectedOption}/Options/${name}`, null);
         }
     }
-
 </script>
 
-
 {#if selectedOption != ""}
+    <div id="flexCategory">
+        <div id="topCategory">
+            <p id="titleCategory"><b>Dropdown Editor</b></p>
+            <img
+                src="redX.png"
+                alt="Close Editor"
+                on:click={() => (selectedOption = "")}
+                on:keypress={() => (selectedOption = "")}
+            />
+        </div>
 
-<div id="flexCategory">
-    <div id="topCategory">
-        <p id="titleCategory"><b>Dropdown Editor</b></p>
-        <img
-            src="redX.png"
-            alt="Close Editor"
-            on:click={() => selectedOption = ""}
-            on:keypress={() => selectedOption = ""}
-        />
+        <div id="addCategory">
+            <input
+                type="text"
+                id="addOption"
+                style="text-align: center; width: 50%; height: 25px; margin: 2%;"
+            />
+            <button
+                id="add"
+                on:click={(elm) => addOption(elm)}
+                on:keypress={(elm) => addOption(elm)}>Add</button
+            >
+        </div>
+
+        {#key $categories[selectedOption].Options}
+            {#if $categories[selectedOption].Options}
+                {#each Object.keys($categories[selectedOption].Options) as option}
+                    <div class="edit">
+                        <input
+                            class="rename"
+                            type="text"
+                            value={option}
+                            on:change={(elm) => updateOption(option, elm)}
+                        />
+                        <img
+                            class="remove"
+                            src="redX.png"
+                            on:click={(elm) => removeOption(elm)}
+                            on:keypress={(elm) => removeOption(elm)}
+                            alt="delete category"
+                        />
+                    </div>
+                {/each}
+            {/if}
+        {/key}
     </div>
-
-    <div id="addCategory">
-        <input type="text" id="addOption" style="text-align: center; width: 50%; height: 25px; margin: 2%;" />
-        <button
-            id="add"
-            on:click={(elm) => addOption(elm)}
-            on:keypress={(elm) => addOption(elm)}>Add</button
-        >
-    </div>
-
-    {#key $categories[selectedOption].Options}
-        {#if $categories[selectedOption].Options}
-            {#each Object.keys($categories[selectedOption].Options) as option}
-                <div class="edit">
-                    <input
-                        class="rename"
-                        type="text"
-                        value={option}
-                        on:change={(elm) => updateOption(option, elm)}
-                    />
-                    <img
-                        class="remove"
-                        src="redX.png"
-                        on:click={(elm) => removeOption(elm)}
-                        on:keypress={(elm) => removeOption(elm)}
-                        alt="delete category"
-                    />
-                </div>
-            {/each}
-        {/if}
-    {/key}
-</div>
-
 {/if}
-
 
 <style>
     .edit {
@@ -164,10 +164,9 @@
         left: 0%;
         top: 0%;
         transform: translate(10%, 10%);
-        background-color: gray;
+        background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
         height: 80vh;
-        opacity: 90%;
         border-radius: 10px;
     }
 </style>

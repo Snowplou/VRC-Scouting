@@ -1,16 +1,18 @@
 <script>
+    import { object_without_properties } from "svelte/internal";
     import { teams, categories, dbUpdated } from "../database";
     export let teamSelected = "";
     export let showCategories = false;
-    export let selectedOption = ""
-    export let showFilters = false
+    export let selectedOption = "";
+    export let selectedFilter = "";
 
     function selectedTeam(id) {
         if (teamSelected) teamSelected = "";
         else {
             teamSelected = id;
             showCategories = false;
-            selectedOption = ""
+            selectedOption = "";
+            selectedFilter = "";
         }
     }
 
@@ -19,6 +21,7 @@
     let categoryList = ["Name", "Rank", "Rating"];
     dbUpdated(() => {
         categoryList = ["Name", "Rank", "Rating"];
+        team_Ranks = []
         let i = 0;
         for (const team in $teams) {
             unfiltered_Team_Ranks[i] = {
@@ -57,7 +60,33 @@
         }
         categoryList.push("Notes");
 
-        team_Ranks = [...unfiltered_Team_Ranks];
+        let filters = []
+        if($categories){
+            for(let filterName of Object.keys($categories)){
+                for(let filter of $categories[filterName].filters){
+                    if(filter.enabled){
+                        filter.category = filterName
+                        filters.push(filter)
+                    }
+                }
+            }
+        }
+
+        teamLoop: for(let team of unfiltered_Team_Ranks){
+            for(let filter of filters){
+                let category = filter.category
+                let type = filter.type
+                let value = filter.val
+
+                if(type == "Equal To" && team[category] != value) continue teamLoop
+                if(type == "Not Equal To" && team[category] == value) continue teamLoop
+                if(type == "Greater Than" && team[category] <= value) continue teamLoop
+                if(type == "Less Than" && team[category] >= value) continue teamLoop
+                if(type == "Greater Than Or Equal To" && team[category] < value) continue teamLoop
+                if(type == "Less Than Or Equal To" && team[category] > value) continue teamLoop
+            }
+            team_Ranks.push(team)
+        }
 
         team_Ranks = team_Ranks.sort((a, b) => {
             if (a.Rating != "Not Ranked" && b.Rating != "Not Ranked") {
@@ -80,16 +109,18 @@
 </script>
 
 <div class="fixTableHead">
-    <table class="styled-table">
-        <thead>
-            <tr>
-                {#each categoryList as category}
-                    <th>{category}</th>
-                {/each}
-            </tr>
-        </thead>
-        <tbody>
-            {#each team_Ranks as team}
+    {#key $teams}
+        {#key $categories}
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        {#each categoryList as category}
+                            <th>{category}</th>
+                        {/each}
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each team_Ranks as team}
                 <tr on:click={() => selectedTeam(team.Name)}>
                     {#each categoryList as category}
                         {#if category == "Name"}
@@ -114,9 +145,10 @@
                     {/each}
                 </tr>
             {/each}
-            <!-- and so on... -->
-        </tbody>
-    </table>
+                </tbody>
+            </table>
+        {/key}
+    {/key}
 </div>
 
 <style>

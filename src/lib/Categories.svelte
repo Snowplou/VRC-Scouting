@@ -1,31 +1,47 @@
 <script>
     import { teams, categories, updateDb } from "../database";
     export let showCategories = false;
-    export let selectedOption = ""
-    export let showFilters = false;
+    export let selectedOption = "";
+    export let selectedFilter = "";
 
     async function invalid(elm) {
         elm.innerHTML = "Invalid";
         setTimeout(() => (elm.innerHTML = "Add"), 1000);
     }
 
-    function optionPressed(category){
-        selectedOption = category
-        showCategories = false
+    function optionPressed(category) {
+        selectedOption = category;
+        showCategories = false;
+    }
+
+    function filterPressed(category) {
+        selectedFilter = category;
+        showCategories = false;
     }
 
     function addCategory(elm) {
         let name = elm.target.parentNode.children[0].value;
-        if (!name || $categories[name]) {
+        if (!name) {
             invalid(elm.target);
             return;
         }
+        if ($categories) {
+            if ($categories[name]) {
+                invalid(elm.target);
+                return;
+            }
+        }
 
         let categoryInfo = {
-            filter: {
-                type: "None",
-            },
-            type: "String",
+            filters: [
+                {type: "Equal To", val: "", enabled: false},
+                {type: "Not Equal To", val: "", enabled: false},
+                {type: "Greater Than", val: "", enabled: false},
+                {type: "Less Than", val: "", enabled: false},
+                {type: "Greater Than Or Equal To", val: "", enabled: false},
+                {type: "Less Than Or Equal To", val: "", enabled: false},
+            ],
+            type: "String"
         };
         updateDb(`categories/${name}`, categoryInfo);
         elm.target.parentNode.children[0].value = "";
@@ -124,8 +140,19 @@
                             <option value="Dropdown">Dropdown</option>
                         </select>
                         {#if $categories[category].type == "Dropdown"}
-                        <button class="options" on:click={() => optionPressed(category)} on:keypress={() => optionPressed(category)}>Options</button>
+                            <button
+                                class="options"
+                                on:click={() => optionPressed(category)}
+                                on:keypress={() => optionPressed(category)}
+                                >Options</button
+                            >
                         {/if}
+                        <button
+                                class="options"
+                                on:click={() => filterPressed(category)}
+                                on:keypress={() => filterPressed(category)}
+                                >Filters</button
+                            >
                         <img
                             class="remove"
                             src="redX.png"
@@ -216,10 +243,9 @@
         left: 0%;
         top: 0%;
         transform: translate(10%, 10%);
-        background-color: gray;
+        background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
         height: 80vh;
-        opacity: 90%;
         border-radius: 10px;
     }
 </style>

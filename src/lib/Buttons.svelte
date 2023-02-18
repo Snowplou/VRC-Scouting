@@ -2,7 +2,7 @@
     import { teams, updateDb } from "../database";
     export let showCategories = false
     export let selectedOption = ""
-    export let showFilters = false
+    export let selectedFilter = ""
     export let teamSelected = ""
     let updating = false
     const ROBOT_EVENTS_KEY =
@@ -13,6 +13,7 @@
         if(showCategories){
             teamSelected = ""
             selectedOption = ""
+            selectedFilter = ""
         }
     }
 

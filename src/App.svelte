@@ -2,22 +2,24 @@
     import Buttons from "./lib/Buttons.svelte";
     import Categories from "./lib/Categories.svelte";
     import Editor from "./lib/Editor.svelte";
+    import Filters from "./lib/Filters.svelte";
     import Info from "./lib/Info.svelte";
     import Options from "./lib/Options.svelte"
     export let teamSelected = ""
     export let showCategories = false
     export let selectedOption = ""
-    export let showFilters = false
+    export let selectedFilter = ""
   
 </script>
 
 <main>
 
-  <Buttons bind:showCategories bind:teamSelected bind:selectedOption bind:showFilters/>
-  <Info bind:showCategories bind:teamSelected bind:selectedOption bind:showFilters/>
+  <Buttons bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
+  <Info bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
   <Editor bind:teamSelected/>
-  <Categories bind:showCategories bind:selectedOption bind:showFilters/>
-  <Options bind:showCategories bind:selectedOption bind:showFilters/>
+  <Categories bind:showCategories bind:selectedOption bind:selectedFilter/>
+  <Options bind:selectedOption/>
+  <Filters bind:selectedFilter/>
   
 </main>
 

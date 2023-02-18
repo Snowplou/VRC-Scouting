@@ -2,26 +2,47 @@
     import { teams, categories, updateDb } from "../database";
     export let showCategories = false;
 
-    async function invalid(elm){
-        elm.innerHTML = "Invalid"
-        setTimeout(() => elm.innerHTML = "Add", 1000)
+    async function invalid(elm) {
+        elm.innerHTML = "Invalid";
+        setTimeout(() => (elm.innerHTML = "Add"), 1000);
     }
 
-    function addCategory(elm){
-        let name = elm.target.parentNode.children[0].value
-        if(!name || $categories[name]){
-            invalid(elm.target)
-            return
+    function addCategory(elm) {
+        let name = elm.target.parentNode.children[0].value;
+        if (!name || $categories[name]) {
+            invalid(elm.target);
+            return;
         }
-        
+
         let categoryInfo = {
             filter: {
-                type: "None"
+                type: "None",
             },
-            type: "String"
+            type: "String",
+        };
+        updateDb(`categories/${name}`, categoryInfo);
+        elm.target.parentNode.children[0].value = "";
+    }
+
+    function removeCategory(elm) {
+        let name = elm.target.parentNode.children[0].value;
+
+        if (
+            confirm(
+                `Are you sure you want to delete ${name}?\nAll of the data stored in ${name} will be deleted.`
+            )
+        ) {
+            for (let team in $teams) {
+                if (
+                    $teams[team][name] != undefined ||
+                    $teams[team][name] != null
+                ) {
+                    updateDb(`teams/${team}/${name}`, null);
+                }
+            }
+
+            updateDb(`categories/${name}`, null);
         }
-        updateDb(`categories/${name}`, categoryInfo)
-        elm.target.parentNode.children[0].value = ""
     }
 
     function updateType(category, elm) {
@@ -68,7 +89,11 @@
 
         <div id="addCategory">
             <input type="text" style="width: 50%; height: 25px; margin: 2%" />
-            <button id="add" on:click={(elm) => addCategory(elm)} on:keypress={(elm) => addCategory(elm)}>Add</button>
+            <button
+                id="add"
+                on:click={(elm) => addCategory(elm)}
+                on:keypress={(elm) => addCategory(elm)}>Add</button
+            >
         </div>
 
         {#key $categories}
@@ -91,6 +116,13 @@
                             <option value="Boolean">Boolean</option>
                             <option value="Dropdown">Dropdown</option>
                         </select>
+                        <img
+                            class="remove"
+                            src="redX.png"
+                            on:click={(elm) => removeCategory(elm)}
+                            on:keypress={(elm) => removeCategory(elm)}
+                            alt="delete category"
+                        />
                     </div>
                 {/each}
             {/if}
@@ -103,7 +135,7 @@
         display: flex;
         align-content: center;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
         flex-wrap: wrap;
         margin: 2%;
         background-color: rgb(84, 121, 215);
@@ -142,8 +174,8 @@
     }
 
     .remove {
-        width: 5%;
-        margin-bottom: 1%;
+        width: 9%;
+        margin: 1%;
     }
 
     img {

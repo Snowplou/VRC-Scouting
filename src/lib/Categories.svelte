@@ -2,8 +2,25 @@
     import { teams, categories, updateDb } from "../database";
     export let showCategories = false;
 
+    async function invalid(elm){
+        elm.innerHTML = "Invalid"
+        setTimeout(() => elm.innerHTML = "Add", 1000)
+    }
+
     function addCategory(elm){
-        console.log(elm)
+        let name = elm.target.parentNode.children[0].value
+        if(!name || $categories[name]){
+            invalid(elm.target)
+            return
+        }
+        
+        let categoryInfo = {
+            filter: {
+                type: "None"
+            },
+            type: "String"
+        }
+        updateDb(`categories/${name}`, categoryInfo)
     }
 
     function updateType(category, elm) {
@@ -49,9 +66,8 @@
         </div>
 
         <div id="addCategory">
-            Add Category:
-            <input type="text" style="width: 25%" />
-            <button id="add" on:click={(elm) => addCategory(elm)} on:keypress={(elm) => addCategory(elm)}>Add Category</button>
+            <input type="text" style="width: 50%; height: 25px; margin: 2%" />
+            <button id="add" on:click={(elm) => addCategory(elm)} on:keypress={(elm) => addCategory(elm)}>Add</button>
         </div>
 
         {#key $categories}
@@ -91,7 +107,7 @@
         margin: 2%;
         background-color: rgb(84, 121, 215);
         font-size: 125%;
-        height: 5%;
+        height: 8%;
     }
 
     #add {
@@ -113,12 +129,12 @@
     #addCategory {
         display: flex;
         align-content: center;
-        justify-content: space-between;
+        justify-content: space-evenly;
         align-items: center;
         flex-wrap: wrap;
         margin: 2%;
         background-color: rgb(84, 121, 215);
-        font-size: 125%;
+        font-size: 100%;
     }
 
     .remove {

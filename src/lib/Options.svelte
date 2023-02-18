@@ -77,23 +77,25 @@
 
         {#key $categories[selectedOption].Options}
             {#if $categories[selectedOption].Options}
-                {#each Object.keys($categories[selectedOption].Options) as option}
-                    <div class="edit">
-                        <input
-                            class="rename"
-                            type="text"
-                            value={option}
-                            on:change={(elm) => updateOption(option, elm)}
-                        />
-                        <img
-                            class="remove"
-                            src="redX.png"
-                            on:click={(elm) => removeOption(elm)}
-                            on:keypress={(elm) => removeOption(elm)}
-                            alt="delete category"
-                        />
-                    </div>
-                {/each}
+                <div class="scrollOptions">
+                    {#each Object.keys($categories[selectedOption].Options) as option}
+                        <div class="edit">
+                            <input
+                                class="rename"
+                                type="text"
+                                value={option}
+                                on:change={(elm) => updateOption(option, elm)}
+                            />
+                            <img
+                                class="remove"
+                                src="redX.png"
+                                on:click={(elm) => removeOption(elm)}
+                                on:keypress={(elm) => removeOption(elm)}
+                                alt="delete category"
+                            />
+                        </div>
+                    {/each}
+                </div>
             {/if}
         {/key}
     </div>
@@ -159,6 +161,14 @@
         justify-content: space-between;
     }
 
+    .scrollOptions {
+        overflow-y: scroll;
+        position: relative;
+        bottom: 100px;
+        height: 72vh;
+        top: -1vh;
+    }
+
     #flexCategory {
         position: absolute;
         left: 0%;
@@ -166,7 +176,7 @@
         transform: translate(10%, 10%);
         background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
-        height: 80vh;
+        height: 85vh;
         border-radius: 10px;
     }
 </style>

@@ -10,8 +10,8 @@
 
 <main>
 
-  <Buttons bind:showCategories/>
-  <Info bind:teamSelected/>
+  <Buttons bind:showCategories bind:teamSelected/>
+  <Info bind:showCategories bind:teamSelected/>
   <Editor bind:teamSelected/>
   <Categories bind:showCategories/>
   

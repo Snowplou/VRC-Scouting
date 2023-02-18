@@ -1,9 +1,14 @@
 <script>
     import { teams, categories, dbUpdated } from "../database";
-    export let teamSelected = ""
+    export let teamSelected = "";
+    export let showCategories = false;
 
     function selectedTeam(id) {
-        teamSelected = id;
+        if (teamSelected) teamSelected = "";
+        else {
+            teamSelected = id;
+            showCategories = false;
+        }
     }
 
     let unfiltered_Team_Ranks = [];
@@ -17,8 +22,11 @@
                 Name: team,
                 Rank: $teams[team].Rank == -1 ? "N/A" : $teams[team].Rank,
                 Rating:
-                    $teams[team].Rating == 0 ? "Not Ranked" : $teams[team].Rating,
-                Notes: $teams[team].Notes == "" ? "No Notes" : $teams[team].Notes,
+                    $teams[team].Rating == 0
+                        ? "Not Ranked"
+                        : $teams[team].Rating,
+                Notes:
+                    $teams[team].Notes == "" ? "No Notes" : $teams[team].Notes,
             };
 
             for (let category in $categories) {
@@ -81,7 +89,9 @@
             {#each team_Ranks as team}
                 <tr on:click={() => selectedTeam(team.Name)}>
                     {#each categoryList as category}
-                        {#if category == "Name" || category == "Rank" || category == "Rating" || category == "Notes"}
+                        {#if category == "Name"}
+                            <td class="semibold">{team[category]}</td>
+                        {:else if category == "Rank" || category == "Rating" || category == "Notes"}
                             <td>{team[category]}</td>
                         {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
                             <td
@@ -107,6 +117,17 @@
 </div>
 
 <style>
+    table tr td {
+        border-right: 1px solid rgb(208, 211, 218);
+    }
+    table tr td:last-of-type {
+        border: none;
+    }
+
+    .semibold {
+        font-weight: 700;
+    }
+
     .fixTableHead {
         overflow-y: auto;
         height: 85vh;

@@ -139,14 +139,13 @@
                             <option value="Boolean">Boolean</option>
                             <option value="Dropdown">Dropdown</option>
                         </select>
-                        {#if $categories[category].type == "Dropdown"}
                             <button
                                 class="options"
-                                on:click={() => optionPressed(category)}
-                                on:keypress={() => optionPressed(category)}
+                                on:click={() => $categories[category].type == "Dropdown" ? optionPressed(category) : ""}
+                                on:keypress={() => $categories[category].type == "Dropdown" ? optionPressed(category) : ""}
+                                style="opacity:{$categories[category].type == "Dropdown" ? 1 : 0}"
                                 >Options</button
                             >
-                        {/if}
                         <button
                                 class="options"
                                 on:click={() => filterPressed(category)}
@@ -177,7 +176,7 @@
         margin: 2%;
         background-color: rgb(84, 121, 215);
         font-size: 125%;
-        height: 8%;
+        height: 12%;
     }
 
     #add {
@@ -192,6 +191,7 @@
 
     .options {
         background-color: rgb(181, 190, 214);
+        margin: 1%;
         height: 25px;
         border-radius: 10px;
         border: none;
@@ -199,12 +199,12 @@
     }
 
     .rename {
-        height: 50%;
+        height: 35%;
         margin: 1%;
     }
 
     .type {
-        height: 75%;
+        height: 50%;
     }
 
     #addCategory {

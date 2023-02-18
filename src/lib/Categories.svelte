@@ -119,6 +119,7 @@
             >
         </div>
 
+        <div class="scrollCategory">
         {#key $categories}
             {#if $categories}
                 {#each Object.keys($categories) as category}
@@ -164,6 +165,7 @@
             {/if}
         {/key}
     </div>
+    </div>
 {/if}
 
 <style>
@@ -177,6 +179,14 @@
         background-color: rgb(84, 121, 215);
         font-size: 125%;
         height: 12%;
+    }
+
+    .scrollCategory {
+        overflow-y: scroll;
+        position: relative;
+        bottom: 100px;
+        height: 72vh;
+        top: -1vh;
     }
 
     #add {
@@ -245,7 +255,7 @@
         transform: translate(10%, 10%);
         background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
-        height: 80vh;
+        height: 85vh;
         border-radius: 10px;
     }
 </style>

@@ -60,13 +60,14 @@
                 }
             )
         ).json();
+
         let loopTeamList = [...teamList];
+
         for (let i = 0; i < skillsRankings.length; i++) {
-            for (let team of loopTeamList) {
-                if (skillsRankings[i].team.id == teamsInfo[team].Id) {
-                    teamsInfo[team].Rank = i + 1;
-                    loopTeamList.splice(loopTeamList.indexOf(teamsInfo[team]), 1);
-                }
+            let skillsTeam = skillsRankings[i].team.team;
+            if (loopTeamList.includes(skillsTeam)) {
+                loopTeamList.splice(teamList.indexOf(skillsTeam), 1);
+                teamsInfo[skillsTeam].Rank = i + 1
             }
         }
 
@@ -75,14 +76,17 @@
             teams: teamsInfo,
         };
 
-        updateDb(`accounts/${team}/events/${eventId}`, eventInfo)
+        updateDb(`accounts/${team}/events/${eventId}`, eventInfo);
+        localStorage.setItem("event", eventId)
+        event = eventId;
     }
 
     function eventClicked(selectedEvent) {
         if ($accounts[team].events) {
-            if (!$accounts[team].events[event]) {
+            if (!$accounts[team].events[selectedEvent]) {
                 createEvent(selectedEvent);
             } else {
+                localStorage.setItem("event", selectedEvent)
                 event = selectedEvent;
             }
         } else {
@@ -95,26 +99,30 @@
     });
 </script>
 
-<div id="scrolling">
-    {#each events as event}
-        <div
-            class="event"
-            on:click={() => eventClicked(event.id)}
-            on:keypress={() => event(event.id)}
-        >
-            <p>{event.name}</p>
-            <p>{event.location.venue}</p>
-            <p>
-                {moment.utc(event.start).format("MMMM Do YYYY")}{moment
-                    .utc(event.start)
-                    .format("MMMM Do YYYY") ==
-                moment.utc(event.end).format("MMMM Do YYYY")
-                    ? ""
-                    : " - " + moment.utc(event.end).format("MMMM Do YYYY")}
-            </p>
-        </div>
-    {/each}
-</div>
+{#if creating}
+    <p id="creating">Creating Event...</p>
+{:else}
+    <div id="scrolling">
+        {#each events as event}
+            <div
+                class="event"
+                on:click={() => eventClicked(event.id)}
+                on:keypress={() => event(event.id)}
+            >
+                <p>{event.name}</p>
+                <p>{event.location.venue}</p>
+                <p>
+                    {moment.utc(event.start).format("MMMM Do YYYY")}{moment
+                        .utc(event.start)
+                        .format("MMMM Do YYYY") ==
+                    moment.utc(event.end).format("MMMM Do YYYY")
+                        ? ""
+                        : " - " + moment.utc(event.end).format("MMMM Do YYYY")}
+                </p>
+            </div>
+        {/each}
+    </div>
+{/if}
 
 <style>
     #scrolling {
@@ -124,6 +132,12 @@
         width: 100%;
         height: 100%;
         overflow-y: scroll;
+    }
+
+    #creating {
+        margin-top: 40vh;
+        text-align: center;
+        font-size: 300%;
     }
 
     .event {
@@ -139,7 +153,7 @@
         background-color: rgb(84, 121, 215);
         color: white;
         width: 75vw;
-        height: 20vh;
+        height: 25vh;
         border-radius: 10px;
         cursor: pointer;
     }

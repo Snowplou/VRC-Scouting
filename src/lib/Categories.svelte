@@ -3,6 +3,8 @@
     export let showCategories = false;
     export let selectedOption = "";
     export let selectedFilter = "";
+    export let team = ""
+    export let event = ""
 
     async function invalid(elm) {
         elm.innerHTML = "Invalid";
@@ -43,7 +45,7 @@
             ],
             type: "String"
         };
-        updateDb(`categories/${name}`, categoryInfo);
+        updateDb(`accounts/${team}/events/${event}/categories/${name}`, categoryInfo);
         elm.target.parentNode.children[0].value = "";
     }
 
@@ -60,7 +62,7 @@
                     $teams[team][name] != undefined ||
                     $teams[team][name] != null
                 ) {
-                    updateDb(`teams/${team}/${name}`, null);
+                    updateDb(`accounts/${team}/events/${event}/accounts/${team}/events/${event}/teams/${team}/${name}`, null);
                 }
             }
 
@@ -69,7 +71,7 @@
     }
 
     function updateType(category, elm) {
-        updateDb(`categories/${category}/type`, elm.target.value);
+        updateDb(`accounts/${team}/events/${event}/categories/${category}/type`, elm.target.value);
     }
 
     function updateName(category, elm) {
@@ -80,8 +82,8 @@
         }
 
         let categoryInfo = { ...$categories[category] };
-        updateDb(`categories/${category}`, null);
-        updateDb(`categories/${newCategory}`, categoryInfo);
+        updateDb(`accounts/${team}/events/${event}/categories/${category}`, null);
+        updateDb(`accounts/${team}/events/${event}/categories/${newCategory}`, categoryInfo);
 
         for (let team in $teams) {
             if (
@@ -89,10 +91,10 @@
                 $teams[team][category] != null
             ) {
                 updateDb(
-                    `teams/${team}/${newCategory}`,
+                    `accounts/${team}/events/${event}/teams/${team}/${newCategory}`,
                     $teams[team][category]
                 );
-                updateDb(`teams/${team}/${category}`, null);
+                updateDb(`accounts/${team}/events/${event}/teams/${team}/${category}`, null);
             }
         }
     }

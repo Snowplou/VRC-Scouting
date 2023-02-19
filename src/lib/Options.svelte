@@ -1,6 +1,8 @@
 <script>
     import { teams, categories, updateDb } from "../database";
     export let selectedOption = "";
+    export let team = ""
+    export let event = ""
 
     function addOption(elm) {
         let name = elm.target.parentNode.children[0].value;
@@ -8,7 +10,7 @@
         if ($categories[selectedOption].Options) {
             if ($categories[selectedOption].Options[name]) return;
         }
-        updateDb(`categories/${selectedOption}/Options/${name}`, name);
+        updateDb(`accounts/${team}/events/${event}/categories/${selectedOption}/Options/${name}`, name);
         elm.target.parentNode.children[0].value = "";
     }
 
@@ -19,15 +21,15 @@
             return;
         }
 
-        updateDb(`categories/${selectedOption}/Options/${option}`, null);
+        updateDb(`accounts/${team}/events/${event}/categories/${selectedOption}/Options/${option}`, null);
         updateDb(
-            `categories/${selectedOption}/Options/${newOption}`,
+            `accounts/${team}/events/${event}/categories/${selectedOption}/Options/${newOption}`,
             newOption
         );
 
         for (let team in $teams) {
             if ($teams[team][selectedOption] == option) {
-                updateDb(`teams/${team}/${selectedOption}`, newOption);
+                updateDb(`accounts/${team}/events/${event}/teams/${team}/${selectedOption}`, newOption);
             }
         }
     }
@@ -45,7 +47,7 @@
                 }
             }
 
-            updateDb(`categories/${selectedOption}/Options/${name}`, null);
+            updateDb(`accounts/${team}/events/${event}/accounts/${team}/events/${event}/categories/${selectedOption}/Options/${name}`, null);
         }
     }
 </script>

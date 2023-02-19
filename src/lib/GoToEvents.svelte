@@ -1,20 +1,20 @@
 <script>
-    export let team = ""
-    function logOut(){
-        team = ""
-        localStorage.removeItem("accountNumber")
+    export let event = ""
+    function GoToEvents(){
         localStorage.removeItem("event")
+        event = ""
+        location.reload()
     }
 </script>
 
-<button on:click={() => logOut()} on:keypress={() => logOut()}>Sign Out</button>
+<button on:click={() => GoToEvents()} on:keypress={() => GoToEvents()}>Event Selector</button>
 
 <style>
     button {
         display: flex;
         align-items: center;
         justify-content: center;
-        float: right;
+        float: left;
         background-color: rgb(84, 121, 215);
         color: white;
         border-radius: 10px;

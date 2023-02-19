@@ -92,7 +92,7 @@
         transform: translate(10%, 10%);
         background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
-        height: 80vh;
+        height: 85vh;
         border-radius: 10px;
     }
 </style>

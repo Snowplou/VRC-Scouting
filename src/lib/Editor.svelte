@@ -1,6 +1,12 @@
 <script>
     export let teamSelected = "";
-    import { teams, categories, updateDb } from "../database";
+    import { teams, categories, updateDb, dbUpdated } from "../database";
+
+    let categoryList = []
+    dbUpdated(() => {
+        if($categories) categoryList = ["Rating", ...Object.keys($categories), "Notes"]
+        else categoryList = ["Rating", "Notes"]
+    })
 
     function type(category) {
         let type;
@@ -38,7 +44,7 @@
 
         {#key $teams}
         {#key $categories}
-        {#each ["Rating", ...Object.keys($categories), "Notes"] as info}
+        {#each categoryList as info}
             <div class="edit">
                 {info}:
                 {#if type(info) == "String"}

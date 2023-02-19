@@ -181,6 +181,10 @@
         height: 12%;
     }
 
+    input {
+        text-align: center;
+    }
+
     .scrollCategory {
         overflow-y: scroll;
         position: relative;

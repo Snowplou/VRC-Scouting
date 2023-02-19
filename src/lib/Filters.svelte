@@ -53,6 +53,10 @@
         height: 8%;
     }
 
+    input {
+        text-align: center;
+    }
+
     .filterType {
         margin: 2%;
         font-size: 70%;

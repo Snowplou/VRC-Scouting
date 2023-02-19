@@ -72,7 +72,8 @@
     img {
         margin: 2%;
         cursor: pointer;
-        width: 10vh;
+        width: 5vh;
+        height: 5vh;
     }
 
     #titleFilter {

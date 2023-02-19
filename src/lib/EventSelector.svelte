@@ -9,9 +9,9 @@
         getEvents,
         eventsUpdated,
         updateDb,
+        team,
+        event
     } from "../database";
-    export let team = "";
-    export let event = "";
     let creating = false;
 
     let events = [];
@@ -30,14 +30,14 @@
                 }
             )
         ).json();
-        for (let team of response.data) {
-            teamsInfo[team.number] = {
-                Id: team.id,
+        for (let eventTeams of response.data) {
+            teamsInfo[eventTeams.number] = {
+                Id: eventTeams.id,
                 Notes: "",
                 Rating: 0,
                 Rank: -1,
             };
-            teamList.push(team.number);
+            teamList.push(eventTeams.number);
         }
         if (response.meta.current_page != response.meta.last_page) {
             await addTeams(page + 1, eventId);
@@ -76,18 +76,18 @@
             teams: teamsInfo,
         };
 
-        updateDb(`accounts/${team}/events/${eventId}`, eventInfo);
+        updateDb(`accounts/${$team}/events/${eventId}`, eventInfo);
         localStorage.setItem("event", eventId)
-        event = eventId;
+        event.set(eventId)
     }
 
-    function eventClicked(selectedEvent) {
-        if ($accounts[team].events) {
-            if (!$accounts[team].events[selectedEvent]) {
+    function Clicked(selectedEvent) {
+        if ($accounts[$team].events) {
+            if (!$accounts[$team].events[selectedEvent]) {
                 createEvent(selectedEvent);
             } else {
                 localStorage.setItem("event", selectedEvent)
-                event = selectedEvent;
+                event.set(selectedEvent);
             }
         } else {
             createEvent(selectedEvent);
@@ -95,7 +95,7 @@
     }
 
     eventsUpdated(async () => {
-        events = (await getEvents($accounts[team].id)).data;
+        events = (await getEvents($accounts[$team].id)).data;
     });
 </script>
 
@@ -103,21 +103,21 @@
     <p id="creating">Creating Event...</p>
 {:else}
     <div id="scrolling">
-        {#each events as event}
+        {#each events as selectorEvent}
             <div
                 class="event"
-                on:click={() => eventClicked(event.id)}
-                on:keypress={() => event(event.id)}
+                on:click={() => eventClicked(selectorEvent.id)}
+                on:keypress={() => eventClicked(selectorEvent.id)}
             >
-                <p>{event.name}</p>
-                <p>{event.location.venue}</p>
+                <p>{selectorEvent.name}</p>
+                <p>{selectorEvent.location.venue}</p>
                 <p>
-                    {moment.utc(event.start).format("MMMM Do YYYY")}{moment
-                        .utc(event.start)
+                    {moment.utc(selectorEvent.start).format("MMMM Do YYYY")}{moment
+                        .utc(selectorEvent.start)
                         .format("MMMM Do YYYY") ==
-                    moment.utc(event.end).format("MMMM Do YYYY")
+                    moment.utc(selectorEvent.end).format("MMMM Do YYYY")
                         ? ""
-                        : " - " + moment.utc(event.end).format("MMMM Do YYYY")}
+                        : " - " + moment.utc(selectorEvent.end).format("MMMM Do YYYY")}
                 </p>
             </div>
         {/each}

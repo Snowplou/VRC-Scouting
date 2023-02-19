@@ -1,8 +1,6 @@
 <script>
     export let teamSelected = "";
-    import { teams, categories, updateDb, dbUpdated } from "../database";
-    export let team = ""
-    export let event = ""
+    import { teams, categories, updateDb, dbUpdated, team, event } from "../database";
 
     let categoryList = []
     dbUpdated(() => {
@@ -27,7 +25,7 @@
     }
 
     function update(category, elm){
-        updateDb(`accounts/${team}/events/${event}/teams/${teamSelected}/${category}`, elm.target.value)
+        updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/${category}`, elm.target.value)
     }
 
 </script>

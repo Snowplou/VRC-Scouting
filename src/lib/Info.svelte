@@ -1,6 +1,5 @@
 <script>
-    import { object_without_properties } from "svelte/internal";
-    import { teams, categories, dbUpdated } from "../database";
+    import { teams, categories, dbUpdated, team, event } from "../database";
     export let teamSelected = "";
     export let showCategories = false;
     export let selectedOption = "";
@@ -23,22 +22,22 @@
         categoryList = ["Name", "Rank", "Rating"];
         team_Ranks = []
         let i = 0;
-        for (const team in $teams) {
+        for (const infoTeam in $teams) {
             unfiltered_Team_Ranks[i] = {
-                Name: team,
-                Rank: $teams[team].Rank == -1 ? "N/A" : $teams[team].Rank,
+                Name: infoTeam,
+                Rank: $teams[infoTeam].Rank == -1 ? "N/A" : $teams[infoTeam].Rank,
                 Rating:
-                    $teams[team].Rating == 0
+                    $teams[infoTeam].Rating == 0
                         ? "Not Ranked"
-                        : $teams[team].Rating,
+                        : $teams[infoTeam].Rating,
                 Notes:
-                    $teams[team].Notes == "" ? "No Notes" : $teams[team].Notes,
+                    $teams[infoTeam].Notes == "" ? "No Notes" : $teams[infoTeam].Notes,
             };
 
             for (let category in $categories) {
-                let val = $teams[team][category];
+                let val = $teams[infoTeam][category];
                 if ($categories[category].type == "Boolean") {
-                    let boolVal = $teams[team][category];
+                    let boolVal = $teams[infoTeam][category];
                     if (boolVal == "" || boolVal == undefined) {
                         unfiltered_Team_Ranks[i][category] = "❔";
                     } else if (boolVal == "true") {
@@ -72,20 +71,20 @@
             }
         }
 
-        teamLoop: for(let team of unfiltered_Team_Ranks){
+        teamLoop: for(let filterTeam of unfiltered_Team_Ranks){
             for(let filter of filters){
                 let category = filter.category
                 let type = filter.type
                 let value = filter.val
 
-                if(type == "Equal To" && team[category] != value) continue teamLoop
-                if(type == "Not Equal To" && team[category] == value) continue teamLoop
-                if(type == "Greater Than" && team[category] <= value) continue teamLoop
-                if(type == "Less Than" && team[category] >= value) continue teamLoop
-                if(type == "Greater Than Or Equal To" && team[category] < value) continue teamLoop
-                if(type == "Less Than Or Equal To" && team[category] > value) continue teamLoop
+                if(type == "Equal To" && filterTeam[category] != value) continue teamLoop
+                if(type == "Not Equal To" && filterTeam[category] == value) continue teamLoop
+                if(type == "Greater Than" && filterTeam[category] <= value) continue teamLoop
+                if(type == "Less Than" && filterTeam[category] >= value) continue teamLoop
+                if(type == "Greater Than Or Equal To" && filterTeam[category] < value) continue teamLoop
+                if(type == "Less Than Or Equal To" && filterTeam[category] > value) continue teamLoop
             }
-            team_Ranks.push(team)
+            team_Ranks.push(filterTeam)
         }
 
         team_Ranks = team_Ranks.sort((a, b) => {
@@ -120,24 +119,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {#each team_Ranks as team}
-                <tr on:click={() => selectedTeam(team.Name)}>
+                    {#each team_Ranks as teamInfo}
+                <tr on:click={() => selectedTeam(teamInfo.Name)}>
                     {#each categoryList as category}
                         {#if category == "Name"}
-                            <td class="semibold">{team[category]}</td>
+                            <td class="semibold">{teamInfo[category]}</td>
                         {:else if category == "Rank" || category == "Rating" || category == "Notes"}
-                            <td>{team[category]}</td>
+                            <td>{teamInfo[category]}</td>
                         {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
                             <td
-                                >{team[category] == 0
+                                >{teamInfo[category] == 0
                                     ? "N/A"
-                                    : team[category]}</td
+                                    : teamInfo[category]}</td
                             >
                         {:else if $categories[category].type == "Dropdown"}
                             <td
-                                >{team[category] == 0
+                                >{teamInfo[category] == 0
                                     ? "N/A"
-                                    : team[category]}</td
+                                    : teamInfo[category]}</td
                             >
                         {:else}
                             <td>Unkown Variable Type</td>

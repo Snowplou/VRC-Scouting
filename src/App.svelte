@@ -13,8 +13,7 @@
     export let showCategories = false
     export let selectedOption = ""
     export let selectedFilter = ""
-    export let team = localStorage.getItem("accountNumber")
-    export let event = localStorage.getItem("event")
+    import { team, event } from "./database";
     let showData = true
   
 </script>
@@ -22,20 +21,20 @@
 <main>
 
   {#if team}
-    {#if event}
-      <GoToEvents bind:event/>
-      <SignOut bind:team/>
-      <Buttons bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter bind:event/>
+    {#if $event}
+      <GoToEvents/>
+      <SignOut/>
+      <Buttons bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
       <Info bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
-      <Editor bind:teamSelected bind:team bind:event/>
-      <Categories bind:showCategories bind:selectedOption bind:selectedFilter bind:team bind:event/>
-      <Options bind:selectedOption bind:team bind:event/>
-      <Filters bind:selectedFilter bind:team bind:event/>
+      <Editor bind:teamSelected/>
+      <Categories bind:showCategories bind:selectedOption bind:selectedFilter/>
+      <Options bind:selectedOption/>
+      <Filters bind:selectedFilter/>
       {:else}
-      <EventSelector bind:team bind:event/>
+      <EventSelector/>
       {/if}
   {:else}
-    <SignIn bind:team/>
+    <SignIn/>
   {/if}
   
 </main>

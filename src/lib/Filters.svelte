@@ -1,15 +1,13 @@
 <script>
-    import { teams, categories, updateDb } from "../database";
+    import { teams, categories, updateDb, team, event } from "../database";
     export let selectedFilter = "";
-    export let team = ""
-    export let event = ""
 
     function updateValue(elm, type){
-        updateDb(`accounts/${team}/events/${event}/categories/${selectedFilter}/filters/${type}/val`, elm.target.parentNode.children[1].value)
+        updateDb(`accounts/${$team}/events/${$event}/categories/${selectedFilter}/filters/${type}/val`, elm.target.parentNode.children[1].value)
     }
 
     function updateEnabled(elm, type){
-        updateDb(`accounts/${team}/events/${event}/categories/${selectedFilter}/filters/${type}/enabled`, elm.target.parentNode.children[2].checked)
+        updateDb(`accounts/${$team}/events/${$event}/categories/${selectedFilter}/filters/${type}/enabled`, elm.target.parentNode.children[2].checked)
     }
 
 </script>

@@ -1,10 +1,8 @@
 <script>
-    import { teams, categories, updateDb } from "../database";
+    import { teams, categories, updateDb, team, event } from "../database";
     export let showCategories = false;
     export let selectedOption = "";
     export let selectedFilter = "";
-    export let team = ""
-    export let event = ""
 
     async function invalid(elm) {
         elm.innerHTML = "Invalid";
@@ -45,7 +43,7 @@
             ],
             type: "String"
         };
-        updateDb(`accounts/${team}/events/${event}/categories/${name}`, categoryInfo);
+        updateDb(`accounts/${$team}/events/${$event}/categories/${name}`, categoryInfo);
         elm.target.parentNode.children[0].value = "";
     }
 
@@ -57,12 +55,12 @@
                 `Are you sure you want to delete ${name}?\nAll of the data stored in ${name} will be deleted.`
             )
         ) {
-            for (let team in $teams) {
+            for (let categoryTeam in $teams) {
                 if (
-                    $teams[team][name] != undefined ||
-                    $teams[team][name] != null
+                    $teams[categoryTeam][name] != undefined ||
+                    $teams[categoryTeam][name] != null
                 ) {
-                    updateDb(`accounts/${team}/events/${event}/accounts/${team}/events/${event}/teams/${team}/${name}`, null);
+                    updateDb(`accounts/${$team}/events/${$event}/teams/${categoryTeam}/${name}`, null);
                 }
             }
 
@@ -71,7 +69,7 @@
     }
 
     function updateType(category, elm) {
-        updateDb(`accounts/${team}/events/${event}/categories/${category}/type`, elm.target.value);
+        updateDb(`accounts/${$team}/events/${$event}/categories/${category}/type`, elm.target.value);
     }
 
     function updateName(category, elm) {
@@ -82,19 +80,19 @@
         }
 
         let categoryInfo = { ...$categories[category] };
-        updateDb(`accounts/${team}/events/${event}/categories/${category}`, null);
-        updateDb(`accounts/${team}/events/${event}/categories/${newCategory}`, categoryInfo);
+        updateDb(`accounts/${$team}/events/${$event}/categories/${category}`, null);
+        updateDb(`accounts/${$team}/events/${$event}/categories/${newCategory}`, categoryInfo);
 
-        for (let team in $teams) {
+        for (let categoryTeam in $teams) {
             if (
-                $teams[team][category] != undefined ||
-                $teams[team][category] != null
+                $teams[categoryTeam][category] != undefined ||
+                $teams[categoryTeam][category] != null
             ) {
                 updateDb(
-                    `accounts/${team}/events/${event}/teams/${team}/${newCategory}`,
-                    $teams[team][category]
+                    `categoryTeam/${team}/events/${$event}/teams/${categoryTeam}/${newCategory}`,
+                    $teams[$team][category]
                 );
-                updateDb(`accounts/${team}/events/${event}/teams/${team}/${category}`, null);
+                updateDb(`accounts/${$team}/events/${$event}/teams/${categoryTeam}/${category}`, null);
             }
         }
     }

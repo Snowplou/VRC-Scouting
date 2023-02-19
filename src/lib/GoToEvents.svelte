@@ -1,8 +1,8 @@
 <script>
-    export let event = ""
+    import { event } from "../database";
     function GoToEvents(){
         localStorage.removeItem("event")
-        event = ""
+        event.set("")
         location.reload()
     }
 </script>

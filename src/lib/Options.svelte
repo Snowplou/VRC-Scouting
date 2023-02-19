@@ -1,8 +1,6 @@
 <script>
-    import { teams, categories, updateDb } from "../database";
+    import { teams, categories, updateDb, team, event } from "../database";
     export let selectedOption = "";
-    export let team = ""
-    export let event = ""
 
     function addOption(elm) {
         let name = elm.target.parentNode.children[0].value;
@@ -10,7 +8,7 @@
         if ($categories[selectedOption].Options) {
             if ($categories[selectedOption].Options[name]) return;
         }
-        updateDb(`accounts/${team}/events/${event}/categories/${selectedOption}/Options/${name}`, name);
+        updateDb(`accounts/${$team}/events/${$event}/categories/${selectedOption}/Options/${name}`, name);
         elm.target.parentNode.children[0].value = "";
     }
 
@@ -21,15 +19,15 @@
             return;
         }
 
-        updateDb(`accounts/${team}/events/${event}/categories/${selectedOption}/Options/${option}`, null);
+        updateDb(`accounts/${$team}/events/${$event}/categories/${selectedOption}/Options/${option}`, null);
         updateDb(
-            `accounts/${team}/events/${event}/categories/${selectedOption}/Options/${newOption}`,
+            `accounts/${$team}/events/${$event}/categories/${selectedOption}/Options/${newOption}`,
             newOption
         );
 
-        for (let team in $teams) {
-            if ($teams[team][selectedOption] == option) {
-                updateDb(`accounts/${team}/events/${event}/teams/${team}/${selectedOption}`, newOption);
+        for (let teamLoop in $teams) {
+            if ($teams[teamLoop][selectedOption] == option) {
+                updateDb(`accounts/${$team}/events/${$event}/teams/${teamLoop}/${selectedOption}`, newOption);
             }
         }
     }
@@ -41,13 +39,13 @@
                 `Are you sure you want to delete ${name}?\nAll of the data stored in ${name} will be deleted.`
             )
         ) {
-            for (let team in $teams) {
-                if ($teams[team][selectedOption] == name) {
-                    updateDb(`teams/${team}/${selectedOption}`, null);
+            for (let teamRemove in $teams) {
+                if ($teams[teamRemove][selectedOption] == name) {
+                    updateDb(`accounts/${$team}/events/${$event}/teams/${$team}/${selectedOption}`, null);
                 }
             }
 
-            updateDb(`accounts/${team}/events/${event}/accounts/${team}/events/${event}/categories/${selectedOption}/Options/${name}`, null);
+            updateDb(`accounts/${$team}/events/${$event}/categories/${selectedOption}/Options/${name}`, null);
         }
     }
 </script>

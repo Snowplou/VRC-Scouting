@@ -1,7 +1,7 @@
 <script>
-    export let team = ""
+    import { team } from "../database";
     function logOut(){
-        team = ""
+        team.set("")
         localStorage.removeItem("accountNumber")
         localStorage.removeItem("event")
     }

@@ -22,48 +22,38 @@
 
         let skillsButton = document.getElementById("skillsUpdater")
 
-        skillsButton.innerHTML = "Disabled For Test"
+        skillsButton.innerHTML = "Updating..."
         skillsButton.style.cursor = "default"
         updating = true
 
-        setTimeout(() => {
+        let skillsRating = await (
+            await fetch(
+                `https://www.robotevents.com/api/seasons/173/skills?program=1`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+        let teamList = Object.keys($teams);
+
+        for (let i = 0; i < skillsRating.length; i++) {
+            let team = skillsRating[i].team.team;
+            if (teamList.includes(team)) {
+                teamList.splice(teamList.indexOf(team), 1);
+                updateDb(`teams/${team}/Rank`, i + 1);
+            }
+        }
+
+        for (let team of teamList) {
+            updateDb(`teams/${team}/Rank`, -1);
+        }
+
         updating = false
         skillsButton.innerHTML = "Skills"
         skillsButton.style.cursor = "pointer"
-        }, 2000)
-
-        // skillsButton.innerHTML = "Updating..."
-        // skillsButton.style.cursor = "default"
-        // updating = true
-
-        // let skillsRating = await (
-        //     await fetch(
-        //         `https://www.robotevents.com/api/seasons/173/skills?program=1`,
-        //         {
-        //             headers: {
-        //                 accept: "application/json",
-        //                 Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
-        //             },
-        //         }
-        //     )
-        // ).json();
-        // let teamList = Object.keys($teams);
-
-        // for (let i = 0; i < skillsRating.length; i++) {
-        //     let team = skillsRating[i].team.team;
-        //     if (teamList.includes(team)) {
-        //         teamList.splice(teamList.indexOf(team), 1);
-        //         updateDb(`teams/${team}/Rank`, i + 1);
-        //     }
-        // }
-
-        // for (let team of teamList) {
-        //     updateDb(`teams/${team}/Rank`, -1);
-        // }
-
-        // updating = false
-        // skillsButton.innerHTML = "Skills"
-        // skillsButton.style.cursor = "pointer"
     }
 </script>
 

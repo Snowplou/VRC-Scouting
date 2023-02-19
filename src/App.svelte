@@ -2,30 +2,38 @@
     import Buttons from "./lib/Buttons.svelte";
     import Categories from "./lib/Categories.svelte";
     import Editor from "./lib/Editor.svelte";
+    import EventSelector from "./lib/EventSelector.svelte";
     import Filters from "./lib/Filters.svelte";
     import Info from "./lib/Info.svelte";
     import Options from "./lib/Options.svelte"
     import SignIn from "./lib/SignIn.svelte";
+    import SignOut from "./lib/SignOut.svelte";
     export let teamSelected = ""
     export let showCategories = false
     export let selectedOption = ""
     export let selectedFilter = ""
-    export let team = ""
+    export let team = localStorage.getItem("accountNumber")
     export let event = ""
+    let showData = true
   
 </script>
 
 <main>
 
-  {#if team != ""}
-  <Buttons bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
-  <Info bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
-  <Editor bind:teamSelected/>
-  <Categories bind:showCategories bind:selectedOption bind:selectedFilter/>
-  <Options bind:selectedOption/>
-  <Filters bind:selectedFilter/>
+  {#if team}
+    {#if event}
+      <SignOut bind:team/>
+      <Buttons bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
+      <Info bind:showCategories bind:teamSelected bind:selectedOption bind:selectedFilter/>
+      <Editor bind:teamSelected/>
+      <Categories bind:showCategories bind:selectedOption bind:selectedFilter/>
+      <Options bind:selectedOption/>
+      <Filters bind:selectedFilter/>
+      {:else}
+      <EventSelector bind:team bind:event/>
+      {/if}
   {:else}
-  <SignIn bind:team/>
+    <SignIn bind:team/>
   {/if}
   
 </main>

@@ -1,0 +1,146 @@
+<script>
+    import moment from "moment";
+    const ROBOT_EVENTS_KEY =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiYzBmOTA1YmJhYTUxMzljNGNiNGNhN2E5N2NiMTFjMTUxZGE1YzA2MTZlNGNjOTIzYTIyZjFiMzlkNGUzZTEzYzA3MGExZGRmYTYzZmM0ZDIiLCJpYXQiOjE2NzQzNTc0MDguMTc0MzgwMSwibmJmIjoxNjc0MzU3NDA4LjE3NDM4MjksImV4cCI6MjYyMTEyODYwOC4xNjY3ODE5LCJzdWIiOiIxMTE2NTUiLCJzY29wZXMiOltdfQ.JeWKVXzcFuAjpObWa0n3javoRWJykyQBfj_DBwpOXyttaM58U30_c3X8G6cOLkz5tWjDTubAU9IqhqjirEfrRHIj2aFoEtnfol9q_1uV4uZG78jNODscCVQL0qnGscOjn9WiE76rTlYovMkEfYtvEIiB63WIh36cM5rR9Vi_6Ng8CcMGV8T5uH-hnUMD9wL3UsBEUF8XepvI6Mpf_lbKrDPUEYDvvApfd84rLA2T6jgAwL3_z7tlF7b0CJ-ONGvjrezgkkyVUcF4azIuTV6Svlogj996dXAQfvHW64RAcHp-8CDItFt81CEh_15jasJEht6wKjTzqshDxsdqpFy2vZX2H2RabncVBmhNsmBPnQkDXpsrU6QAOF4pR308g0IvcsW4B_3ZLimU5vLg3GO57z1picRAVBo8r9NgZpcOZDoJBmiZs16v-h_1PCIQ4TOgEYKzNaq7cJBWCrToKFT_CftavB8Dd5kN9swXhoWiJGgLRY9dO8n0sP8Qrm-rQs2QczQWEFGxOroCnZLg2V_foUtpUK9hKQvvC-nGwIGM0izsAPjmvntY_oRucw4NkJyC9FWvAsHReh6YPUFX5LS437dfDlr0RXrPSg6v8SsONEL25pv8tqgZEYwDg8pHb8Y2QjnutBAM-8RH2yGfNEnLrVYObacT_raq4IgqQujcVEU";
+    import {
+        teams,
+        categories,
+        accounts,
+        getEvents,
+        eventsUpdated,
+        updateDb,
+    } from "../database";
+    export let team = "";
+    export let event = "";
+    let creating = false;
+
+    let events = [];
+    let teamList = [];
+    let teamsInfo = [];
+
+    async function addTeams(page, eventId) {
+        let response = await (
+            await fetch(
+                `https://www.robotevents.com/api/v2/events/${eventId}/teams?page=${page}`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+        for (let team of response.data) {
+            teamsInfo[team.number] = {
+                Id: team.id,
+                Notes: "",
+                Rating: 0,
+                Rank: -1,
+            };
+            teamList.push(team.number);
+        }
+        if (response.meta.current_page != response.meta.last_page) {
+            await addTeams(page + 1, eventId);
+        }
+    }
+
+    async function createEvent(eventId) {
+        creating = true;
+
+        await addTeams(1, eventId);
+
+        let skillsRankings = await (
+            await fetch(
+                `https://www.robotevents.com/api/seasons/173/skills?program=1`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+        let loopTeamList = [...teamList];
+        for (let i = 0; i < skillsRankings.length; i++) {
+            for (let team of loopTeamList) {
+                if (skillsRankings[i].team.id == teamsInfo[team].Id) {
+                    teamsInfo[team].Rank = i + 1;
+                    loopTeamList.splice(loopTeamList.indexOf(teamsInfo[team]), 1);
+                }
+            }
+        }
+
+        let eventInfo = {
+            teamList: teamList,
+            teams: teamsInfo,
+        };
+
+        updateDb(`accounts/${team}/events/${eventId}`, eventInfo)
+    }
+
+    function eventClicked(selectedEvent) {
+        if ($accounts[team].events) {
+            if (!$accounts[team].events[event]) {
+                createEvent(selectedEvent);
+            } else {
+                event = selectedEvent;
+            }
+        } else {
+            createEvent(selectedEvent);
+        }
+    }
+
+    eventsUpdated(async () => {
+        events = (await getEvents($accounts[team].id)).data;
+    });
+</script>
+
+<div id="scrolling">
+    {#each events as event}
+        <div
+            class="event"
+            on:click={() => eventClicked(event.id)}
+            on:keypress={() => event(event.id)}
+        >
+            <p>{event.name}</p>
+            <p>{event.location.venue}</p>
+            <p>
+                {moment.utc(event.start).format("MMMM Do YYYY")}{moment
+                    .utc(event.start)
+                    .format("MMMM Do YYYY") ==
+                moment.utc(event.end).format("MMMM Do YYYY")
+                    ? ""
+                    : " - " + moment.utc(event.end).format("MMMM Do YYYY")}
+            </p>
+        </div>
+    {/each}
+</div>
+
+<style>
+    #scrolling {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+    }
+
+    .event {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 5vh;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: rgb(84, 121, 215);
+        color: white;
+        width: 75vw;
+        height: 20vh;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+</style>

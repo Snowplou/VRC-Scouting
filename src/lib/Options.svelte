@@ -41,7 +41,7 @@
         ) {
             for (let teamRemove in $teams) {
                 if ($teams[teamRemove][selectedOption] == name) {
-                    updateDb(`accounts/${$team}/events/${$event}/teams/${$team}/${selectedOption}`, null);
+                    updateDb(`accounts/${$team}/events/${$event}/teams/${teamRemove}/${selectedOption}`, null);
                 }
             }
 

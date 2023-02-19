@@ -64,7 +64,7 @@
                 }
             }
 
-            updateDb(`categories/${name}`, null);
+            updateDb(`accounts/${$team}/events/${$event}/categories/${name}`, null);
         }
     }
 

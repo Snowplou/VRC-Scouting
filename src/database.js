@@ -2,9 +2,11 @@ import { FirebaseError, initializeApp } from "firebase/app";
 import { getDatabase, ref, set as set_firebase, get, onValue, push, child } from "firebase/database";
 import { writable } from 'svelte/store';
 export let team = writable(localStorage.getItem("accountNumber"));
+// export let team = writable("")
 let $team;
 team.subscribe(v => $team = v);
 export let event = writable(localStorage.getItem("event"));
+// export let event = writable("")
 let $event;
 event.subscribe(v => $event = v);
 const FIREBASE_API_KEY = "AIzaSyACIQ7aK-Eedrj-UjJBLaNpOQg8YodVoMg"

@@ -10,7 +10,7 @@
         eventsUpdated,
         updateDb,
         team,
-        event
+        event,
     } from "../database";
     let creating = false;
 
@@ -67,7 +67,7 @@
             let skillsTeam = skillsRankings[i].team.team;
             if (loopTeamList.includes(skillsTeam)) {
                 loopTeamList.splice(teamList.indexOf(skillsTeam), 1);
-                teamsInfo[skillsTeam].Rank = i + 1
+                teamsInfo[skillsTeam].Rank = i + 1;
             }
         }
 
@@ -77,8 +77,9 @@
         };
 
         updateDb(`accounts/${$team}/events/${eventId}`, eventInfo);
-        localStorage.setItem("event", eventId)
-        event.set(eventId)
+        localStorage.setItem("event", eventId);
+        event.set(eventId);
+        location.reload();
     }
 
     function Clicked(selectedEvent) {
@@ -86,8 +87,9 @@
             if (!$accounts[$team].events[selectedEvent]) {
                 createEvent(selectedEvent);
             } else {
-                localStorage.setItem("event", selectedEvent)
+                localStorage.setItem("event", selectedEvent);
                 event.set(selectedEvent);
+                location.reload();
             }
         } else {
             createEvent(selectedEvent);
@@ -106,18 +108,21 @@
         {#each events as selectorEvent}
             <div
                 class="event"
-                on:click={() => eventClicked(selectorEvent.id)}
-                on:keypress={() => eventClicked(selectorEvent.id)}
+                on:click={() => Clicked(selectorEvent.id)}
+                on:keypress={() => Clicked(selectorEvent.id)}
             >
                 <p>{selectorEvent.name}</p>
                 <p>{selectorEvent.location.venue}</p>
                 <p>
-                    {moment.utc(selectorEvent.start).format("MMMM Do YYYY")}{moment
+                    {moment
+                        .utc(selectorEvent.start)
+                        .format("MMMM Do YYYY")}{moment
                         .utc(selectorEvent.start)
                         .format("MMMM Do YYYY") ==
                     moment.utc(selectorEvent.end).format("MMMM Do YYYY")
                         ? ""
-                        : " - " + moment.utc(selectorEvent.end).format("MMMM Do YYYY")}
+                        : " - " +
+                          moment.utc(selectorEvent.end).format("MMMM Do YYYY")}
                 </p>
             </div>
         {/each}

@@ -103,7 +103,7 @@
         position: absolute;
         left: 0%;
         top: 0%;
-        transform: translate(10%, 5%);
+        transform: translate(10%, 10%);
         background-color: gray;
         width: 80vw;
         height: 85vh;

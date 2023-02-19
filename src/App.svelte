@@ -20,7 +20,7 @@
 
 <main>
 
-  {#if team}
+  {#if $team}
     {#if $event}
       <GoToEvents/>
       <SignOut/>

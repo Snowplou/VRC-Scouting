@@ -142,14 +142,14 @@
     }
 
     .remove {
-        width: 9%;
+        width: 3vh;
         margin: 1%;
     }
 
     img {
         margin: 2%;
         cursor: pointer;
-        width: 15%;
+        width: 10vh;
     }
 
     #titleCategory {

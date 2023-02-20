@@ -65,9 +65,9 @@
             $eventMatches.qualify[lastMatch].scheduled
         );
         let timeStarted = utcToTime($eventMatches.qualify[lastMatch].started);
-        timeScheduled = utcToTime(
-            moment(timeScheduled, "h:mm A").add(-1, "minutes")
-        );
+        // timeScheduled = utcToTime(
+        //     moment(timeScheduled, "h:mm A").add(-1, "minutes")
+        // );
         timeBehind = moment(timeStarted, "h:mm A").diff(
             moment(timeScheduled, "h:mm A")
         );

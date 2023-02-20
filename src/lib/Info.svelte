@@ -77,6 +77,10 @@
                 let type = filter.type
                 let value = filter.val
 
+                if($categories[category].type){
+                    filterTeam[category] = Number(filterTeam[category])
+                }
+
                 if(type == "Equal To" && filterTeam[category] != value) continue teamLoop
                 if(type == "Not Equal To" && filterTeam[category] == value) continue teamLoop
                 if(type == "Greater Than" && filterTeam[category] <= value) continue teamLoop

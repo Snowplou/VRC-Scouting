@@ -70,7 +70,6 @@
                 teamsInfo[skillsTeam].Rank = i + 1;
             }
         }
-
         let eventInfo = {
             teamList: teamList,
             teams: teamsInfo,

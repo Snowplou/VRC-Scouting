@@ -14,7 +14,6 @@
     export let selectedOption = ""
     export let selectedFilter = ""
     import { team, event } from "./database";
-    let showData = true
   
 </script>
 

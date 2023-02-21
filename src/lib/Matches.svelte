@@ -46,6 +46,14 @@
         updating = true;
         let updateButton = document.getElementById("update");
 
+        eventMatches.set({
+            qualify: {},
+            r16: {},
+            quarter: {},
+            semi: {},
+            final: {},
+        });
+
         if (updateButton) {
             updateButton.innerHTML = "updating";
             updateButton.style.cursor = "default";
@@ -61,17 +69,21 @@
             }
         }
 
-        let timeScheduled = utcToTime(
-            $eventMatches.qualify[lastMatch].scheduled
-        );
-        let timeStarted = utcToTime($eventMatches.qualify[lastMatch].started);
-        // timeScheduled = utcToTime(
-        //     moment(timeScheduled, "h:mm A").add(-1, "minutes")
-        // );
-        timeBehind = moment(timeStarted, "h:mm A").diff(
-            moment(timeScheduled, "h:mm A")
-        );
-        timeBehind /= 1000 * 60; // Milliseconds to minutes
+        if ($eventMatches.qualify[lastMatch]) {
+            let timeScheduled = utcToTime(
+                $eventMatches.qualify[lastMatch].scheduled
+            );
+            let timeStarted = utcToTime(
+                $eventMatches.qualify[lastMatch].started
+            );
+            // timeScheduled = utcToTime(
+            //     moment(timeScheduled, "h:mm A").add(-1, "minutes")
+            // );
+            timeBehind = moment(timeStarted, "h:mm A").diff(
+                moment(timeScheduled, "h:mm A")
+            );
+            timeBehind /= 1000 * 60; // Milliseconds to minutes
+        }
 
         if (updateButton) {
             updateButton.innerHTML = "Update";
@@ -117,8 +129,10 @@
 </div>
 
 <div id="scrolling">
-    {#if !Object.keys($eventMatches.qualify).length}
-        <p style="text-align: center; font-size: 200%">The matches have not been scheduled yet.</p>
+    {#if !Object.keys($eventMatches.qualify).length && !Object.keys($eventMatches.final).length}
+        <p style="text-align: center; font-size: 200%">
+            The matches have not been scheduled yet.
+        </p>
     {:else}
         {#each Object.keys($eventMatches) as round}
             {#if show[round]}

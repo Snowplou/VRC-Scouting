@@ -17,7 +17,7 @@
         }
     }
 
-    async function updateSkills() {
+    async function updateTable() {
         if(updating) return
 
         let skillsButton = document.getElementById("skillsUpdater")
@@ -52,13 +52,13 @@
         }
 
         updating = false
-        skillsButton.innerHTML = "Skills"
+        skillsButton.innerHTML = "Update"
         skillsButton.style.cursor = "pointer"
     }
 </script>
 
 <div>
-    <button id="skillsUpdater" on:click={updateSkills} on:keydown={updateSkills}>Skills</button>
+    <button id="skillsUpdater" on:click={updateTable} on:keydown={updateTable}>Update</button>
 
     <button on:click={() => toggleShowCategories()} on:keypress={() => toggleShowCategories()}>Categories</button>
 </div>

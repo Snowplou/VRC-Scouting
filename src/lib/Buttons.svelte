@@ -17,7 +17,7 @@
         }
     }
 
-    async function updateTable() {
+    async function updateInfo() {
         if(updating) return
 
         let skillsButton = document.getElementById("skillsUpdater")
@@ -43,12 +43,12 @@
             let skillsTeam = skillsRankings[i].team.team;
             if (teamList.includes(skillsTeam)) {
                 teamList.splice(teamList.indexOf(skillsTeam), 1);
-                updateDb(`accounts/${$team}/events/${$event}/teams/${skillsTeam}/Rank`, i + 1);
+                updateDb(`accounts/${$team}/events/${$event}/teams/${skillsTeam}/Skills Rank`, i + 1);
             }
         }
 
         for (let skillsTeam of teamList) {
-            updateDb(`accounts/${$team}/events/${$event}/teams/${skillsTeam}/Rank`, -1);
+            updateDb(`accounts/${$team}/events/${$event}/teams/${skillsTeam}/Skills Rank`, -1);
         }
 
         updating = false
@@ -58,7 +58,7 @@
 </script>
 
 <div>
-    <button id="skillsUpdater" on:click={updateTable} on:keydown={updateTable}>Update</button>
+    <button id="skillsUpdater" on:click={updateInfo} on:keydown={updateInfo}>Update</button>
 
     <button on:click={() => toggleShowCategories()} on:keypress={() => toggleShowCategories()}>Categories</button>
 </div>

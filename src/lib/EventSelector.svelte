@@ -35,7 +35,7 @@
                 Id: eventTeams.id,
                 Notes: "",
                 Rating: 0,
-                Rank: -1,
+                "Skills Rank": -1,
             };
             teamList.push(eventTeams.number);
         }
@@ -67,7 +67,7 @@
             let skillsTeam = skillsRankings[i].team.team;
             if (loopTeamList.includes(skillsTeam)) {
                 loopTeamList.splice(teamList.indexOf(skillsTeam), 1);
-                teamsInfo[skillsTeam].Rank = i + 1;
+                teamsInfo[skillsTeam]["Skills Rank"] = i + 1;
             }
         }
         let eventInfo = {

@@ -17,15 +17,15 @@
 
     let unfiltered_Team_Ranks = [];
     let team_Ranks = [];
-    let categoryList = ["Name", "Rank", "Rating"];
+    let categoryList = ["Name", "Skills Rank", "Rating"];
     dbUpdated(() => {
-        categoryList = ["Name", "Rank", "Rating"];
+        categoryList = ["Name", "Skills Rank", "Rating"];
         team_Ranks = []
         let i = 0;
         for (const infoTeam in $teams) {
             unfiltered_Team_Ranks[i] = {
                 Name: infoTeam,
-                Rank: $teams[infoTeam].Rank == -1 ? "N/A" : $teams[infoTeam].Rank,
+                "Skills Rank": $teams[infoTeam]["Skills Rank"] == -1 ? "N/A" : $teams[infoTeam]["Skills Rank"],
                 Rating:
                     $teams[infoTeam].Rating == 0
                         ? "Not Ranked"
@@ -98,11 +98,11 @@
                 return -1;
             } else if (a.Rating == "Not Ranked" && b.Rating != "Not Ranked") {
                 return 1;
-            } else if (a.Rank != "N/A" && b.Rank != "N/A") {
-                return a.Rank - b.Rank;
-            } else if (a.Rank != "N/A" && b.Rank == "N/A") {
+            } else if (a["Skills Rank"] != "N/A" && b["Skills Rank"] != "N/A") {
+                return a["Skills Rank"] - b["Skills Rank"];
+            } else if (a["Skills Rank"] != "N/A" && b["Skills Rank"] == "N/A") {
                 return -1;
-            } else if (a.Rank == "N/A" && b.Rank == "N/A") {
+            } else if (a["Skills Rank"] == "N/A" && b["Skills Rank"] == "N/A") {
                 return 1;
             } else {
                 return 0;
@@ -128,7 +128,7 @@
                     {#each categoryList as category}
                         {#if category == "Name"}
                             <td class="semibold">{teamInfo[category]}</td>
-                        {:else if category == "Rank" || category == "Rating" || category == "Notes"}
+                        {:else if category == "Skills Rank" || category == "Rating" || category == "Notes"}
                             <td>{teamInfo[category]}</td>
                         {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
                             <td

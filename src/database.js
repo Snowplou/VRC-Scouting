@@ -8,10 +8,10 @@ export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
 export let eventMatches = writable({
-	qualify: {},
+	qualifications: {},
 	r16: {},
-	quarter: {},
-	semi: {},
+	"quarter-finals": {},
+	"semi-finals": {},
 	final: {}	
 });
 let $eventMatches;
@@ -75,16 +75,16 @@ export async function updateMatches(page, eventId, division){
 			let tempMatchInfo = $eventMatches
 			let round = match.round
 			if(round == 2) {
-				tempMatchInfo.qualify[match.matchnum] = match
+				tempMatchInfo.qualifications[match.matchnum] = match
 			}
 			else if(round == 6){
 				tempMatchInfo.r16[match.instance] = match
 			}
 			else if(round == 3) {
-				tempMatchInfo.quarter[match.instance] = match
+				tempMatchInfo["quarter-finals"][match.instance] = match
 			}
 			else if(round == 4) {
-				tempMatchInfo.semi[match.instance] = match
+				tempMatchInfo["semi-finals"][match.instance] = match
 			}
 			else if(round == 5) {
 				tempMatchInfo.final[match.instance] = match

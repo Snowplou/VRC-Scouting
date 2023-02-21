@@ -47,10 +47,10 @@
         let updateButton = document.getElementById("update");
 
         eventMatches.set({
-            qualify: {},
+            qualifications: {},
             r16: {},
-            quarter: {},
-            semi: {},
+            "quarter-finals": {},
+            "semi-finals": {},
             final: {},
         });
 
@@ -62,19 +62,19 @@
         await updateMatches(1, $event, chosenDiv);
 
         let lastMatch = 0;
-        for (let match of Object.values($eventMatches.qualify)) {
+        for (let match of Object.values($eventMatches.qualifications)) {
             if (!match.started) {
                 lastMatch = match.matchnum - 1;
                 break;
             }
         }
 
-        if ($eventMatches.qualify[lastMatch]) {
+        if ($eventMatches.qualifications[lastMatch]) {
             let timeScheduled = utcToTime(
-                $eventMatches.qualify[lastMatch].scheduled
+                $eventMatches.qualifications[lastMatch].scheduled
             );
             let timeStarted = utcToTime(
-                $eventMatches.qualify[lastMatch].started
+                $eventMatches.qualifications[lastMatch].started
             );
             // timeScheduled = utcToTime(
             //     moment(timeScheduled, "h:mm A").add(-1, "minutes")
@@ -93,10 +93,10 @@
     }
 
     let show = {
-        qualify: true,
+        qualifications: true,
         r16: true,
-        quarter: true,
-        semi: true,
+        "quarter-finals": true,
+        "semi-finals": true,
         final: true,
     };
 </script>
@@ -129,7 +129,7 @@
 </div>
 
 <div id="scrolling">
-    {#if !Object.keys($eventMatches.qualify).length && !Object.keys($eventMatches.final).length}
+    {#if !Object.keys($eventMatches.qualifications).length && !Object.keys($eventMatches.final).length}
         <p style="text-align: center; font-size: 200%">
             The matches have not been scheduled yet.
         </p>
@@ -157,9 +157,11 @@
                                         Not Started
                                     {/if}
                                 </div>
+                                {#if match.field}
                                 <div class="field">
-                                    Field {match.field}
+                                    {match.field}
                                 </div>
+                                {/if}
                             </div>
                             <div class="blue">
                                 {match.alliances[0].teams[0].team.name}<br />
@@ -272,9 +274,6 @@
         padding-top: 2vh;
         margin: 1%;
         font-size: 125%;
-    }
-
-    #show p::first-letter {
         text-transform: capitalize;
     }
 

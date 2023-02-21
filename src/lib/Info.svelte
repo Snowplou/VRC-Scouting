@@ -17,15 +17,16 @@
 
     let unfiltered_Team_Ranks = [];
     let team_Ranks = [];
-    let categoryList = ["Name", "Skills Rank", "Rating"];
+    let categoryList = ["Name", "Ranking", "Skills Rank", "Rating"];
     dbUpdated(() => {
-        categoryList = ["Name", "Skills Rank", "Rating"];
+        categoryList = ["Name", "Ranking", "Skills Rank", "Rating"];
         team_Ranks = []
         let i = 0;
         for (const infoTeam in $teams) {
             unfiltered_Team_Ranks[i] = {
                 Name: infoTeam,
                 "Skills Rank": $teams[infoTeam]["Skills Rank"] == -1 ? "N/A" : $teams[infoTeam]["Skills Rank"],
+                Ranking: $teams[infoTeam].Ranking,
                 Rating:
                     $teams[infoTeam].Rating == 0
                         ? "Not Ranked"
@@ -128,7 +129,7 @@
                     {#each categoryList as category}
                         {#if category == "Name"}
                             <td class="semibold">{teamInfo[category]}</td>
-                        {:else if category == "Skills Rank" || category == "Rating" || category == "Notes"}
+                        {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
                             <td>{teamInfo[category]}</td>
                         {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
                             <td

@@ -36,6 +36,7 @@
                 Notes: "",
                 Rating: 0,
                 "Skills Rank": -1,
+                Ranking: 1
             };
             teamList.push(eventTeams.number);
         }

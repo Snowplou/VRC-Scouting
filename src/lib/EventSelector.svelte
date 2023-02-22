@@ -49,10 +49,10 @@
     }
 
     let teamRankings = {};
-    async function getRankings(page, eventId) {
+    async function getRankings(page, eventId, division) {
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/rankings?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${division}/rankings?page=${page}`,
                 {
                     headers: {
                         accept: "application/json",
@@ -67,7 +67,7 @@
         }
 
         if (response.meta.current_page != response.meta.last_page) {
-            await getRankings(page + 1, eventId);
+            await getRankings(page + 1, eventId, division);
         }
     }
 
@@ -85,10 +85,10 @@
             )
         ).json();
 
-        if(page == 1) teamDivs[divId] = []
+        if (page == 1) teamDivs[divId] = [];
 
         for (let ranking of response.data) {
-            teamDivs[divId].push(ranking.team.name)
+            teamDivs[divId].push(ranking.team.name);
         }
 
         if (response.meta.current_page != response.meta.last_page) {
@@ -98,11 +98,9 @@
 
     async function createEvent(eventId) {
         creating = true;
-        let divisions = await getDivisions(eventId)
+        let divisions = await getDivisions(eventId);
 
-        division.set(
-            Object.values(divisions.divisions)[0].id
-        );
+        division.set(Object.values(divisions.divisions)[0].id);
 
         await addTeams(1, eventId);
 
@@ -128,23 +126,24 @@
             }
         }
 
-
-        for(let div of divisions.divisions){
-            await getDivTeams(1, eventId, div.id)
+        for (let div of divisions.divisions) {
+            await getDivTeams(1, eventId, div.id);
         }
-        for(let div of Object.keys(teamDivs)){
-            for(let teamDiv of teamDivs[div]){
-                teamsInfo[teamDiv].Division = div
+        for (let div of Object.keys(teamDivs)) {
+            for (let teamDiv of teamDivs[div]) {
+                console.log(teamDiv, div);
+                teamsInfo[teamDiv].Division = div;
             }
         }
 
+        for (let div of Object.keys(teamDivs)) {
+            teamRankings = {}
+            await getRankings(1, eventId, div);
 
-        await getRankings(1, eventId);
-
-        for (let ranking of Object.keys(teamRankings)) {
-            teamsInfo[ranking].Ranking = teamRankings[ranking]
+            for (let ranking of Object.keys(teamRankings)) {
+                teamsInfo[ranking].Ranking = teamRankings[ranking];
+            }
         }
-
 
         let eventInfo = {
             teamList: teamList,

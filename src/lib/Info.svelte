@@ -1,5 +1,5 @@
 <script>
-    import { teams, categories, dbUpdated, team, event } from "../database";
+    import { teams, categories, dbUpdated, team, event, division } from "../database";
     export let teamSelected = "";
     export let showCategories = false;
     export let selectedOption = "";
@@ -38,6 +38,7 @@
                     $teams[infoTeam].Notes == ""
                         ? "No Notes"
                         : $teams[infoTeam].Notes,
+                Division: $teams[infoTeam].Division
             };
 
             for (let category in $categories) {
@@ -129,7 +130,7 @@
                 </thead>
                 <tbody>
                     {#each team_Ranks as teamInfo}
-                        {#if teamInfo.Ranking != 0}
+                        {#if teamInfo.Ranking != 0 && teamInfo.Division == $division}
                             <tr on:click={() => selectedTeam(teamInfo.Name)}>
                                 {#each categoryList as category}
                                     {#if category == "Name"}

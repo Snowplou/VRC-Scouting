@@ -20,19 +20,24 @@
     let categoryList = ["Name", "Ranking", "Skills Rank", "Rating"];
     dbUpdated(() => {
         categoryList = ["Name", "Ranking", "Skills Rank", "Rating"];
-        team_Ranks = []
+        team_Ranks = [];
         let i = 0;
         for (const infoTeam in $teams) {
             unfiltered_Team_Ranks[i] = {
                 Name: infoTeam,
-                "Skills Rank": $teams[infoTeam]["Skills Rank"] == -1 ? "N/A" : $teams[infoTeam]["Skills Rank"],
+                "Skills Rank":
+                    $teams[infoTeam]["Skills Rank"] == -1
+                        ? "N/A"
+                        : $teams[infoTeam]["Skills Rank"],
                 Ranking: $teams[infoTeam].Ranking,
                 Rating:
                     $teams[infoTeam].Rating == 0
                         ? "Not Ranked"
                         : $teams[infoTeam].Rating,
                 Notes:
-                    $teams[infoTeam].Notes == "" ? "No Notes" : $teams[infoTeam].Notes,
+                    $teams[infoTeam].Notes == ""
+                        ? "No Notes"
+                        : $teams[infoTeam].Notes,
             };
 
             for (let category in $categories) {
@@ -60,54 +65,53 @@
         }
         categoryList.push("Notes");
 
-        let filters = []
-        if($categories){
-            for(let filterName of Object.keys($categories)){
-                for(let filter of $categories[filterName].filters){
-                    if(filter.enabled){
-                        filter.category = filterName
-                        filters.push(filter)
+        let filters = [];
+        if ($categories) {
+            for (let filterName of Object.keys($categories)) {
+                for (let filter of $categories[filterName].filters) {
+                    if (filter.enabled) {
+                        filter.category = filterName;
+                        filters.push(filter);
                     }
                 }
             }
         }
 
-        teamLoop: for(let filterTeam of unfiltered_Team_Ranks){
-            for(let filter of filters){
-                let category = filter.category
-                let type = filter.type
-                let value = filter.val
+        teamLoop: for (let filterTeam of unfiltered_Team_Ranks) {
+            for (let filter of filters) {
+                let category = filter.category;
+                let type = filter.type;
+                let value = filter.val;
 
-                if($categories[category].type){
-                    filterTeam[category] = Number(filterTeam[category])
+                if ($categories[category].type) {
+                    filterTeam[category] = Number(filterTeam[category]);
                 }
 
-                if(type == "Equal To" && filterTeam[category] != value) continue teamLoop
-                if(type == "Not Equal To" && filterTeam[category] == value) continue teamLoop
-                if(type == "Greater Than" && filterTeam[category] <= value) continue teamLoop
-                if(type == "Less Than" && filterTeam[category] >= value) continue teamLoop
-                if(type == "Greater Than Or Equal To" && filterTeam[category] < value) continue teamLoop
-                if(type == "Less Than Or Equal To" && filterTeam[category] > value) continue teamLoop
+                if (type == "Equal To" && filterTeam[category] != value)
+                    continue teamLoop;
+                if (type == "Not Equal To" && filterTeam[category] == value)
+                    continue teamLoop;
+                if (type == "Greater Than" && filterTeam[category] <= value)
+                    continue teamLoop;
+                if (type == "Less Than" && filterTeam[category] >= value)
+                    continue teamLoop;
+                if (
+                    type == "Greater Than Or Equal To" &&
+                    filterTeam[category] < value
+                )
+                    continue teamLoop;
+                if (
+                    type == "Less Than Or Equal To" &&
+                    filterTeam[category] > value
+                )
+                    continue teamLoop;
             }
-            team_Ranks.push(filterTeam)
+            team_Ranks.push(filterTeam);
         }
 
         team_Ranks = team_Ranks.sort((a, b) => {
-            if (a.Rating != "Not Ranked" && b.Rating != "Not Ranked") {
-                return b.Rating - a.Rating;
-            } else if (a.Rating != "Not Ranked" && b.Rating == "Not Ranked") {
-                return -1;
-            } else if (a.Rating == "Not Ranked" && b.Rating != "Not Ranked") {
-                return 1;
-            } else if (a["Skills Rank"] != "N/A" && b["Skills Rank"] != "N/A") {
-                return a["Skills Rank"] - b["Skills Rank"];
-            } else if (a["Skills Rank"] != "N/A" && b["Skills Rank"] == "N/A") {
-                return -1;
-            } else if (a["Skills Rank"] == "N/A" && b["Skills Rank"] == "N/A") {
-                return 1;
-            } else {
-                return 0;
-            }
+            if (a.Ranking > b.Ranking) return 1;
+            else return -1;
         });
     });
 </script>
@@ -125,30 +129,34 @@
                 </thead>
                 <tbody>
                     {#each team_Ranks as teamInfo}
-                <tr on:click={() => selectedTeam(teamInfo.Name)}>
-                    {#each categoryList as category}
-                        {#if category == "Name"}
-                            <td class="semibold">{teamInfo[category]}</td>
-                        {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
-                            <td>{teamInfo[category]}</td>
-                        {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
-                            <td
-                                >{teamInfo[category] == 0
-                                    ? "N/A"
-                                    : teamInfo[category]}</td
-                            >
-                        {:else if $categories[category].type == "Dropdown"}
-                            <td
-                                >{teamInfo[category] == 0
-                                    ? "N/A"
-                                    : teamInfo[category]}</td
-                            >
-                        {:else}
-                            <td>Unkown Variable Type</td>
+                        {#if teamInfo.Ranking != 0}
+                            <tr on:click={() => selectedTeam(teamInfo.Name)}>
+                                {#each categoryList as category}
+                                    {#if category == "Name"}
+                                        <td class="semibold"
+                                            >{teamInfo[category]}</td
+                                        >
+                                    {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
+                                        <td>{teamInfo[category]}</td>
+                                    {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
+                                        <td
+                                            >{teamInfo[category] == 0
+                                                ? "N/A"
+                                                : teamInfo[category]}</td
+                                        >
+                                    {:else if $categories[category].type == "Dropdown"}
+                                        <td
+                                            >{teamInfo[category] == 0
+                                                ? "N/A"
+                                                : teamInfo[category]}</td
+                                        >
+                                    {:else}
+                                        <td>Unkown Variable Type</td>
+                                    {/if}
+                                {/each}
+                            </tr>
                         {/if}
                     {/each}
-                </tr>
-            {/each}
                 </tbody>
             </table>
         {/key}

@@ -11,7 +11,8 @@
         updateDb,
         team,
         event,
-        division
+        division,
+        getDivisions,
     } from "../database";
     let creating = false;
 
@@ -37,7 +38,8 @@
                 Notes: "",
                 Rating: 0,
                 "Skills Rank": -1,
-                Ranking: 1,
+                Ranking: 0,
+                Division: 0,
             };
             teamList.push(eventTeams.number);
         }
@@ -46,8 +48,61 @@
         }
     }
 
+    let teamRankings = {};
+    async function getRankings(page, eventId) {
+        let response = await (
+            await fetch(
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/rankings?page=${page}`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+
+        for (let ranking of response.data) {
+            teamRankings[ranking.team.name] = ranking.rank;
+        }
+
+        if (response.meta.current_page != response.meta.last_page) {
+            await getRankings(page + 1, eventId);
+        }
+    }
+
+    let teamDivs = {};
+    async function getDivTeams(page, eventId, divId) {
+        let response = await (
+            await fetch(
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/rankings?page=${page}`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+
+        if(page == 1) teamDivs[divId] = []
+
+        for (let ranking of response.data) {
+            teamDivs[divId].push(ranking.team.name)
+        }
+
+        if (response.meta.current_page != response.meta.last_page) {
+            await getDivTeams(page + 1, eventId, divId);
+        }
+    }
+
     async function createEvent(eventId) {
         creating = true;
+        let divisions = await getDivisions(eventId)
+
+        division.set(
+            Object.values(divisions.divisions)[0].id
+        );
 
         await addTeams(1, eventId);
 
@@ -72,6 +127,24 @@
                 teamsInfo[skillsTeam]["Skills Rank"] = i + 1;
             }
         }
+
+
+        for(let div of divisions.divisions){
+            await getDivTeams(1, eventId, div.id)
+        }
+        for(let div of Object.keys(teamDivs)){
+            for(let teamDiv of teamDivs[div]){
+                teamsInfo[teamDiv].Division = div
+            }
+        }
+
+
+        await getRankings(1, eventId);
+
+        for (let ranking of Object.keys(teamRankings)) {
+            teamsInfo[ranking].Ranking = teamRankings[ranking]
+        }
+
 
         let eventInfo = {
             teamList: teamList,
@@ -145,6 +218,11 @@
         margin-top: 40vh;
         text-align: center;
         font-size: 300%;
+    }
+
+    .event p {
+        margin-left: 1%;
+        margin-right: 1%;
     }
 
     .event {

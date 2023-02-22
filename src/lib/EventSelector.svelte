@@ -11,6 +11,7 @@
         updateDb,
         team,
         event,
+        division
     } from "../database";
     let creating = false;
 
@@ -36,7 +37,7 @@
                 Notes: "",
                 Rating: 0,
                 "Skills Rank": -1,
-                Ranking: 1
+                Ranking: 1,
             };
             teamList.push(eventTeams.number);
         }
@@ -71,6 +72,7 @@
                 teamsInfo[skillsTeam]["Skills Rank"] = i + 1;
             }
         }
+
         let eventInfo = {
             teamList: teamList,
             teams: teamsInfo,

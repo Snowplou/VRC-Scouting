@@ -5,20 +5,14 @@
         teams,
         team,
         event,
+        division,
         eventMatches,
         updateMatches,
         getDivisions,
     } from "../database";
 
     let updating = false;
-    let divisions = {};
-    let chosenDiv = 1;
     let timeBehind = 0;
-
-    function updateDiv(elm) {
-        chosenDiv = elm.target.value;
-        update();
-    }
 
     function utcToTime(time) {
         var localTime = moment.utc(time).local().format("h:mm A");
@@ -31,13 +25,6 @@
             .local()
             .format("h:mm A");
     }
-
-    (async () => {
-        let info = (await getDivisions($event)).divisions;
-        for (let div of info) {
-            divisions[div.id] = div.name;
-        }
-    })();
 
     update();
 
@@ -59,7 +46,7 @@
             updateButton.style.cursor = "default";
         }
 
-        await updateMatches(1, $event, chosenDiv);
+        await updateMatches(1, $event);
 
         let lastMatch = 0;
         for (let match of Object.values($eventMatches.qualifications)) {
@@ -104,14 +91,6 @@
 <button id="update" on:click={() => update()} on:keypress={() => update()}
     >Update</button
 >
-
-<div id="division">
-    Division: <select value="1" on:change={(elm) => updateDiv(elm)}>
-        {#each Object.keys(divisions) as div}
-            <option value={div}>{divisions[div]}</option>
-        {/each}
-    </select>
-</div>
 
 <div id="show">
     {#each Object.keys(show) as round}
@@ -196,14 +175,6 @@
     .times {
         font-size: 75%;
         margin: 0.5%;
-    }
-
-    #division {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 1%;
-        text-align: center;
     }
 
     #update {

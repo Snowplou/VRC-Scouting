@@ -7,6 +7,9 @@ team.subscribe(v => $team = v);
 export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
+export let division = writable();
+let $division;
+division.subscribe(v => $division = v);
 export let eventMatches = writable({
 	qualifications: {},
 	r16: {},
@@ -55,11 +58,11 @@ export async function getDivisions(eventId){
 	return response
 }
 
-export async function updateMatches(page, eventId, division){
+export async function updateMatches(page, eventId){
 
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${division}/matches?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/matches?page=${page}`,
                 {
                     headers: {
                         accept: "application/json",
@@ -94,7 +97,7 @@ export async function updateMatches(page, eventId, division){
         }
 
         if (response.meta.current_page != response.meta.last_page) {
-            await updateMatches(page + 1, eventId, division);
+            await updateMatches(page + 1, eventId);
         }
 }
 

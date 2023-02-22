@@ -169,7 +169,7 @@
 
     .fixTableHead {
         overflow-y: auto;
-        height: 85vh;
+        height: 80vh;
     }
     .fixTableHead thead th {
         position: sticky;

@@ -2,6 +2,7 @@
     import { event } from "../database";
     function GoToEvents(){
         localStorage.removeItem("event")
+        localStorage.removeItem("division")
         event.set("")
         location.reload()
     }

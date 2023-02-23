@@ -7,7 +7,7 @@ team.subscribe(v => $team = v);
 export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
-export let division = writable();
+export let division = writable(localStorage.getItem("division"));
 let $division;
 division.subscribe(v => $division = v);
 export let eventMatches = writable({
@@ -15,13 +15,13 @@ export let eventMatches = writable({
 	r16: {},
 	"quarter-finals": {},
 	"semi-finals": {},
-	final: {}	
+	final: {}
 });
 let $eventMatches;
 eventMatches.subscribe(v => $eventMatches = v);
 const FIREBASE_API_KEY = "AIzaSyACIQ7aK-Eedrj-UjJBLaNpOQg8YodVoMg"
 const ROBOT_EVENTS_KEY =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiYzBmOTA1YmJhYTUxMzljNGNiNGNhN2E5N2NiMTFjMTUxZGE1YzA2MTZlNGNjOTIzYTIyZjFiMzlkNGUzZTEzYzA3MGExZGRmYTYzZmM0ZDIiLCJpYXQiOjE2NzQzNTc0MDguMTc0MzgwMSwibmJmIjoxNjc0MzU3NDA4LjE3NDM4MjksImV4cCI6MjYyMTEyODYwOC4xNjY3ODE5LCJzdWIiOiIxMTE2NTUiLCJzY29wZXMiOltdfQ.JeWKVXzcFuAjpObWa0n3javoRWJykyQBfj_DBwpOXyttaM58U30_c3X8G6cOLkz5tWjDTubAU9IqhqjirEfrRHIj2aFoEtnfol9q_1uV4uZG78jNODscCVQL0qnGscOjn9WiE76rTlYovMkEfYtvEIiB63WIh36cM5rR9Vi_6Ng8CcMGV8T5uH-hnUMD9wL3UsBEUF8XepvI6Mpf_lbKrDPUEYDvvApfd84rLA2T6jgAwL3_z7tlF7b0CJ-ONGvjrezgkkyVUcF4azIuTV6Svlogj996dXAQfvHW64RAcHp-8CDItFt81CEh_15jasJEht6wKjTzqshDxsdqpFy2vZX2H2RabncVBmhNsmBPnQkDXpsrU6QAOF4pR308g0IvcsW4B_3ZLimU5vLg3GO57z1picRAVBo8r9NgZpcOZDoJBmiZs16v-h_1PCIQ4TOgEYKzNaq7cJBWCrToKFT_CftavB8Dd5kN9swXhoWiJGgLRY9dO8n0sP8Qrm-rQs2QczQWEFGxOroCnZLg2V_foUtpUK9hKQvvC-nGwIGM0izsAPjmvntY_oRucw4NkJyC9FWvAsHReh6YPUFX5LS437dfDlr0RXrPSg6v8SsONEL25pv8tqgZEYwDg8pHb8Y2QjnutBAM-8RH2yGfNEnLrVYObacT_raq4IgqQujcVEU";
+	"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzIiwianRpIjoiYzBmOTA1YmJhYTUxMzljNGNiNGNhN2E5N2NiMTFjMTUxZGE1YzA2MTZlNGNjOTIzYTIyZjFiMzlkNGUzZTEzYzA3MGExZGRmYTYzZmM0ZDIiLCJpYXQiOjE2NzQzNTc0MDguMTc0MzgwMSwibmJmIjoxNjc0MzU3NDA4LjE3NDM4MjksImV4cCI6MjYyMTEyODYwOC4xNjY3ODE5LCJzdWIiOiIxMTE2NTUiLCJzY29wZXMiOltdfQ.JeWKVXzcFuAjpObWa0n3javoRWJykyQBfj_DBwpOXyttaM58U30_c3X8G6cOLkz5tWjDTubAU9IqhqjirEfrRHIj2aFoEtnfol9q_1uV4uZG78jNODscCVQL0qnGscOjn9WiE76rTlYovMkEfYtvEIiB63WIh36cM5rR9Vi_6Ng8CcMGV8T5uH-hnUMD9wL3UsBEUF8XepvI6Mpf_lbKrDPUEYDvvApfd84rLA2T6jgAwL3_z7tlF7b0CJ-ONGvjrezgkkyVUcF4azIuTV6Svlogj996dXAQfvHW64RAcHp-8CDItFt81CEh_15jasJEht6wKjTzqshDxsdqpFy2vZX2H2RabncVBmhNsmBPnQkDXpsrU6QAOF4pR308g0IvcsW4B_3ZLimU5vLg3GO57z1picRAVBo8r9NgZpcOZDoJBmiZs16v-h_1PCIQ4TOgEYKzNaq7cJBWCrToKFT_CftavB8Dd5kN9swXhoWiJGgLRY9dO8n0sP8Qrm-rQs2QczQWEFGxOroCnZLg2V_foUtpUK9hKQvvC-nGwIGM0izsAPjmvntY_oRucw4NkJyC9FWvAsHReh6YPUFX5LS437dfDlr0RXrPSg6v8SsONEL25pv8tqgZEYwDg8pHb8Y2QjnutBAM-8RH2yGfNEnLrVYObacT_raq4IgqQujcVEU";
 
 
 const firebaseConfig = {
@@ -48,57 +48,65 @@ export function updateDb(path, data) {
 	set_firebase(ref(db, path), data)
 }
 
-export async function getEvents(teamId){
-	let response = await(await fetch(`https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=173`, {headers: {"accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}`}})).json()
+export async function getEvents(teamId) {
+	let response = await (await fetch(`https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=173`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
 	return response
 }
 
-export async function getDivisions(eventId){
-	let response = await(await fetch(`https://www.robotevents.com/api/v2/events/${eventId}`, {headers: {"accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}`}})).json()
+export async function getDivisionsFromDb() {
+	let divs = {}
+	await get(child(ref(getDatabase()), `accounts/${$team}/events/${$event}/divisions`)).then((snapshot) => {
+		divs = snapshot.val()
+	})
+	return divs
+}
+
+export async function getDivisions(eventId) {
+	let response = await (await fetch(`https://www.robotevents.com/api/v2/events/${eventId}`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
 	return response
 }
 
-export async function updateMatches(page, eventId){
+export async function updateMatches(page, eventId) {
 
-        let response = await (
-            await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/matches?page=${page}`,
-                {
-                    headers: {
-                        accept: "application/json",
-                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
-                    },
-                }
-            )
-        ).json();
+	let response = await (
+		await fetch(
+			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/matches?page=${page}`,
+			{
+				headers: {
+					accept: "application/json",
+					Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+				},
+			}
+		)
+	).json();
 
 
 
-        for (let match of response.data) {
-			let tempMatchInfo = $eventMatches
-			let round = match.round
-			if(round == 2) {
-				tempMatchInfo.qualifications[match.matchnum] = match
-			}
-			else if(round == 6){
-				tempMatchInfo.r16[match.instance] = match
-			}
-			else if(round == 3) {
-				tempMatchInfo["quarter-finals"][match.instance] = match
-			}
-			else if(round == 4) {
-				tempMatchInfo["semi-finals"][match.instance] = match
-			}
-			else if(round == 5) {
-				tempMatchInfo.final[match.instance] = match
-			}
-			
-			eventMatches.set(tempMatchInfo)
-        }
+	for (let match of response.data) {
+		let tempMatchInfo = $eventMatches
+		let round = match.round
+		if (round == 2) {
+			tempMatchInfo.qualifications[match.matchnum] = match
+		}
+		else if (round == 6) {
+			tempMatchInfo.r16[match.instance] = match
+		}
+		else if (round == 3) {
+			tempMatchInfo["quarter-finals"][match.instance] = match
+		}
+		else if (round == 4) {
+			tempMatchInfo["semi-finals"][match.instance] = match
+		}
+		else if (round == 5) {
+			tempMatchInfo.final[match.instance] = match
+		}
 
-        if (response.meta.current_page != response.meta.last_page) {
-            await updateMatches(page + 1, eventId);
-        }
+		eventMatches.set(tempMatchInfo)
+	}
+
+	if (response.meta.current_page != response.meta.last_page) {
+		await updateMatches(page + 1, eventId);
+	}
 }
 
 const callbacks = [];

@@ -1,13 +1,12 @@
 <script>
-    import { teams, team, event, division, getDivisions } from "../database"
+    import { teams, team, event, division, getDivisions, getDivisionsFromDb } from "../database"
     let divisions = {};
 
     (async () => {
-        let info = (await getDivisions($event)).divisions;
-        for (let div of info) {
-            divisions[div.id] = div.name;
+        let info = await getDivisionsFromDb()
+        for (let div of Object.keys(info)) {
+            divisions[info[div]] = div;
         }
-        division.set(Object.keys(divisions)[0])
     })();
 
     function updateDiv(elm) {

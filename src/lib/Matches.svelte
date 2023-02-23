@@ -28,6 +28,8 @@
 
     update();
 
+    division.subscribe(() => update())
+
     async function update() {
         if (updating) return;
         updating = true;

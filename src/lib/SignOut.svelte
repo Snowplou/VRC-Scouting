@@ -4,6 +4,7 @@
         team.set("")
         localStorage.removeItem("accountNumber")
         localStorage.removeItem("event")
+        localStorage.removeItem("division")
     }
 </script>
 

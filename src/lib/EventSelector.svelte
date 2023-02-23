@@ -101,6 +101,12 @@
         let divisions = await getDivisions(eventId);
 
         division.set(Object.values(divisions.divisions)[0].id);
+        localStorage.setItem("division", $division)
+
+        let divs = {}
+        for(let divisionInfo of divisions.divisions){
+            divs[divisionInfo.name] = divisionInfo.id
+        }
 
         await addTeams(1, eventId);
 
@@ -131,7 +137,6 @@
         }
         for (let div of Object.keys(teamDivs)) {
             for (let teamDiv of teamDivs[div]) {
-                console.log(teamDiv, div);
                 teamsInfo[teamDiv].Division = div;
             }
         }
@@ -148,6 +153,7 @@
         let eventInfo = {
             teamList: teamList,
             teams: teamsInfo,
+            divisions: divs
         };
 
         updateDb(`accounts/${$team}/events/${eventId}`, eventInfo);

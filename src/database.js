@@ -41,6 +41,13 @@ const app = initializeApp(firebaseConfig);
 // Initialize Realtime Database and get a reference to the service
 const db = getDatabase();
 
+(async () => {
+	if($division || !$event) return
+		division.set(Object.values(await getDivisionsFromDb())[0])
+		localStorage.setItem("division", $division)
+		location.reload()
+})()
+
 export let teams = writable({})
 export let categories = writable({})
 export let accounts = writable({})

@@ -10,6 +10,7 @@ event.subscribe(v => $event = v);
 export let division = writable(localStorage.getItem("division"));
 let $division;
 division.subscribe(v => $division = v);
+export let disableDivisionSelect = writable(false);
 export let eventMatches = writable({
 	qualifications: {},
 	r16: {},
@@ -68,6 +69,7 @@ export async function getDivisions(eventId) {
 
 export async function updateMatches(page, eventId) {
 
+	disableDivisionSelect.set(true);
 	let response = await (
 		await fetch(
 			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/matches?page=${page}`,
@@ -107,6 +109,8 @@ export async function updateMatches(page, eventId) {
 	if (response.meta.current_page != response.meta.last_page) {
 		await updateMatches(page + 1, eventId);
 	}
+
+	disableDivisionSelect.set(false);
 }
 
 const callbacks = [];

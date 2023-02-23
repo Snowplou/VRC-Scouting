@@ -1,5 +1,5 @@
 <script>
-    import { teams, team, event, division, getDivisions, getDivisionsFromDb } from "../database"
+    import { division, getDivisionsFromDb, disableDivisionSelect } from "../database"
     let divisions = {};
 
     (async () => {
@@ -11,12 +11,13 @@
 
     function updateDiv(elm) {
         division.set(elm.target.value)
+        localStorage.setItem("division", $division)
     }
 </script>
 
 
 <div id="division">
-    Division: <select value="1" on:change={(elm) => updateDiv(elm)}>
+    Division: <select value={$division} on:change={(elm) => updateDiv(elm)} disabled={$disableDivisionSelect}>
         {#each Object.keys(divisions) as div}
             <option value={div}>{divisions[div]}</option>
         {/each}

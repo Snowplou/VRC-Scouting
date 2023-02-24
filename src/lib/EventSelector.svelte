@@ -162,7 +162,15 @@
         location.reload();
     }
 
-    function Clicked(selectedEvent) {
+    function deleteEvent(selectedEvent, eventName){
+        if(!confirm(`Are you sure that you want to delete the event: ${eventName}?`)) return
+        if(!confirm(`This will delete all of the data stored for ${eventName}. Are you sure that you want to continue?`)) return
+
+        updateDb(`accounts/${$team}/events/${selectedEvent}`, null)
+    }
+
+    function Clicked(elm, selectedEvent) {
+        if(elm.target.type) return // Don't run if delete button was pressed
         if ($accounts[$team].events) {
             if (!$accounts[$team].events[selectedEvent]) {
                 createEvent(selectedEvent);
@@ -188,8 +196,8 @@
         {#each events as selectorEvent}
             <div
                 class="event"
-                on:click={() => Clicked(selectorEvent.id)}
-                on:keypress={() => Clicked(selectorEvent.id)}
+                on:click={(elm) => Clicked(elm, selectorEvent.id)}
+                on:keypress={(elm) => Clicked(elm, selectorEvent.id)}
             >
                 <p>{selectorEvent.name}</p>
                 <p>{selectorEvent.location.venue}</p>
@@ -204,6 +212,7 @@
                         : " - " +
                           moment.utc(selectorEvent.end).format("MMMM Do YYYY")}
                 </p>
+                <button on:click={() => deleteEvent(selectorEvent.id, selectorEvent.name)} on:keypress={() => deleteEvent(selectorEvent.id, selectorEvent.name)}>Delete</button>
             </div>
         {/each}
     </div>
@@ -217,6 +226,15 @@
         width: 100%;
         height: 100%;
         overflow-y: scroll;
+    }
+
+    button {
+        margin-bottom: 1%;
+        width: 20%;
+        height: 20%;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
     }
 
     #creating {
@@ -243,7 +261,7 @@
         background-color: rgb(84, 121, 215);
         color: white;
         width: 75vw;
-        height: 25vh;
+        height: 30vh;
         border-radius: 10px;
         cursor: pointer;
     }

@@ -115,7 +115,7 @@
 
 <div id="matchFilter">
     <p>Team Search:</p>
-    <input id="filteredTeam" type="text" on:change={() => matchFilter = document.getElementById("filteredTeam").value.toUpperCase()}/>
+    <input id="filteredTeam" type="text" on:input={() => matchFilter = document.getElementById("filteredTeam").value.toUpperCase()}/>
 </div>
 
 <div id="scrolling">

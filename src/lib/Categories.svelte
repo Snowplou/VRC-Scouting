@@ -84,13 +84,10 @@
         updateDb(`accounts/${$team}/events/${$event}/categories/${newCategory}`, categoryInfo);
 
         for (let categoryTeam in $teams) {
-            if (
-                $teams[categoryTeam][category] != undefined ||
-                $teams[categoryTeam][category] != null
-            ) {
+            if ($teams[categoryTeam][category]) {
                 updateDb(
-                    `categoryTeam/${team}/events/${$event}/teams/${categoryTeam}/${newCategory}`,
-                    $teams[$team][category]
+                    `accounts/${$team}/events/${$event}/teams/${categoryTeam}/${newCategory}`,
+                    $teams[categoryTeam][category]
                 );
                 updateDb(`accounts/${$team}/events/${$event}/teams/${categoryTeam}/${category}`, null);
             }

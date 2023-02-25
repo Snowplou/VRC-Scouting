@@ -23,14 +23,14 @@
 
     let unfiltered_Team_Ranks = [];
     let team_Ranks = [];
-    let categoryList = ["Name", "Ranking", "Skills Rank", "Rating"];
+    let categoryList = ["Team Number", "Ranking", "Skills Rank", "Rating"];
     dbUpdated(() => {
-        categoryList = ["Name", "Ranking", "Skills Rank", "Rating"];
+        categoryList = ["Team Number", "Ranking", "Skills Rank", "Rating"];
         team_Ranks = [];
         let i = 0;
         for (const infoTeam in $teams) {
             unfiltered_Team_Ranks[i] = {
-                Name: infoTeam,
+                "Team Number": infoTeam,
                 "Skills Rank":
                     $teams[infoTeam]["Skills Rank"] == -1
                         ? "N/A"
@@ -118,10 +118,10 @@
 
         team_Ranks = team_Ranks.sort((a, b) => {
             if ($sortingType == "name") {
-                if (a.Name.length > b.Name.length) return 1;
-                else if (a.Name.length < b.Name.length) return -1;
-                else if (a.Name > b.Name) return 1;
-                else if (a.Name < b.Name) return -1;
+                if (a["Team Number"].length > b["Team Number"].length) return 1;
+                else if (a["Team Number"].length < b["Team Number"].length) return -1;
+                else if (a["Team Number"] > b["Team Number"]) return 1;
+                else if (a["Team Number"] < b["Team Number"]) return -1;
                 else return 0;
             } else if ($sortingType == "rank") {
                 if (a.Ranking > b.Ranking) return 1;
@@ -133,10 +133,10 @@
     sortingType.subscribe(() => {
         team_Ranks = team_Ranks.sort((a, b) => {
             if ($sortingType == "name") {
-                if (a.Name.length > b.Name.length) return 1;
-                else if (a.Name.length < b.Name.length) return -1;
-                else if (a.Name > b.Name) return 1;
-                else if (a.Name < b.Name) return -1;
+                if (a["Team Number"].length > b["Team Number"].length) return 1;
+                else if (a["Team Number"].length < b["Team Number"].length) return -1;
+                else if (a["Team Number"] > b["Team Number"]) return 1;
+                else if (a["Team Number"] < b["Team Number"]) return -1;
                 else return 0;
             } else if ($sortingType == "rank") {
                 if (a.Ranking > b.Ranking) return 1;
@@ -170,10 +170,10 @@
                         {#each team_Ranks as teamInfo}
                             {#if teamInfo.Ranking != 0 && teamInfo.Division == $division}
                                 <tr
-                                    on:click={() => selectedTeam(teamInfo.Name)}
+                                    on:click={() => selectedTeam(teamInfo["Team Number"])}
                                 >
                                     {#each categoryList as category}
-                                        {#if category == "Name"}
+                                        {#if category == "Team Number"}
                                             <td class="semibold"
                                                 >{teamInfo[category]}</td
                                             >

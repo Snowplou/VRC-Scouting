@@ -63,4 +63,7 @@
 </main>
 
 <style>
+  main {
+    overflow-y: none;
+  }
 </style>

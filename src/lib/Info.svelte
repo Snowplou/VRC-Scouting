@@ -1,5 +1,11 @@
 <script>
-    import { teams, categories, dbUpdated, team, event, division } from "../database";
+    import {
+        teams,
+        categories,
+        dbUpdated,
+        division,
+        sortingType,
+    } from "../database";
     export let teamSelected = "";
     export let showCategories = false;
     export let selectedOption = "";
@@ -38,7 +44,7 @@
                     $teams[infoTeam].Notes == ""
                         ? "No Notes"
                         : $teams[infoTeam].Notes,
-                Division: $teams[infoTeam].Division
+                Division: $teams[infoTeam].Division,
             };
 
             for (let category in $categories) {
@@ -111,60 +117,106 @@
         }
 
         team_Ranks = team_Ranks.sort((a, b) => {
-            if (a.Ranking > b.Ranking) return 1;
-            else return -1;
+            if ($sortingType == "name") {
+                if (a.Name.length > b.Name.length) return 1;
+                else if (a.Name.length < b.Name.length) return -1;
+                else if (a.Name > b.Name) return 1;
+                else if (a.Name < b.Name) return -1;
+                else return 0;
+            } else if ($sortingType == "rank") {
+                if (a.Ranking > b.Ranking) return 1;
+                else return -1;
+            }
         });
     });
+
+    sortingType.subscribe(() => {
+        team_Ranks = team_Ranks.sort((a, b) => {
+            if ($sortingType == "name") {
+                if (a.Name.length > b.Name.length) return 1;
+                else if (a.Name.length < b.Name.length) return -1;
+                else if (a.Name > b.Name) return 1;
+                else if (a.Name < b.Name) return -1;
+                else return 0;
+            } else if ($sortingType == "rank") {
+                if (a.Ranking > b.Ranking) return 1;
+                else return -1;
+            }
+        });
+    })
 </script>
+
+<div id="sortingType">
+    <p>Sort:</p>
+    <select value="rank" on:change={(elm) => sortingType.set(elm.target.value)}>
+        <option value="rank">Rankings</option>
+        <option value="name">Team Number</option>
+    </select>
+</div>
 
 <div class="fixTableHead">
     {#key $teams}
         {#key $categories}
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        {#each categoryList as category}
-                            <th>{category}</th>
+            {#key $sortingType}
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            {#each categoryList as category}
+                                <th>{category}</th>
+                            {/each}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each team_Ranks as teamInfo}
+                            {#if teamInfo.Ranking != 0 && teamInfo.Division == $division}
+                                <tr
+                                    on:click={() => selectedTeam(teamInfo.Name)}
+                                >
+                                    {#each categoryList as category}
+                                        {#if category == "Name"}
+                                            <td class="semibold"
+                                                >{teamInfo[category]}</td
+                                            >
+                                        {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
+                                            <td>{teamInfo[category]}</td>
+                                        {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
+                                            <td
+                                                >{teamInfo[category] == 0
+                                                    ? "N/A"
+                                                    : teamInfo[category]}</td
+                                            >
+                                        {:else if $categories[category].type == "Dropdown"}
+                                            <td
+                                                >{teamInfo[category] == 0
+                                                    ? "N/A"
+                                                    : teamInfo[category]}</td
+                                            >
+                                        {:else}
+                                            <td>Unkown Variable Type</td>
+                                        {/if}
+                                    {/each}
+                                </tr>
+                            {/if}
                         {/each}
-                    </tr>
-                </thead>
-                <tbody>
-                    {#each team_Ranks as teamInfo}
-                        {#if teamInfo.Ranking != 0 && teamInfo.Division == $division}
-                            <tr on:click={() => selectedTeam(teamInfo.Name)}>
-                                {#each categoryList as category}
-                                    {#if category == "Name"}
-                                        <td class="semibold"
-                                            >{teamInfo[category]}</td
-                                        >
-                                    {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
-                                        <td>{teamInfo[category]}</td>
-                                    {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
-                                        <td
-                                            >{teamInfo[category] == 0
-                                                ? "N/A"
-                                                : teamInfo[category]}</td
-                                        >
-                                    {:else if $categories[category].type == "Dropdown"}
-                                        <td
-                                            >{teamInfo[category] == 0
-                                                ? "N/A"
-                                                : teamInfo[category]}</td
-                                        >
-                                    {:else}
-                                        <td>Unkown Variable Type</td>
-                                    {/if}
-                                {/each}
-                            </tr>
-                        {/if}
-                    {/each}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            {/key}
         {/key}
     {/key}
 </div>
 
 <style>
+    #sortingType {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        margin-top: -3%;
+        margin-bottom: -1%;
+    }
+    #sortingType select {
+        height: 25%;
+    }
+
     table tr td {
         border-right: 1px solid rgb(208, 211, 218);
     }
@@ -178,7 +230,7 @@
 
     .fixTableHead {
         overflow-y: auto;
-        height: 80vh;
+        height: 77vh;
     }
     .fixTableHead thead th {
         position: sticky;

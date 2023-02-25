@@ -41,6 +41,21 @@
     }
 
     async function updateInfo() {
+
+
+        // let middleSchoolSkills = await (
+        //     await fetch(
+        //         `https://www.robotevents.com/api/seasons/173/skills?grade_level=Middle+School`,
+        //         {
+        //             headers: {
+        //                 accept: "application/json",
+        //                 Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+        //             },
+        //         }
+        //     )
+        // ).json();
+
+
         if (updating) return;
 
         let skillsButton = document.getElementById("skillsUpdater");
@@ -49,9 +64,9 @@
         skillsButton.style.cursor = "default";
         updating = true;
 
-        let skillsRankings = await (
+        let middleSkillsRankings = await (
             await fetch(
-                `https://www.robotevents.com/api/seasons/173/skills?program=1`,
+                `https://www.robotevents.com/api/seasons/173/skills?grade_level=Middle+School`,
                 {
                     headers: {
                         accept: "application/json",
@@ -62,20 +77,50 @@
         ).json();
         let teamList = Object.keys($teams);
 
-        for (let i = 0; i < skillsRankings.length; i++) {
-            let skillsTeam = skillsRankings[i].team.team;
-            if (teamList.includes(skillsTeam)) {
-                teamList.splice(teamList.indexOf(skillsTeam), 1);
+        for (let i = 0; i < middleSkillsRankings.length; i++) {
+            let middleSkillsTeam = middleSkillsRankings[i].team.team;
+            if (teamList.includes(middleSkillsTeam)) {
+                teamList.splice(teamList.indexOf(middleSkillsTeam), 1);
                 updateDb(
-                    `accounts/${$team}/events/${$event}/teams/${skillsTeam}/Skills Rank`,
-                    i + 1
+                    `accounts/${$team}/events/${$event}/teams/${middleSkillsTeam}/Skills Rank`,
+                    (i + 1) + " MS"
                 );
             }
         }
 
-        for (let skillsTeam of teamList) {
+        for (let middleSkillsTeam of teamList) {
             updateDb(
-                `accounts/${$team}/events/${$event}/teams/${skillsTeam}/Skills Rank`,
+                `accounts/${$team}/events/${$event}/teams/${middleSkillsTeam}/Skills Rank`,
+                -1
+            );
+        }
+
+        let highSkillsRankings = await (
+            await fetch(
+                `https://www.robotevents.com/api/seasons/173/skills?program=1`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+
+        for (let i = 0; i < highSkillsRankings.length; i++) {
+            let highSkillsTeam = highSkillsRankings[i].team.team;
+            if (teamList.includes(highSkillsTeam)) {
+                teamList.splice(teamList.indexOf(highSkillsTeam), 1);
+                updateDb(
+                    `accounts/${$team}/events/${$event}/teams/${highSkillsTeam}/Skills Rank`,
+                    (i + 1) + " HS"
+                );
+            }
+        }
+
+        for (let highSkillsTeam of teamList) {
+            updateDb(
+                `accounts/${$team}/events/${$event}/teams/${highSkillsTeam}/Skills Rank`,
                 -1
             );
         }

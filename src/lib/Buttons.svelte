@@ -42,20 +42,6 @@
 
     async function updateInfo() {
 
-
-        // let middleSchoolSkills = await (
-        //     await fetch(
-        //         `https://www.robotevents.com/api/seasons/173/skills?grade_level=Middle+School`,
-        //         {
-        //             headers: {
-        //                 accept: "application/json",
-        //                 Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
-        //             },
-        //         }
-        //     )
-        // ).json();
-
-
         if (updating) return;
 
         let skillsButton = document.getElementById("skillsUpdater");
@@ -88,16 +74,9 @@
             }
         }
 
-        for (let middleSkillsTeam of teamList) {
-            updateDb(
-                `accounts/${$team}/events/${$event}/teams/${middleSkillsTeam}/Skills Rank`,
-                -1
-            );
-        }
-
         let highSkillsRankings = await (
             await fetch(
-                `https://www.robotevents.com/api/seasons/173/skills?program=1`,
+                `https://www.robotevents.com/api/seasons/173/skills`,
                 {
                     headers: {
                         accept: "application/json",

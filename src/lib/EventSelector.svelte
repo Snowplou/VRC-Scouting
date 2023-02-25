@@ -110,9 +110,21 @@
 
         await addTeams(1, eventId);
 
-        let skillsRankings = await (
+        let middleSkillsRankings = await (
             await fetch(
-                `https://www.robotevents.com/api/seasons/173/skills?program=1`,
+                `https://www.robotevents.com/api/seasons/173/skills?grade_level=Middle+School`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+
+        let highSkillsRankings = await (
+            await fetch(
+                `https://www.robotevents.com/api/seasons/173/skills`,
                 {
                     headers: {
                         accept: "application/json",
@@ -124,11 +136,19 @@
 
         let loopTeamList = [...teamList];
 
-        for (let i = 0; i < skillsRankings.length; i++) {
-            let skillsTeam = skillsRankings[i].team.team;
-            if (loopTeamList.includes(skillsTeam)) {
-                loopTeamList.splice(teamList.indexOf(skillsTeam), 1);
-                teamsInfo[skillsTeam]["Skills Rank"] = i + 1;
+        for (let i = 0; i < middleSkillsRankings.length; i++) {
+            let middleSkillsTeam = middleSkillsRankings[i].team.team;
+            if (loopTeamList.includes(middleSkillsTeam)) {
+                loopTeamList.splice(teamList.indexOf(middleSkillsTeam), 1);
+                teamsInfo[middleSkillsTeam]["Skills Rank"] = (i + 1) + " MS";
+            }
+        }
+
+        for (let i = 0; i < highSkillsRankings.length; i++) {
+            let highSkillsTeam = highSkillsRankings[i].team.team;
+            if (loopTeamList.includes(highSkillsTeam)) {
+                loopTeamList.splice(teamList.indexOf(highSkillsTeam), 1);
+                teamsInfo[highSkillsTeam]["Skills Rank"] = (i + 1) + " HS";
             }
         }
 

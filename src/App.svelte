@@ -13,13 +13,24 @@
   export let showCategories = false;
   export let selectedOption = "";
   export let selectedFilter = "";
-  import { team, event } from "./database";
+  import { team, event, saving } from "./database";
   import Matches from "./lib/Matches.svelte";
   import GoToTeams from "./lib/GoToTeams.svelte";
     import GoToMatches from "./lib/GoToMatches.svelte";
     import DivisionSelector from "./lib/DivisionSelector.svelte";
     import Saving from "./lib/Saving.svelte";
   export let showMatches = false;
+
+  function onBeforeUnload(e) {
+    if ($saving) {
+        e.preventDefault();
+        e.returnValue = '';
+        return;
+    }
+}
+
+window.addEventListener('beforeunload', onBeforeUnload);
+
 </script>
 
 <main>

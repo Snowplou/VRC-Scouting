@@ -104,10 +104,9 @@
         left: 0%;
         top: 0%;
         transform: translate(10%, 10%);
-        background-color: gray;
+        background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
         height: 85vh;
-        opacity: 90%;
         border-radius: 10px;
     }
 </style>

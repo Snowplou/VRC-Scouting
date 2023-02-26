@@ -89,28 +89,27 @@
                 let category = filter.category;
                 let type = filter.type;
                 let value = filter.val;
+                let teamVal = filterTeam[category];
 
-                if ($categories[category].type) {
+                if ($categories[category].type == "Number") {
                     filterTeam[category] = Number(filterTeam[category]);
                 }
 
-                if (type == "Equal To" && filterTeam[category] != value)
+                if ($categories[category].type == "Boolean") {
+                    if (teamVal == "✅") teamVal = "true";
+                    else if (teamVal == "❌") teamVal = "false";
+                    else teamVal = "unknown";
+                }
+
+                if (type == "Equal To" && teamVal != value) continue teamLoop;
+                if (type == "Not Equal To" && teamVal == value)
                     continue teamLoop;
-                if (type == "Not Equal To" && filterTeam[category] == value)
+                if (type == "Greater Than" && teamVal <= value)
                     continue teamLoop;
-                if (type == "Greater Than" && filterTeam[category] <= value)
+                if (type == "Less Than" && teamVal >= value) continue teamLoop;
+                if (type == "Greater Than Or Equal To" && teamVal < value)
                     continue teamLoop;
-                if (type == "Less Than" && filterTeam[category] >= value)
-                    continue teamLoop;
-                if (
-                    type == "Greater Than Or Equal To" &&
-                    filterTeam[category] < value
-                )
-                    continue teamLoop;
-                if (
-                    type == "Less Than Or Equal To" &&
-                    filterTeam[category] > value
-                )
+                if (type == "Less Than Or Equal To" && teamVal > value)
                     continue teamLoop;
             }
             team_Ranks.push(filterTeam);
@@ -119,13 +118,14 @@
         team_Ranks = team_Ranks.sort((a, b) => {
             if ($sortingType == "name") {
                 if (a["Team Number"].length > b["Team Number"].length) return 1;
-                else if (a["Team Number"].length < b["Team Number"].length) return -1;
+                else if (a["Team Number"].length < b["Team Number"].length)
+                    return -1;
                 else if (a["Team Number"] > b["Team Number"]) return 1;
                 else if (a["Team Number"] < b["Team Number"]) return -1;
                 else return 0;
             } else if ($sortingType == "rank") {
-                if(a.Ranking == 0) return 1;
-                else if(b.Ranking == 0) return -1;
+                if (a.Ranking == 0) return 1;
+                else if (b.Ranking == 0) return -1;
                 else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                 else return -1;
             }
@@ -136,22 +136,23 @@
         team_Ranks = team_Ranks.sort((a, b) => {
             if ($sortingType == "name") {
                 if (a["Team Number"].length > b["Team Number"].length) return 1;
-                else if (a["Team Number"].length < b["Team Number"].length) return -1;
+                else if (a["Team Number"].length < b["Team Number"].length)
+                    return -1;
                 else if (a["Team Number"] > b["Team Number"]) return 1;
                 else if (a["Team Number"] < b["Team Number"]) return -1;
                 else return 0;
             } else if ($sortingType == "rank") {
-                if(a.Ranking == 0) return 1;
-                else if(b.Ranking == 0) return -1;
+                if (a.Ranking == 0) return 1;
+                else if (b.Ranking == 0) return -1;
                 else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                 else return -1;
             }
         });
-    })
+    });
 
-    function sortingChanged(elm){
-        sortingType.set(elm.target.value)
-        localStorage.setItem("sortingType", $sortingType)
+    function sortingChanged(elm) {
+        sortingType.set(elm.target.value);
+        localStorage.setItem("sortingType", $sortingType);
     }
 </script>
 
@@ -179,7 +180,8 @@
                         {#each team_Ranks as teamInfo}
                             {#if teamInfo.Division == $division || $division == "all"}
                                 <tr
-                                    on:click={() => selectedTeam(teamInfo["Team Number"])}
+                                    on:click={() =>
+                                        selectedTeam(teamInfo["Team Number"])}
                                 >
                                     {#each categoryList as category}
                                         {#if category == "Team Number"}

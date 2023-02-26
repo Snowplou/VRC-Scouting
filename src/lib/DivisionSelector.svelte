@@ -21,6 +21,7 @@
         {#each Object.keys(divisions) as div}
             <option value={div}>{divisions[div]}</option>
         {/each}
+        <option value="all">All Divisions</option>
     </select>
 </div>
 

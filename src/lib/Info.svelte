@@ -144,11 +144,16 @@
             }
         });
     })
+
+    function sortingChanged(elm){
+        sortingType.set(elm.target.value)
+        localStorage.setItem("sortingType", $sortingType)
+    }
 </script>
 
 <div id="sortingType">
     <p>Sort:</p>
-    <select value="rank" on:change={(elm) => sortingType.set(elm.target.value)}>
+    <select value={$sortingType} on:change={(elm) => sortingChanged(elm)}>
         <option value="rank">Rankings</option>
         <option value="name">Team Number</option>
     </select>
@@ -168,7 +173,7 @@
                     </thead>
                     <tbody>
                         {#each team_Ranks as teamInfo}
-                            {#if teamInfo.Ranking != 0 && teamInfo.Division == $division}
+                            {#if teamInfo.Ranking != 0 && (teamInfo.Division == $division || $division == "all")}
                                 <tr
                                     on:click={() => selectedTeam(teamInfo["Team Number"])}
                                 >

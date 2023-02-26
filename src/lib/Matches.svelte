@@ -126,7 +126,9 @@
 </div>
 
 <div id="scrolling">
-    {#if !Object.keys($eventMatches.qualifications).length && !Object.keys($eventMatches.final).length}
+    {#if $division == "all"} 
+    <p style="text-align: center; font-size: 200%">Cannot display all matches.</p>
+    {:else if !Object.keys($eventMatches.qualifications).length && !Object.keys($eventMatches.final).length}
         <p style="text-align: center; font-size: 200%">
             The matches have not been scheduled yet.
         </p>

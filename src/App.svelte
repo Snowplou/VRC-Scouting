@@ -20,9 +20,10 @@
     import DivisionSelector from "./lib/DivisionSelector.svelte";
     import Saving from "./lib/Saving.svelte";
   export let showMatches = false;
+  export let creatingEvent = false
 
   function onBeforeUnload(e) {
-    if ($saving) {
+    if ($saving && !creatingEvent) {
         e.preventDefault();
         e.returnValue = '';
         return;
@@ -68,7 +69,7 @@ window.addEventListener('beforeunload', onBeforeUnload);
         <Filters bind:selectedFilter />
       {/if}
     {:else}
-      <EventSelector />
+      <EventSelector bind:creatingEvent/>
     {/if}
   {:else}
     <SignIn />

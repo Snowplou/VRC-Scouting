@@ -14,6 +14,7 @@
         division,
         getDivisions,
     } from "../database";
+    export let creatingEvent = false;
     let creating = false;
 
     let events = [];
@@ -33,7 +34,7 @@
             )
         ).json();
 
-        progressBar.innerHTML = `Getting Teams... ${page}/${response.meta.last_page}`
+        progressBar.innerHTML = `Getting Teams... ${page}/${response.meta.last_page}`;
 
         for (let eventTeams of response.data) {
             teamsInfo[eventTeams.number] = {
@@ -66,7 +67,9 @@
             )
         ).json();
 
-        progressBar.innerHTML = `Getting Team Rankings... ${page + (response.meta.last_page * getRankingsMultiplier)}/${response.meta.last_page * divisions.divisions.length}`
+        progressBar.innerHTML = `Getting Team Rankings... ${
+            page + response.meta.last_page * getRankingsMultiplier
+        }/${response.meta.last_page * divisions.divisions.length}`;
 
         for (let ranking of response.data) {
             teamRankings[ranking.team.name] = ranking.rank;
@@ -74,8 +77,7 @@
 
         if (response.meta.current_page != response.meta.last_page) {
             await getRankings(page + 1, eventId, division, progressBar);
-        }
-        else{
+        } else {
             getRankingsMultiplier++;
         }
     }
@@ -95,7 +97,9 @@
             )
         ).json();
 
-        progressBar.innerHTML = `Sorting Teams Into Divisions... ${page + (response.meta.last_page * getDivTeamsMultiplier)}/${response.meta.last_page * divisions.divisions.length}`
+        progressBar.innerHTML = `Sorting Teams Into Divisions... ${
+            page + response.meta.last_page * getDivTeamsMultiplier
+        }/${response.meta.last_page * divisions.divisions.length}`;
 
         if (page == 1) teamDivs[divId] = [];
 
@@ -105,8 +109,7 @@
 
         if (response.meta.current_page != response.meta.last_page) {
             await getDivTeams(page + 1, eventId, divId, progressBar);
-        }
-        else{
+        } else {
             getDivTeamsMultiplier++;
         }
     }
@@ -114,6 +117,7 @@
     let divisions;
     async function createEvent(eventId) {
         creating = true;
+        creatingEvent = true;
 
         divisions = await getDivisions(eventId);
 
@@ -126,10 +130,10 @@
         }
 
         let progressBar = document.getElementById("progress");
-        progressBar.innerHTML = "Getting Teams... 1/?"
+        progressBar.innerHTML = "Getting Teams... 1/?";
         await addTeams(1, eventId, progressBar);
 
-        progressBar.innerHTML = "Getting Skills Rankings..."
+        progressBar.innerHTML = "Getting Skills Rankings... 1/2";
 
         let middleSkillsRankings = await (
             await fetch(
@@ -142,6 +146,8 @@
                 }
             )
         ).json();
+
+        progressBar.innerHTML = "Getting Skills Rankings... 2/2";
 
         let highSkillsRankings = await (
             await fetch(`https://www.robotevents.com/api/seasons/173/skills`, {
@@ -170,7 +176,7 @@
             }
         }
 
-        progressBar.innerHTML = "Sorting Teams Into Divisions... 1/?"
+        progressBar.innerHTML = "Sorting Teams Into Divisions... 1/?";
 
         for (let div of divisions.divisions) {
             await getDivTeams(1, eventId, div.id, progressBar);
@@ -181,7 +187,7 @@
             }
         }
 
-        progressBar.innerHTML = "Getting Rankings... 1/?"
+        progressBar.innerHTML = "Getting Rankings... 1/?";
 
         for (let div of Object.keys(teamDivs)) {
             teamRankings = {};
@@ -198,11 +204,12 @@
             divisions: divs,
         };
 
-        progressBar.innerHTML = "Done!"
+        progressBar.innerHTML = "Done!";
 
         updateDb(`accounts/${$team}/events/${eventId}`, eventInfo);
         localStorage.setItem("event", eventId);
         event.set(eventId);
+        creatingEvent = true;
         location.reload();
     }
 

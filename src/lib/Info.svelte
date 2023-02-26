@@ -124,7 +124,9 @@
                 else if (a["Team Number"] < b["Team Number"]) return -1;
                 else return 0;
             } else if ($sortingType == "rank") {
-                if (a.Ranking > b.Ranking) return 1;
+                if(a.Ranking == 0) return 1;
+                else if(b.Ranking == 0) return -1;
+                else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                 else return -1;
             }
         });
@@ -139,7 +141,9 @@
                 else if (a["Team Number"] < b["Team Number"]) return -1;
                 else return 0;
             } else if ($sortingType == "rank") {
-                if (a.Ranking > b.Ranking) return 1;
+                if(a.Ranking == 0) return 1;
+                else if(b.Ranking == 0) return -1;
+                else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                 else return -1;
             }
         });
@@ -173,7 +177,7 @@
                     </thead>
                     <tbody>
                         {#each team_Ranks as teamInfo}
-                            {#if teamInfo.Ranking != 0 && (teamInfo.Division == $division || $division == "all")}
+                            {#if teamInfo.Division == $division || $division == "all"}
                                 <tr
                                     on:click={() => selectedTeam(teamInfo["Team Number"])}
                                 >

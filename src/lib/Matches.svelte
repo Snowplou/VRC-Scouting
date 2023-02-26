@@ -33,7 +33,7 @@
     division.subscribe(() => update());
 
     async function update() {
-        if (updating) return;
+        if (updating || $division == "all") return;
         updating = true;
         let updateButton = document.getElementById("update");
 

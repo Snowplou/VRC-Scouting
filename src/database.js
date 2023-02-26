@@ -7,6 +7,7 @@ team.subscribe(v => $team = v);
 export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
+export let saving = writable(false);
 export let division = writable(localStorage.getItem("division"));
 let $division;
 division.subscribe(v => $division = v);
@@ -59,7 +60,10 @@ export let categories = writable({})
 export let accounts = writable({})
 
 export function updateDb(path, data) {
-	set_firebase(ref(db, path), data)
+	saving.set(true)
+	set_firebase(ref(db, path), data).then(() => {
+		saving.set(false);
+	})
 }
 
 export async function getEvents(teamId) {

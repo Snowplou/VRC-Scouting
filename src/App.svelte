@@ -18,12 +18,14 @@
   import GoToTeams from "./lib/GoToTeams.svelte";
     import GoToMatches from "./lib/GoToMatches.svelte";
     import DivisionSelector from "./lib/DivisionSelector.svelte";
+    import Saving from "./lib/Saving.svelte";
   export let showMatches = false;
 </script>
 
 <main>
   {#if $team}
     {#if $event}
+      <Saving />
       <DivisionSelector/>
       {#if showMatches}
         <GoToTeams bind:showMatches />

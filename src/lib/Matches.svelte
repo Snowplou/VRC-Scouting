@@ -14,7 +14,7 @@
 
     let updating = false;
     let timeBehind = 0;
-    let matchFilter = ""
+    let matchFilter = "";
 
     function utcToTime(time) {
         var localTime = moment.utc(time).local().format("h:mm A");
@@ -115,7 +115,14 @@
 
 <div id="matchFilter">
     <p>Team Search:</p>
-    <input id="filteredTeam" type="text" on:input={() => matchFilter = document.getElementById("filteredTeam").value.toUpperCase()}/>
+    <input
+        id="filteredTeam"
+        type="text"
+        on:input={() =>
+            (matchFilter = document
+                .getElementById("filteredTeam")
+                .value.toUpperCase())}
+    />
 </div>
 
 <div id="scrolling">
@@ -263,9 +270,6 @@
 
     .roundTitle {
         text-align: center;
-    }
-
-    .roundTitle::first-letter {
         text-transform: capitalize;
     }
 

@@ -20,7 +20,7 @@
     let teamList = [];
     let teamsInfo = [];
 
-    async function addTeams(page, eventId) {
+    async function addTeams(page, eventId, progressBar) {
         let response = await (
             await fetch(
                 `https://www.robotevents.com/api/v2/events/${eventId}/teams?page=${page}`,
@@ -32,6 +32,9 @@
                 }
             )
         ).json();
+
+        progressBar.innerHTML = `Getting Teams... ${page}/${response.meta.last_page}`
+
         for (let eventTeams of response.data) {
             teamsInfo[eventTeams.number] = {
                 Id: eventTeams.id,
@@ -44,12 +47,13 @@
             teamList.push(eventTeams.number);
         }
         if (response.meta.current_page != response.meta.last_page) {
-            await addTeams(page + 1, eventId);
+            await addTeams(page + 1, eventId, progressBar);
         }
     }
 
     let teamRankings = {};
-    async function getRankings(page, eventId, division) {
+    let getRankingsMultiplier = 0;
+    async function getRankings(page, eventId, division, progressBar) {
         let response = await (
             await fetch(
                 `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${division}/rankings?page=${page}`,
@@ -62,17 +66,23 @@
             )
         ).json();
 
+        progressBar.innerHTML = `Getting Team Rankings... ${page + (response.meta.last_page * getRankingsMultiplier)}/${response.meta.last_page * divisions.divisions.length}`
+
         for (let ranking of response.data) {
             teamRankings[ranking.team.name] = ranking.rank;
         }
 
         if (response.meta.current_page != response.meta.last_page) {
-            await getRankings(page + 1, eventId, division);
+            await getRankings(page + 1, eventId, division, progressBar);
+        }
+        else{
+            getRankingsMultiplier++;
         }
     }
 
     let teamDivs = {};
-    async function getDivTeams(page, eventId, divId) {
+    let getDivTeamsMultiplier = 0;
+    async function getDivTeams(page, eventId, divId, progressBar) {
         let response = await (
             await fetch(
                 `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/rankings?page=${page}`,
@@ -85,6 +95,8 @@
             )
         ).json();
 
+        progressBar.innerHTML = `Sorting Teams Into Divisions... ${page + (response.meta.last_page * getDivTeamsMultiplier)}/${response.meta.last_page * divisions.divisions.length}`
+
         if (page == 1) teamDivs[divId] = [];
 
         for (let ranking of response.data) {
@@ -92,23 +104,32 @@
         }
 
         if (response.meta.current_page != response.meta.last_page) {
-            await getDivTeams(page + 1, eventId, divId);
+            await getDivTeams(page + 1, eventId, divId, progressBar);
+        }
+        else{
+            getDivTeamsMultiplier++;
         }
     }
 
+    let divisions;
     async function createEvent(eventId) {
         creating = true;
-        let divisions = await getDivisions(eventId);
+
+        divisions = await getDivisions(eventId);
 
         division.set(Object.values(divisions.divisions)[0].id);
-        localStorage.setItem("division", $division)
+        localStorage.setItem("division", $division);
 
-        let divs = {}
-        for(let divisionInfo of divisions.divisions){
-            divs[divisionInfo.name] = divisionInfo.id
+        let divs = {};
+        for (let divisionInfo of divisions.divisions) {
+            divs[divisionInfo.name] = divisionInfo.id;
         }
 
-        await addTeams(1, eventId);
+        let progressBar = document.getElementById("progress");
+        progressBar.innerHTML = "Getting Teams... 1/?"
+        await addTeams(1, eventId, progressBar);
+
+        progressBar.innerHTML = "Getting Skills Rankings..."
 
         let middleSkillsRankings = await (
             await fetch(
@@ -123,15 +144,12 @@
         ).json();
 
         let highSkillsRankings = await (
-            await fetch(
-                `https://www.robotevents.com/api/seasons/173/skills`,
-                {
-                    headers: {
-                        accept: "application/json",
-                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
-                    },
-                }
-            )
+            await fetch(`https://www.robotevents.com/api/seasons/173/skills`, {
+                headers: {
+                    accept: "application/json",
+                    Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                },
+            })
         ).json();
 
         let loopTeamList = [...teamList];
@@ -140,7 +158,7 @@
             let middleSkillsTeam = middleSkillsRankings[i].team.team;
             if (loopTeamList.includes(middleSkillsTeam)) {
                 loopTeamList.splice(teamList.indexOf(middleSkillsTeam), 1);
-                teamsInfo[middleSkillsTeam]["Skills Rank"] = (i + 1) + " MS";
+                teamsInfo[middleSkillsTeam]["Skills Rank"] = i + 1 + " MS";
             }
         }
 
@@ -148,12 +166,14 @@
             let highSkillsTeam = highSkillsRankings[i].team.team;
             if (loopTeamList.includes(highSkillsTeam)) {
                 loopTeamList.splice(teamList.indexOf(highSkillsTeam), 1);
-                teamsInfo[highSkillsTeam]["Skills Rank"] = (i + 1) + " HS";
+                teamsInfo[highSkillsTeam]["Skills Rank"] = i + 1 + " HS";
             }
         }
 
+        progressBar.innerHTML = "Sorting Teams Into Divisions... 1/?"
+
         for (let div of divisions.divisions) {
-            await getDivTeams(1, eventId, div.id);
+            await getDivTeams(1, eventId, div.id, progressBar);
         }
         for (let div of Object.keys(teamDivs)) {
             for (let teamDiv of teamDivs[div]) {
@@ -161,9 +181,11 @@
             }
         }
 
+        progressBar.innerHTML = "Getting Rankings... 1/?"
+
         for (let div of Object.keys(teamDivs)) {
-            teamRankings = {}
-            await getRankings(1, eventId, div);
+            teamRankings = {};
+            await getRankings(1, eventId, div, progressBar);
 
             for (let ranking of Object.keys(teamRankings)) {
                 teamsInfo[ranking].Ranking = teamRankings[ranking];
@@ -173,8 +195,10 @@
         let eventInfo = {
             teamList: teamList,
             teams: teamsInfo,
-            divisions: divs
+            divisions: divs,
         };
+
+        progressBar.innerHTML = "Done!"
 
         updateDb(`accounts/${$team}/events/${eventId}`, eventInfo);
         localStorage.setItem("event", eventId);
@@ -182,15 +206,25 @@
         location.reload();
     }
 
-    function deleteEvent(selectedEvent, eventName){
-        if(!confirm(`Are you sure that you want to delete the event: ${eventName}?`)) return
-        if(!confirm(`This will delete all of the data stored for ${eventName}. Are you sure that you want to continue?`)) return
+    function deleteEvent(selectedEvent, eventName) {
+        if (
+            !confirm(
+                `Are you sure that you want to delete the event: ${eventName}?`
+            )
+        )
+            return;
+        if (
+            !confirm(
+                `This will delete all of the data stored for ${eventName}. Are you sure that you want to continue?`
+            )
+        )
+            return;
 
-        updateDb(`accounts/${$team}/events/${selectedEvent}`, null)
+        updateDb(`accounts/${$team}/events/${selectedEvent}`, null);
     }
 
     function Clicked(elm, selectedEvent) {
-        if(elm.target.type) return // Don't run if delete button was pressed
+        if (elm.target.type) return; // Don't run if delete button was pressed
         if ($accounts[$team].events) {
             if (!$accounts[$team].events[selectedEvent]) {
                 createEvent(selectedEvent);
@@ -211,6 +245,7 @@
 
 {#if creating}
     <p id="creating">Creating Event...</p>
+    <p id="progress">Getting Divisions...</p>
 {:else}
     <div id="scrolling">
         {#each events as selectorEvent}
@@ -232,7 +267,13 @@
                         : " - " +
                           moment.utc(selectorEvent.end).format("MMMM Do YYYY")}
                 </p>
-                <button on:click={() => deleteEvent(selectorEvent.id, selectorEvent.name)} on:keypress={() => deleteEvent(selectorEvent.id, selectorEvent.name)}>Delete</button>
+                <button
+                    on:click={() =>
+                        deleteEvent(selectorEvent.id, selectorEvent.name)}
+                    on:keypress={() =>
+                        deleteEvent(selectorEvent.id, selectorEvent.name)}
+                    >Delete</button
+                >
             </div>
         {/each}
     </div>
@@ -266,6 +307,10 @@
     .event p {
         margin-left: 1%;
         margin-right: 1%;
+    }
+
+    #progress {
+        text-align: center;
     }
 
     .event {

@@ -150,6 +150,16 @@
                     else if (aSkills[1] == "MS") return 1;
                     else return -1;
                 }
+                else if($sortingType == "rating") {
+                let numA = Number(a.Rating)
+                let numB = Number(b.Rating)
+                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
+                else if(a.Rating == "Not Ranked") return 1;
+                else if(b.Rating == "Not Ranked") return -1;
+                else if(numA > numB) return -1;
+                else if(numA < numB) return 1;
+                else return 0;
+            }
             } else if ($removedTeams.includes(a["Team Number"])) return 1;
             else if ($removedTeams.includes(b["Team Number"])) return -1;
 
@@ -177,6 +187,16 @@
                 else if (aSkills[0] < bSkills[0]) return -1;
                 else if (aSkills[1] == "MS") return 1;
                 else return -1;
+            }
+            else if($sortingType == "rating") {
+                let numA = Number(a.Rating)
+                let numB = Number(b.Rating)
+                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
+                else if(a.Rating == "Not Ranked") return 1;
+                else if(b.Rating == "Not Ranked") return -1;
+                else if(numA > numB) return -1;
+                else if(numA < numB) return 1;
+                else return 0;
             }
         });
     });
@@ -213,6 +233,16 @@
                     else if (aSkills[1] == "MS") return 1;
                     else return -1;
                 }
+                else if($sortingType == "rating") {
+                let numA = Number(a.Rating)
+                let numB = Number(b.Rating)
+                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
+                else if(a.Rating == "Not Ranked") return 1;
+                else if(b.Rating == "Not Ranked") return -1;
+                else if(numA > numB) return -1;
+                else if(numA < numB) return 1;
+                else return 0;
+            }
             } else if ($removedTeams.includes(a["Team Number"])) return 1;
             else if ($removedTeams.includes(b["Team Number"])) return -1;
 
@@ -241,6 +271,16 @@
                 else if (aSkills[1] == "MS") return 1;
                 else return -1;
             }
+            else if($sortingType == "rating") {
+                let numA = Number(a.Rating)
+                let numB = Number(b.Rating)
+                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
+                else if(a.Rating == "Not Ranked") return 1;
+                else if(b.Rating == "Not Ranked") return -1;
+                else if(numA > numB) return -1;
+                else if(numA < numB) return 1;
+                else return 0;
+            }
         });
     });
 
@@ -256,6 +296,7 @@
         <option value="rank">Rankings</option>
         <option value="name">Team Number</option>
         <option value="skills">Skills Rankings</option>
+        <option value="rating">Rating</option>
     </select>
 </div>
 

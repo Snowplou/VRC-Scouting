@@ -15,28 +15,13 @@
     export let selectedOption = "";
     export let selectedFilter = "";
 
-    function selectedTeam(id, elm) {
-        if(elm.target.type) return // Don't run if remove checkbox was changed
+    function selectedTeam(id) {
         if (teamSelected) teamSelected = "";
         else {
             teamSelected = id;
             showCategories = false;
             selectedOption = "";
             selectedFilter = "";
-        }
-    }
-
-    function remove(elm) {
-        let removingTeam = elm.target.parentNode.parentNode.children[0].innerHTML
-        let temp = []
-        if($removedTeams) temp = [...$removedTeams]
-        if(elm.target.checked){
-            temp.push(removingTeam)
-            updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
-        }
-        else {
-            temp.splice(temp.indexOf(removingTeam), 1)
-            updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
         }
     }
 
@@ -135,6 +120,27 @@
         }
 
         team_Ranks = team_Ranks.sort((a, b) => {
+            if (
+                $removedTeams.includes(a["Team Number"]) &&
+                $removedTeams.includes(b["Team Number"])
+            ) {
+                if ($sortingType == "name") {
+                    if (a["Team Number"].length > b["Team Number"].length)
+                        return 1;
+                    else if (a["Team Number"].length < b["Team Number"].length)
+                        return -1;
+                    else if (a["Team Number"] > b["Team Number"]) return 1;
+                    else if (a["Team Number"] < b["Team Number"]) return -1;
+                    else return 0;
+                } else if ($sortingType == "rank") {
+                    if (a.Ranking == 0) return 1;
+                    else if (b.Ranking == 0) return -1;
+                    else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
+                    else return -1;
+                }
+            } else if ($removedTeams.includes(a["Team Number"])) return 1;
+            else if ($removedTeams.includes(b["Team Number"])) return -1;
+
             if ($sortingType == "name") {
                 if (a["Team Number"].length > b["Team Number"].length) return 1;
                 else if (a["Team Number"].length < b["Team Number"].length)
@@ -153,6 +159,27 @@
 
     sortingType.subscribe(() => {
         team_Ranks = team_Ranks.sort((a, b) => {
+            if (
+                $removedTeams.includes(a["Team Number"]) &&
+                $removedTeams.includes(b["Team Number"])
+            ) {
+                if ($sortingType == "name") {
+                    if (a["Team Number"].length > b["Team Number"].length)
+                        return 1;
+                    else if (a["Team Number"].length < b["Team Number"].length)
+                        return -1;
+                    else if (a["Team Number"] > b["Team Number"]) return 1;
+                    else if (a["Team Number"] < b["Team Number"]) return -1;
+                    else return 0;
+                } else if ($sortingType == "rank") {
+                    if (a.Ranking == 0) return 1;
+                    else if (b.Ranking == 0) return -1;
+                    else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
+                    else return -1;
+                }
+            } else if ($removedTeams.includes(a["Team Number"])) return 1;
+            else if ($removedTeams.includes(b["Team Number"])) return -1;
+
             if ($sortingType == "name") {
                 if (a["Team Number"].length > b["Team Number"].length) return 1;
                 else if (a["Team Number"].length < b["Team Number"].length)
@@ -194,7 +221,6 @@
                                 {#each categoryList as category}
                                     <th>{category}</th>
                                 {/each}
-                                <th>Remove</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -203,17 +229,19 @@
                                     <tr
                                         on:click={(elm) =>
                                             selectedTeam(
-                                                teamInfo["Team Number"], elm
+                                                teamInfo["Team Number"]
                                             )}
                                         on:keypress={(elm) =>
                                             selectedTeam(
-                                                teamInfo["Team Number"], elm
+                                                teamInfo["Team Number"]
                                             )}
-                                        class={$removedTeams ? ($removedTeams.includes(
-                                            teamInfo["Team Number"]
-                                        )
-                                            ? "strikethrough"
-                                            : "") : ""}
+                                        class={$removedTeams
+                                            ? $removedTeams.includes(
+                                                  teamInfo["Team Number"]
+                                              )
+                                                ? "strikethrough"
+                                                : ""
+                                            : ""}
                                     >
                                         {#each categoryList as category}
                                             {#if category == "Team Number"}
@@ -242,9 +270,6 @@
                                                 <td>Unkown Variable Type</td>
                                             {/if}
                                         {/each}
-                                        <td>
-                                            <input type="checkbox" style="scale: 1.25;" checked={$removedTeams ? $removedTeams.includes(teamInfo["Team Number"]) : false} on:change={(elm) => remove(elm)}>
-                                        </td>
                                     </tr>
                                 {/if}
                             {/each}

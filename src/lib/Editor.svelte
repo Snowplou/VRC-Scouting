@@ -1,6 +1,6 @@
 <script>
     export let teamSelected = "";
-    import { teams, categories, updateDb, dbUpdated, team, event } from "../database";
+    import { teams, removedTeams, categories, updateDb, dbUpdated, team, event } from "../database";
 
     let categoryList = []
     dbUpdated(() => {
@@ -26,6 +26,15 @@
 
     function update(category, elm){
         updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/${category}`, elm.target.value)
+    }
+
+    function remove(elm){
+        let value = elm.target.checked
+        let temp = []
+        if($removedTeams) temp = [...$removedTeams]
+        if(value) temp.push(teamSelected)
+        else temp.splice(temp.indexOf(teamSelected), 1)
+        updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
     }
 
 </script>
@@ -74,6 +83,9 @@
         {/each}
         {/key}
         {/key}
+        <div class="edit">
+            Remove: <input type="checkbox" on:change={(elm) => remove(elm)} checked={$removedTeams ? $removedTeams.includes(teamSelected) : false} style="cursor: pointer; scale: 1.25;">
+        </div>
     </div>
 {/if}
 

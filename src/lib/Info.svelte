@@ -137,6 +137,18 @@
                     else if (b.Ranking == 0) return -1;
                     else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                     else return -1;
+                } else if ($sortingType == "skills") {
+                    let aSkills = a["Skills Rank"].split(" ");
+                    let bSkills = b["Skills Rank"].split(" ");
+                    aSkills[0] = Number(aSkills[0]);
+                    bSkills[0] = Number(bSkills[0]);
+                    if (aSkills.length == 1 && bSkills.length == 1) return 0;
+                    else if (aSkills.length == 1) return 1;
+                    else if (bSkills.length == 1) return -1;
+                    else if (aSkills[0] > bSkills[0]) return 1;
+                    else if (aSkills[0] < bSkills[0]) return -1;
+                    else if (aSkills[1] == "MS") return 1;
+                    else return -1;
                 }
             } else if ($removedTeams.includes(a["Team Number"])) return 1;
             else if ($removedTeams.includes(b["Team Number"])) return -1;
@@ -152,6 +164,18 @@
                 if (a.Ranking == 0) return 1;
                 else if (b.Ranking == 0) return -1;
                 else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
+                else return -1;
+            } else if ($sortingType == "skills") {
+                let aSkills = a["Skills Rank"].split(" ");
+                let bSkills = b["Skills Rank"].split(" ");
+                aSkills[0] = Number(aSkills[0]);
+                bSkills[0] = Number(bSkills[0]);
+                if (aSkills.length == 1 && bSkills.length == 1) return 0;
+                else if (aSkills.length == 1) return 1;
+                else if (bSkills.length == 1) return -1;
+                else if (aSkills[0] > bSkills[0]) return 1;
+                else if (aSkills[0] < bSkills[0]) return -1;
+                else if (aSkills[1] == "MS") return 1;
                 else return -1;
             }
         });
@@ -176,6 +200,18 @@
                     else if (b.Ranking == 0) return -1;
                     else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                     else return -1;
+                } else if ($sortingType == "skills") {
+                    let aSkills = a["Skills Rank"].split(" ");
+                    let bSkills = b["Skills Rank"].split(" ");
+                    aSkills[0] = Number(aSkills[0]);
+                    bSkills[0] = Number(bSkills[0]);
+                    if (aSkills.length == 1 && bSkills.length == 1) return 0;
+                    else if (aSkills.length == 1) return 1;
+                    else if (bSkills.length == 1) return -1;
+                    else if (aSkills[0] > bSkills[0]) return 1;
+                    else if (aSkills[0] < bSkills[0]) return -1;
+                    else if (aSkills[1] == "MS") return 1;
+                    else return -1;
                 }
             } else if ($removedTeams.includes(a["Team Number"])) return 1;
             else if ($removedTeams.includes(b["Team Number"])) return -1;
@@ -192,6 +228,18 @@
                 else if (b.Ranking == 0) return -1;
                 else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
                 else return -1;
+            } else if ($sortingType == "skills") {
+                let aSkills = a["Skills Rank"].split(" ");
+                let bSkills = b["Skills Rank"].split(" ");
+                aSkills[0] = Number(aSkills[0]);
+                bSkills[0] = Number(bSkills[0]);
+                if (aSkills.length == 1 && bSkills.length == 1) return 0;
+                else if (aSkills.length == 1) return 1;
+                else if (bSkills.length == 1) return -1;
+                else if (aSkills[0] > bSkills[0]) return 1;
+                else if (aSkills[0] < bSkills[0]) return -1;
+                else if (aSkills[1] == "MS") return 1;
+                else return -1;
             }
         });
     });
@@ -207,6 +255,7 @@
     <select value={$sortingType} on:change={(elm) => sortingChanged(elm)}>
         <option value="rank">Rankings</option>
         <option value="name">Team Number</option>
+        <option value="skills">Skills Rankings</option>
     </select>
 </div>
 

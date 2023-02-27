@@ -4,6 +4,7 @@ import { writable } from 'svelte/store';
 export let team = writable(localStorage.getItem("accountNumber"));
 let $team;
 team.subscribe(v => $team = v);
+export let removedTeams = writable([])
 export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
@@ -151,6 +152,14 @@ onValue(dbRefAccounts, snapshot => {
 const dbRefTeams = ref(db, `accounts/${$team}/events/${$event}/teams`)
 onValue(dbRefTeams, snapshot => {
 	teams.set(snapshot.val())
+	for (let i = 0; i < callbacks.length; i++) {
+		callbacks[i]()
+	}
+});
+
+const dbRefRemovedTeams = ref(db, `accounts/${$team}/events/${$event}/removedTeams`)
+onValue(dbRefRemovedTeams, snapshot => {
+	removedTeams.set(snapshot.val())
 	for (let i = 0; i < callbacks.length; i++) {
 		callbacks[i]()
 	}

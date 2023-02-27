@@ -1,6 +1,7 @@
 <script>
     import {
         teams,
+        removedTeams,
         categories,
         dbUpdated,
         division,
@@ -168,55 +169,75 @@
     {#key $teams}
         {#key $categories}
             {#key $sortingType}
-                <table class="styled-table">
-                    <thead>
-                        <tr>
-                            {#each categoryList as category}
-                                <th>{category}</th>
+                {#key $removedTeams}
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                {#each categoryList as category}
+                                    <th>{category}</th>
+                                {/each}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each team_Ranks as teamInfo}
+                                {#if teamInfo.Division == $division || $division == "all"}
+                                    <tr
+                                        on:click={() =>
+                                            selectedTeam(
+                                                teamInfo["Team Number"]
+                                            )}
+                                        class={$removedTeams.includes(
+                                            teamInfo["Team Number"]
+                                        )
+                                            ? "strikethrough"
+                                            : ""}
+                                    >
+                                        {#each categoryList as category}
+                                            {#if category == "Team Number"}
+                                                <td class="semibold"
+                                                    >{teamInfo[category]}</td
+                                                >
+                                            {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
+                                                <td>{teamInfo[category]}</td>
+                                            {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
+                                                <td
+                                                    >{teamInfo[category] == 0
+                                                        ? "N/A"
+                                                        : teamInfo[
+                                                              category
+                                                          ]}</td
+                                                >
+                                            {:else if $categories[category].type == "Dropdown"}
+                                                <td
+                                                    >{teamInfo[category] == 0
+                                                        ? "N/A"
+                                                        : teamInfo[
+                                                              category
+                                                          ]}</td
+                                                >
+                                            {:else}
+                                                <td>Unkown Variable Type</td>
+                                            {/if}
+                                        {/each}
+                                    </tr>
+                                {/if}
                             {/each}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {#each team_Ranks as teamInfo}
-                            {#if teamInfo.Division == $division || $division == "all"}
-                                <tr
-                                    on:click={() =>
-                                        selectedTeam(teamInfo["Team Number"])}
-                                >
-                                    {#each categoryList as category}
-                                        {#if category == "Team Number"}
-                                            <td class="semibold"
-                                                >{teamInfo[category]}</td
-                                            >
-                                        {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
-                                            <td>{teamInfo[category]}</td>
-                                        {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
-                                            <td
-                                                >{teamInfo[category] == 0
-                                                    ? "N/A"
-                                                    : teamInfo[category]}</td
-                                            >
-                                        {:else if $categories[category].type == "Dropdown"}
-                                            <td
-                                                >{teamInfo[category] == 0
-                                                    ? "N/A"
-                                                    : teamInfo[category]}</td
-                                            >
-                                        {:else}
-                                            <td>Unkown Variable Type</td>
-                                        {/if}
-                                    {/each}
-                                </tr>
-                            {/if}
-                        {/each}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {/key}
             {/key}
         {/key}
     {/key}
 </div>
 
 <style>
+    .strikethrough {
+        color: red;
+        background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+M/A8B8ABQAB/6Zcm10AAAAASUVORK5CYII=");
+        background-repeat: repeat-x;
+        background-position: 50% 50%;
+    }
+
     #sortingType {
         display: flex;
         align-items: center;

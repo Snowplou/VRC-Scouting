@@ -119,170 +119,63 @@
             team_Ranks.push(filterTeam);
         }
 
-        team_Ranks = team_Ranks.sort((a, b) => {
-            if (
-                $removedTeams.includes(a["Team Number"]) &&
-                $removedTeams.includes(b["Team Number"])
-            ) {
-                if ($sortingType == "name") {
-                    if (a["Team Number"].length > b["Team Number"].length)
-                        return 1;
-                    else if (a["Team Number"].length < b["Team Number"].length)
-                        return -1;
-                    else if (a["Team Number"] > b["Team Number"]) return 1;
-                    else if (a["Team Number"] < b["Team Number"]) return -1;
-                    else return 0;
-                } else if ($sortingType == "rank") {
-                    if (a.Ranking == 0) return 1;
-                    else if (b.Ranking == 0) return -1;
-                    else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
-                    else return -1;
-                } else if ($sortingType == "skills") {
-                    let aSkills = a["Skills Rank"].split(" ");
-                    let bSkills = b["Skills Rank"].split(" ");
-                    aSkills[0] = Number(aSkills[0]);
-                    bSkills[0] = Number(bSkills[0]);
-                    if (aSkills.length == 1 && bSkills.length == 1) return 0;
-                    else if (aSkills.length == 1) return 1;
-                    else if (bSkills.length == 1) return -1;
-                    else if (aSkills[0] > bSkills[0]) return 1;
-                    else if (aSkills[0] < bSkills[0]) return -1;
-                    else if (aSkills[1] == "MS") return 1;
-                    else return -1;
-                }
-                else if($sortingType == "rating") {
-                let numA = Number(a.Rating)
-                let numB = Number(b.Rating)
-                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
-                else if(a.Rating == "Not Ranked") return 1;
-                else if(b.Rating == "Not Ranked") return -1;
-                else if(numA > numB) return -1;
-                else if(numA < numB) return 1;
-                else return 0;
-            }
-            } else if ($removedTeams.includes(a["Team Number"])) return 1;
-            else if ($removedTeams.includes(b["Team Number"])) return -1;
-
-            if ($sortingType == "name") {
-                if (a["Team Number"].length > b["Team Number"].length) return 1;
-                else if (a["Team Number"].length < b["Team Number"].length)
-                    return -1;
-                else if (a["Team Number"] > b["Team Number"]) return 1;
-                else if (a["Team Number"] < b["Team Number"]) return -1;
-                else return 0;
-            } else if ($sortingType == "rank") {
-                if (a.Ranking == 0) return 1;
-                else if (b.Ranking == 0) return -1;
-                else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
-                else return -1;
-            } else if ($sortingType == "skills") {
-                let aSkills = a["Skills Rank"].split(" ");
-                let bSkills = b["Skills Rank"].split(" ");
-                aSkills[0] = Number(aSkills[0]);
-                bSkills[0] = Number(bSkills[0]);
-                if (aSkills.length == 1 && bSkills.length == 1) return 0;
-                else if (aSkills.length == 1) return 1;
-                else if (bSkills.length == 1) return -1;
-                else if (aSkills[0] > bSkills[0]) return 1;
-                else if (aSkills[0] < bSkills[0]) return -1;
-                else if (aSkills[1] == "MS") return 1;
-                else return -1;
-            }
-            else if($sortingType == "rating") {
-                let numA = Number(a.Rating)
-                let numB = Number(b.Rating)
-                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
-                else if(a.Rating == "Not Ranked") return 1;
-                else if(b.Rating == "Not Ranked") return -1;
-                else if(numA > numB) return -1;
-                else if(numA < numB) return 1;
-                else return 0;
-            }
-        });
+        sort();
     });
 
     sortingType.subscribe(() => {
+        sort();
+    });
+
+    function sortLogic(a, b) {
+        if ($sortingType == "name") {
+            if (a["Team Number"].length > b["Team Number"].length) return 1;
+            else if (a["Team Number"].length < b["Team Number"].length)
+                return -1;
+            else if (a["Team Number"] > b["Team Number"]) return 1;
+            else if (a["Team Number"] < b["Team Number"]) return -1;
+            else return 0;
+        } else if ($sortingType == "rank") {
+            if (a.Ranking == 0) return 1;
+            else if (b.Ranking == 0) return -1;
+            else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
+            else return -1;
+        } else if ($sortingType == "skills") {
+            let aSkills = a["Skills Rank"].split(" ");
+            let bSkills = b["Skills Rank"].split(" ");
+            aSkills[0] = Number(aSkills[0]);
+            bSkills[0] = Number(bSkills[0]);
+            if (aSkills.length == 1 && bSkills.length == 1) return 0;
+            else if (aSkills.length == 1) return 1;
+            else if (bSkills.length == 1) return -1;
+            else if (aSkills[0] > bSkills[0]) return 1;
+            else if (aSkills[0] < bSkills[0]) return -1;
+            else if (aSkills[1] == "MS") return 1;
+            else return -1;
+        } else if ($sortingType == "rating") {
+            let numA = Number(a.Rating);
+            let numB = Number(b.Rating);
+            if (a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
+            else if (a.Rating == "Not Ranked") return 1;
+            else if (b.Rating == "Not Ranked") return -1;
+            else if (numA > numB) return -1;
+            else if (numA < numB) return 1;
+            else return 0;
+        }
+    }
+
+    function sort() {
         team_Ranks = team_Ranks.sort((a, b) => {
             if (
                 $removedTeams.includes(a["Team Number"]) &&
                 $removedTeams.includes(b["Team Number"])
-            ) {
-                if ($sortingType == "name") {
-                    if (a["Team Number"].length > b["Team Number"].length)
-                        return 1;
-                    else if (a["Team Number"].length < b["Team Number"].length)
-                        return -1;
-                    else if (a["Team Number"] > b["Team Number"]) return 1;
-                    else if (a["Team Number"] < b["Team Number"]) return -1;
-                    else return 0;
-                } else if ($sortingType == "rank") {
-                    if (a.Ranking == 0) return 1;
-                    else if (b.Ranking == 0) return -1;
-                    else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
-                    else return -1;
-                } else if ($sortingType == "skills") {
-                    let aSkills = a["Skills Rank"].split(" ");
-                    let bSkills = b["Skills Rank"].split(" ");
-                    aSkills[0] = Number(aSkills[0]);
-                    bSkills[0] = Number(bSkills[0]);
-                    if (aSkills.length == 1 && bSkills.length == 1) return 0;
-                    else if (aSkills.length == 1) return 1;
-                    else if (bSkills.length == 1) return -1;
-                    else if (aSkills[0] > bSkills[0]) return 1;
-                    else if (aSkills[0] < bSkills[0]) return -1;
-                    else if (aSkills[1] == "MS") return 1;
-                    else return -1;
-                }
-                else if($sortingType == "rating") {
-                let numA = Number(a.Rating)
-                let numB = Number(b.Rating)
-                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
-                else if(a.Rating == "Not Ranked") return 1;
-                else if(b.Rating == "Not Ranked") return -1;
-                else if(numA > numB) return -1;
-                else if(numA < numB) return 1;
-                else return 0;
-            }
-            } else if ($removedTeams.includes(a["Team Number"])) return 1;
+            )
+                return sortLogic(a, b);
+            else if ($removedTeams.includes(a["Team Number"])) return 1;
             else if ($removedTeams.includes(b["Team Number"])) return -1;
 
-            if ($sortingType == "name") {
-                if (a["Team Number"].length > b["Team Number"].length) return 1;
-                else if (a["Team Number"].length < b["Team Number"].length)
-                    return -1;
-                else if (a["Team Number"] > b["Team Number"]) return 1;
-                else if (a["Team Number"] < b["Team Number"]) return -1;
-                else return 0;
-            } else if ($sortingType == "rank") {
-                if (a.Ranking == 0) return 1;
-                else if (b.Ranking == 0) return -1;
-                else if (a.Ranking > b.Ranking || a.Ranking == 0) return 1;
-                else return -1;
-            } else if ($sortingType == "skills") {
-                let aSkills = a["Skills Rank"].split(" ");
-                let bSkills = b["Skills Rank"].split(" ");
-                aSkills[0] = Number(aSkills[0]);
-                bSkills[0] = Number(bSkills[0]);
-                if (aSkills.length == 1 && bSkills.length == 1) return 0;
-                else if (aSkills.length == 1) return 1;
-                else if (bSkills.length == 1) return -1;
-                else if (aSkills[0] > bSkills[0]) return 1;
-                else if (aSkills[0] < bSkills[0]) return -1;
-                else if (aSkills[1] == "MS") return 1;
-                else return -1;
-            }
-            else if($sortingType == "rating") {
-                let numA = Number(a.Rating)
-                let numB = Number(b.Rating)
-                if(a.Rating == "Not Ranked" && b.Rating == "Not Ranked") return 0;
-                else if(a.Rating == "Not Ranked") return 1;
-                else if(b.Rating == "Not Ranked") return -1;
-                else if(numA > numB) return -1;
-                else if(numA < numB) return 1;
-                else return 0;
-            }
+            return sortLogic(a, b);
         });
-    });
+    }
 
     function sortingChanged(elm) {
         sortingType.set(elm.target.value);
@@ -305,66 +198,74 @@
         {#key $categories}
             {#key $sortingType}
                 {#key $removedTeams}
-                    <table class="styled-table">
-                        <thead>
-                            <tr>
-                                {#each categoryList as category}
-                                    <th>{category}</th>
+                    {#key team_Ranks}
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    {#each categoryList as category}
+                                        <th>{category}</th>
+                                    {/each}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {#each team_Ranks as teamInfo}
+                                    {#if teamInfo.Division == $division || $division == "all"}
+                                        <tr
+                                            on:click={(elm) =>
+                                                selectedTeam(
+                                                    teamInfo["Team Number"]
+                                                )}
+                                            on:keypress={(elm) =>
+                                                selectedTeam(
+                                                    teamInfo["Team Number"]
+                                                )}
+                                            class={$removedTeams
+                                                ? $removedTeams.includes(
+                                                      teamInfo["Team Number"]
+                                                  )
+                                                    ? "strikethrough"
+                                                    : ""
+                                                : ""}
+                                        >
+                                            {#each categoryList as category}
+                                                {#if category == "Team Number"}
+                                                    <td class="semibold"
+                                                        >{teamInfo[
+                                                            category
+                                                        ]}</td
+                                                    >
+                                                {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
+                                                    <td>{teamInfo[category]}</td
+                                                    >
+                                                {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
+                                                    <td
+                                                        >{teamInfo[category] ==
+                                                        0
+                                                            ? "N/A"
+                                                            : teamInfo[
+                                                                  category
+                                                              ]}</td
+                                                    >
+                                                {:else if $categories[category].type == "Dropdown"}
+                                                    <td
+                                                        >{teamInfo[category] ==
+                                                        0
+                                                            ? "N/A"
+                                                            : teamInfo[
+                                                                  category
+                                                              ]}</td
+                                                    >
+                                                {:else}
+                                                    <td>Unkown Variable Type</td
+                                                    >
+                                                {/if}
+                                            {/each}
+                                        </tr>
+                                    {/if}
                                 {/each}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {#each team_Ranks as teamInfo}
-                                {#if teamInfo.Division == $division || $division == "all"}
-                                    <tr
-                                        on:click={(elm) =>
-                                            selectedTeam(
-                                                teamInfo["Team Number"]
-                                            )}
-                                        on:keypress={(elm) =>
-                                            selectedTeam(
-                                                teamInfo["Team Number"]
-                                            )}
-                                        class={$removedTeams
-                                            ? $removedTeams.includes(
-                                                  teamInfo["Team Number"]
-                                              )
-                                                ? "strikethrough"
-                                                : ""
-                                            : ""}
-                                    >
-                                        {#each categoryList as category}
-                                            {#if category == "Team Number"}
-                                                <td class="semibold"
-                                                    >{teamInfo[category]}</td
-                                                >
-                                            {:else if category == "Ranking" || category == "Skills Rank" || category == "Rating" || category == "Notes"}
-                                                <td>{teamInfo[category]}</td>
-                                            {:else if $categories[category].type == "Number" || $categories[category].type == "String" || $categories[category].type == "Boolean"}
-                                                <td
-                                                    >{teamInfo[category] == 0
-                                                        ? "N/A"
-                                                        : teamInfo[
-                                                              category
-                                                          ]}</td
-                                                >
-                                            {:else if $categories[category].type == "Dropdown"}
-                                                <td
-                                                    >{teamInfo[category] == 0
-                                                        ? "N/A"
-                                                        : teamInfo[
-                                                              category
-                                                          ]}</td
-                                                >
-                                            {:else}
-                                                <td>Unkown Variable Type</td>
-                                            {/if}
-                                        {/each}
-                                    </tr>
-                                {/if}
-                            {/each}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    {/key}
                 {/key}
             {/key}
         {/key}

@@ -1,24 +1,42 @@
 <script>
     import {
+        team,
+        event,
         teams,
         removedTeams,
         categories,
         dbUpdated,
         division,
         sortingType,
+        updateDb,
     } from "../database";
     export let teamSelected = "";
     export let showCategories = false;
     export let selectedOption = "";
     export let selectedFilter = "";
 
-    function selectedTeam(id) {
+    function selectedTeam(id, elm) {
+        if(elm.target.type) return // Don't run if remove checkbox was changed
         if (teamSelected) teamSelected = "";
         else {
             teamSelected = id;
             showCategories = false;
             selectedOption = "";
             selectedFilter = "";
+        }
+    }
+
+    function remove(elm) {
+        let removingTeam = elm.target.parentNode.parentNode.children[0].innerHTML
+        let temp = []
+        if($removedTeams) temp = [...$removedTeams]
+        if(elm.target.checked){
+            temp.push(removingTeam)
+            updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
+        }
+        else {
+            temp.splice(temp.indexOf(removingTeam), 1)
+            updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
         }
     }
 
@@ -176,21 +194,26 @@
                                 {#each categoryList as category}
                                     <th>{category}</th>
                                 {/each}
+                                <th>Remove</th>
                             </tr>
                         </thead>
                         <tbody>
                             {#each team_Ranks as teamInfo}
                                 {#if teamInfo.Division == $division || $division == "all"}
                                     <tr
-                                        on:click={() =>
+                                        on:click={(elm) =>
                                             selectedTeam(
-                                                teamInfo["Team Number"]
+                                                teamInfo["Team Number"], elm
                                             )}
-                                        class={$removedTeams.includes(
+                                        on:keypress={(elm) =>
+                                            selectedTeam(
+                                                teamInfo["Team Number"], elm
+                                            )}
+                                        class={$removedTeams ? ($removedTeams.includes(
                                             teamInfo["Team Number"]
                                         )
                                             ? "strikethrough"
-                                            : ""}
+                                            : "") : ""}
                                     >
                                         {#each categoryList as category}
                                             {#if category == "Team Number"}
@@ -219,6 +242,9 @@
                                                 <td>Unkown Variable Type</td>
                                             {/if}
                                         {/each}
+                                        <td>
+                                            <input type="checkbox" style="scale: 1.25;" checked={$removedTeams ? $removedTeams.includes(teamInfo["Team Number"]) : false} on:change={(elm) => remove(elm)}>
+                                        </td>
                                     </tr>
                                 {/if}
                             {/each}

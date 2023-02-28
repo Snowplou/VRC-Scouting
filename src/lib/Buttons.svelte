@@ -1,6 +1,7 @@
 <script>
     import { teams, updateDb, team, event, division } from "../database";
     export let showCategories = false;
+    export let showNotes = false;
     export let selectedOption = "";
     export let selectedFilter = "";
     export let teamSelected = "";
@@ -14,6 +15,17 @@
             teamSelected = "";
             selectedOption = "";
             selectedFilter = "";
+            showNotes = false;
+        }
+    }
+
+    function toggleShowNotes() {
+        showNotes = !showNotes;
+        if (showNotes) {
+            teamSelected = "";
+            selectedOption = "";
+            selectedFilter = "";
+            showCategories = false;
         }
     }
 
@@ -123,7 +135,7 @@
     <button id="skillsUpdater" on:click={updateInfo} on:keydown={updateInfo}
         >Update</button
     >
-
+    <button on:click={() => toggleShowNotes()} on:keypress={() => toggleShowNotes()}>Notes</button>
     <button
         on:click={() => toggleShowCategories()}
         on:keypress={() => toggleShowCategories()}>Categories</button

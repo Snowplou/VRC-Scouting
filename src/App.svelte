@@ -11,6 +11,7 @@
   import SignOut from "./lib/SignOut.svelte";
   export let teamSelected = "";
   export let showCategories = false;
+  export let showNotes = false;
   export let selectedOption = "";
   export let selectedFilter = "";
   import { team, event, saving } from "./database";
@@ -19,6 +20,7 @@
     import GoToMatches from "./lib/GoToMatches.svelte";
     import DivisionSelector from "./lib/DivisionSelector.svelte";
     import Saving from "./lib/Saving.svelte";
+    import Notes from "./lib/Notes.svelte";
   export let showMatches = false;
   export let creatingEvent = false
 
@@ -43,12 +45,17 @@ window.addEventListener('beforeunload', onBeforeUnload);
         <GoToTeams bind:showMatches />
         <SignOut />
         <Matches />
+      {:else if showNotes}
+      <GoToTeams bind:showMatches />
+      <SignOut />
+      <Notes />
       {:else}
         <GoToEvents />
         <SignOut />
         <GoToMatches bind:showMatches/>
         <Buttons
           bind:showCategories
+          bind:showNotes
           bind:teamSelected
           bind:selectedOption
           bind:selectedFilter

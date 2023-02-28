@@ -5,6 +5,7 @@ export let team = writable(localStorage.getItem("accountNumber"));
 let $team;
 team.subscribe(v => $team = v);
 export let removedTeams = writable([])
+export let notes = writable({})
 export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
@@ -172,3 +173,8 @@ onValue(dbRefCategories, snapshot => {
 		callbacks[i]()
 	}
 })
+
+const dbRefNotes = ref(db, `accounts/${$team}/events/${$event}/notes`)
+onValue(dbRefNotes, snapshot => {
+	notes.set(snapshot.val())
+});

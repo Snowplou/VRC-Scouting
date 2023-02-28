@@ -19,6 +19,16 @@
         );
     }
 
+    function removeNote(){
+        if(!chosenNote) return
+        let ask = confirm(`Are you sure that you want to delete ${chosenNote}?`)
+        if(ask)
+        updateDb(
+            `accounts/${$team}/events/${$event}/notes/${chosenNote}`,
+            null
+        );
+    }
+
     notes.subscribe(() => {
         if (chosenNote == "" && $notes) {
             chosenNote = Object.keys($notes)[0];
@@ -27,6 +37,9 @@
 </script>
 
 <div id="noteSelection">
+    <button on:click={() => removeNote()} on:keypress={() => removeNote()}
+        >Remove Note</button
+    >
     Notes:
     <select
         id="selectElement"

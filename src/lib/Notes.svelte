@@ -84,9 +84,15 @@
     }
 
     #notes {
-        width: 70%;
+        width: 90%;
         height: 80vh;
+        padding: 1%;
         margin-top: 5%;
         resize: vertical;
+        font-size: 4vw;
+        background-color: rgb(84, 121, 215);
+        color: white;
+        border-radius: 10px;
+        border: none;
     }
 </style>

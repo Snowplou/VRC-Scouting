@@ -86,9 +86,99 @@ export async function getDivisions(eventId) {
 	return response
 }
 
-export async function updateMatches(page, eventId) {
+export async function getMatchesAll(page, eventId, divId){
+	let response = await (
+		await fetch(
+			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/matches?page=${page}`,
+			{
+				headers: {
+					accept: "application/json",
+					Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+				},
+			}
+		)
+	).json();
 
+
+	for (let match of response.data) {
+		let tempMatchInfo = $eventMatches
+		let round = match.round
+		if (round == 2) {
+			tempMatchInfo.qualifications.push(match)
+		}
+		else if (round == 6) {
+			tempMatchInfo.r16.push(match)
+		}
+		else if (round == 3) {
+			tempMatchInfo["quarter-finals"].push(match)
+		}
+		else if (round == 4) {
+			tempMatchInfo["semi-finals"].push(match)
+		}
+		else if (round == 5) {
+			tempMatchInfo.final.push(match)
+		}
+
+		eventMatches.set(tempMatchInfo)
+	}
+
+	if (response.meta.current_page != response.meta.last_page) {
+		await getMatchesAll(page + 1, eventId, divId);
+	}
+}
+
+let matchDivisions;
+export async function updateMatchesAll(eventId, divId, div){
+	if(divId == -1000){
+		matchDivisions = await getDivisions($event)
+		matchDivisions = matchDivisions.divisions
+	
+		div = matchDivisions[0]
+		divId = div.id
+	}
+	else{
+		div = matchDivisions[matchDivisions.indexOf(div) + 1]
+		if(!div){
+
+			let tempMatches = $eventMatches
+			for(let round of Object.keys(tempMatches)){
+				// for(let i = 0; i < tempMatches[round].length; i++){
+				// 	let temp = tempMatches[round][i]
+				// 	tempMatches[round][i] = tempMatches[round][Math.ceil(tempMatches[round].length / 2) - i - 1]
+				// 	tempMatches[round][Math.ceil(tempMatches[round].length) - i - 1] = temp
+				// }
+				tempMatches[round] = tempMatches[round].sort((a, b) => {
+					// let aId = a.division.id
+					// let bId = b.division.id
+
+					if(a.instance > b.instance || a.matchnum > b.matchnum) return 1;
+					else if(a.instance < b.instance || a.matchnum < b.matchnum) return -1;
+					else return 0;
+					
+				})
+			}
+
+			eventMatches.set(tempMatches)
+
+			disableDivisionSelect.set(false);
+			return;
+		}
+		divId = div.id
+	}
+
+	await getMatchesAll(1, eventId, divId)
+	
+	updateMatchesAll(eventId, divId, div)
+}
+
+export async function updateMatches(page, eventId) {
 	disableDivisionSelect.set(true);
+
+	if($division == "all"){
+		updateMatchesAll(eventId, -1000, {});
+		return;
+	}
+
 	let response = await (
 		await fetch(
 			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/matches?page=${page}`,
@@ -102,24 +192,23 @@ export async function updateMatches(page, eventId) {
 	).json();
 
 
-
 	for (let match of response.data) {
 		let tempMatchInfo = $eventMatches
 		let round = match.round
 		if (round == 2) {
-			tempMatchInfo.qualifications[match.matchnum] = match
+			tempMatchInfo.qualifications.push(match)
 		}
 		else if (round == 6) {
-			tempMatchInfo.r16[match.instance] = match
+			tempMatchInfo.r16.push(match)
 		}
 		else if (round == 3) {
-			tempMatchInfo["quarter-finals"][match.instance] = match
+			tempMatchInfo["quarter-finals"].push(match)
 		}
 		else if (round == 4) {
-			tempMatchInfo["semi-finals"][match.instance] = match
+			tempMatchInfo["semi-finals"].push(match)
 		}
 		else if (round == 5) {
-			tempMatchInfo.final[match.instance] = match
+			tempMatchInfo.final.push(match)
 		}
 
 		eventMatches.set(tempMatchInfo)

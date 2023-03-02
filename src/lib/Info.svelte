@@ -165,13 +165,15 @@
 
     function sort() {
         team_Ranks = team_Ranks.sort((a, b) => {
-            if (
-                $removedTeams.includes(a["Team Number"]) &&
-                $removedTeams.includes(b["Team Number"])
-            )
-                return sortLogic(a, b);
-            else if ($removedTeams.includes(a["Team Number"])) return 1;
-            else if ($removedTeams.includes(b["Team Number"])) return -1;
+            if ($removedTeams) {
+                if (
+                    $removedTeams.includes(a["Team Number"]) &&
+                    $removedTeams.includes(b["Team Number"])
+                )
+                    return sortLogic(a, b);
+                else if ($removedTeams.includes(a["Team Number"])) return 1;
+                else if ($removedTeams.includes(b["Team Number"])) return -1;
+            }
 
             return sortLogic(a, b);
         });

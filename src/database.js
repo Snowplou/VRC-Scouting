@@ -142,19 +142,10 @@ export async function updateMatchesAll(eventId, divId, div){
 
 			let tempMatches = $eventMatches
 			for(let round of Object.keys(tempMatches)){
-				// for(let i = 0; i < tempMatches[round].length; i++){
-				// 	let temp = tempMatches[round][i]
-				// 	tempMatches[round][i] = tempMatches[round][Math.ceil(tempMatches[round].length / 2) - i - 1]
-				// 	tempMatches[round][Math.ceil(tempMatches[round].length) - i - 1] = temp
-				// }
 				tempMatches[round] = tempMatches[round].sort((a, b) => {
-					// let aId = a.division.id
-					// let bId = b.division.id
-
 					if(a.instance > b.instance || a.matchnum > b.matchnum) return 1;
 					else if(a.instance < b.instance || a.matchnum < b.matchnum) return -1;
 					else return 0;
-					
 				})
 			}
 

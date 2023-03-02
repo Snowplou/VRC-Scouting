@@ -1,5 +1,5 @@
 <script>
-    import { teams, updateDb, team, event, division } from "../database";
+    import { teams, updateDb, team, event, division, getDivisions } from "../database";
     export let showCategories = false;
     export let showNotes = false;
     export let selectedOption = "";
@@ -30,10 +30,10 @@
     }
 
     let teamRankings = {};
-    async function getRankings(page, eventId) {
+    async function getRankings(page, eventId, div) {
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${$event}/divisions/${$division}/rankings?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${$event}/divisions/${div}/rankings?page=${page}`,
                 {
                     headers: {
                         accept: "application/json",
@@ -48,12 +48,11 @@
         }
 
         if (response.meta.current_page != response.meta.last_page) {
-            await getRankings(page + 1, eventId);
+            await getRankings(page + 1, eventId, div);
         }
     }
 
     async function updateInfo() {
-
         if (updating) return;
 
         let skillsButton = document.getElementById("skillsUpdater");
@@ -81,21 +80,18 @@
                 teamList.splice(teamList.indexOf(middleSkillsTeam), 1);
                 updateDb(
                     `accounts/${$team}/events/${$event}/teams/${middleSkillsTeam}/Skills Rank`,
-                    (i + 1) + " MS"
+                    i + 1 + " MS"
                 );
             }
         }
 
         let highSkillsRankings = await (
-            await fetch(
-                `https://www.robotevents.com/api/seasons/173/skills`,
-                {
-                    headers: {
-                        accept: "application/json",
-                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
-                    },
-                }
-            )
+            await fetch(`https://www.robotevents.com/api/seasons/173/skills`, {
+                headers: {
+                    accept: "application/json",
+                    Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                },
+            })
         ).json();
 
         for (let i = 0; i < highSkillsRankings.length; i++) {
@@ -104,7 +100,7 @@
                 teamList.splice(teamList.indexOf(highSkillsTeam), 1);
                 updateDb(
                     `accounts/${$team}/events/${$event}/teams/${highSkillsTeam}/Skills Rank`,
-                    (i + 1) + " HS"
+                    i + 1 + " HS"
                 );
             }
         }
@@ -116,7 +112,15 @@
             );
         }
 
-        await getRankings(1, $event);
+        if ($division == "all") {
+            let divs = await getDivisions($event);
+            divs = divs.divisions;
+            for (let div of divs) {
+                await getRankings(1, $event, div.id);
+            }
+        } else {
+            await getRankings(1, $event, $division);
+        }
 
         for (let ranking of Object.keys(teamRankings)) {
             updateDb(
@@ -135,7 +139,10 @@
     <button id="skillsUpdater" on:click={updateInfo} on:keydown={updateInfo}
         >Update</button
     >
-    <button on:click={() => toggleShowNotes()} on:keypress={() => toggleShowNotes()}>Notes</button>
+    <button
+        on:click={() => toggleShowNotes()}
+        on:keypress={() => toggleShowNotes()}>Notes</button
+    >
     <button
         on:click={() => toggleShowCategories()}
         on:keypress={() => toggleShowCategories()}>Categories</button

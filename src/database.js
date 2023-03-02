@@ -14,17 +14,11 @@ export let division = writable(localStorage.getItem("division"));
 let $division;
 division.subscribe(v => $division = v);
 export let disableDivisionSelect = writable(false);
-export let eventMatches = writable({
-	qualifications: {},
-	r16: {},
-	"quarter-finals": {},
-	"semi-finals": {},
-	final: {}
-});
+export let eventMatches = writable({});
 let $eventMatches;
 eventMatches.subscribe(v => $eventMatches = v);
 let startingType = localStorage.getItem("sortingType")
-if(!startingType){
+if (!startingType) {
 	startingType = "rank"
 	localStorage.setItem("sortingType", "rank")
 }
@@ -51,10 +45,10 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase();
 
 (async () => {
-	if($division || !$event) return
-		division.set(Object.values(await getDivisionsFromDb())[0])
-		localStorage.setItem("division", $division)
-		location.reload()
+	if ($division || !$event) return
+	division.set(Object.values(await getDivisionsFromDb())[0])
+	localStorage.setItem("division", $division)
+	location.reload()
 })()
 
 export let teams = writable({})
@@ -86,7 +80,7 @@ export async function getDivisions(eventId) {
 	return response
 }
 
-export async function getMatchesAll(page, eventId, divId){
+export async function getMatchesAll(page, eventId, divId) {
 	let response = await (
 		await fetch(
 			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/matches?page=${page}`,
@@ -102,6 +96,21 @@ export async function getMatchesAll(page, eventId, divId){
 
 	for (let match of response.data) {
 		let tempMatchInfo = $eventMatches
+		if (!tempMatchInfo) {
+			tempMatchInfo = {
+				qualifications: [],
+				r16: [],
+				"quarter-finals": [],
+				"semi-finals": [],
+				finals: [],
+			}
+		}
+		if (!tempMatchInfo.qualifications) tempMatchInfo.qualifications = []
+		if (!tempMatchInfo.r16) tempMatchInfo.r16 = []
+		if (!tempMatchInfo["quarter-finals"]) tempMatchInfo["quarter-finals"] = []
+		if (!tempMatchInfo["semi-finals"]) tempMatchInfo["semi-finals"] = []
+		if (!tempMatchInfo.finals) tempMatchInfo.finals = []
+
 		let round = match.round
 		if (round == 2) {
 			tempMatchInfo.qualifications.push(match)
@@ -116,10 +125,10 @@ export async function getMatchesAll(page, eventId, divId){
 			tempMatchInfo["semi-finals"].push(match)
 		}
 		else if (round == 5) {
-			tempMatchInfo.final.push(match)
+			tempMatchInfo.finals.push(match)
 		}
 
-		eventMatches.set(tempMatchInfo)
+		updateDb(`events/${$event}`, tempMatchInfo)
 	}
 
 	if (response.meta.current_page != response.meta.last_page) {
@@ -128,28 +137,28 @@ export async function getMatchesAll(page, eventId, divId){
 }
 
 let matchDivisions;
-export async function updateMatchesAll(eventId, divId, div){
-	if(divId == -1000){
+export async function updateMatchesAll(eventId, divId, div) {
+	if (divId == -1000) {
 		matchDivisions = await getDivisions($event)
 		matchDivisions = matchDivisions.divisions
-	
+
 		div = matchDivisions[0]
 		divId = div.id
 	}
-	else{
+	else {
 		div = matchDivisions[matchDivisions.indexOf(div) + 1]
-		if(!div){
+		if (!div) {
 
 			let tempMatches = $eventMatches
-			for(let round of Object.keys(tempMatches)){
+			for (let round of Object.keys(tempMatches)) {
 				tempMatches[round] = tempMatches[round].sort((a, b) => {
-					if(a.instance > b.instance || a.matchnum > b.matchnum) return 1;
-					else if(a.instance < b.instance || a.matchnum < b.matchnum) return -1;
+					if (a.instance > b.instance || a.matchnum > b.matchnum) return 1;
+					else if (a.instance < b.instance || a.matchnum < b.matchnum) return -1;
 					else return 0;
 				})
 			}
 
-			eventMatches.set(tempMatches)
+			updateDb(`events/${$event}`, tempMatches)
 
 			disableDivisionSelect.set(false);
 			return;
@@ -158,17 +167,17 @@ export async function updateMatchesAll(eventId, divId, div){
 	}
 
 	await getMatchesAll(1, eventId, divId)
-	
+
 	updateMatchesAll(eventId, divId, div)
 }
 
 export async function updateMatches(page, eventId) {
 	disableDivisionSelect.set(true);
 
-	if($division == "all"){
-		updateMatchesAll(eventId, -1000, {});
-		return;
-	}
+	// if ($division == "all") {
+	await updateMatchesAll(eventId, -1000, {});
+	return;
+	// }
 
 	let response = await (
 		await fetch(
@@ -183,8 +192,23 @@ export async function updateMatches(page, eventId) {
 	).json();
 
 
+	let tempMatchInfo = $eventMatches
+	if (!tempMatchInfo) {
+		tempMatchInfo = {
+			qualifications: [],
+			r16: [],
+			"quarter-finals": [],
+			"semi-finals": [],
+			final: [],
+		}
+	}
+	if (!tempMatchInfo.qualifications) tempMatchInfo.qualifications = []
+	if (!tempMatchInfo.r16) tempMatchInfo.r16 = []
+	if (!tempMatchInfo["quarter-finals"]) tempMatchInfo["quarter-finals"] = []
+	if (!tempMatchInfo["semi-finals"]) tempMatchInfo["semi-finals"] = []
+	if (!tempMatchInfo.final) tempMatchInfo.final = []
+
 	for (let match of response.data) {
-		let tempMatchInfo = $eventMatches
 		let round = match.round
 		if (round == 2) {
 			tempMatchInfo.qualifications.push(match)
@@ -201,9 +225,8 @@ export async function updateMatches(page, eventId) {
 		else if (round == 5) {
 			tempMatchInfo.final.push(match)
 		}
-
-		eventMatches.set(tempMatchInfo)
 	}
+	updateDb(`events/${$event}`, tempMatchInfo)
 
 	if (response.meta.current_page != response.meta.last_page) {
 		await updateMatches(page + 1, eventId);
@@ -257,4 +280,9 @@ onValue(dbRefCategories, snapshot => {
 const dbRefNotes = ref(db, `accounts/${$team}/events/${$event}/notes`)
 onValue(dbRefNotes, snapshot => {
 	notes.set(snapshot.val())
+});
+
+const dbRefEventMatches = ref(db, `events/${$event}`)
+onValue(dbRefEventMatches, snapshot => {
+	eventMatches.set(snapshot.val())
 });

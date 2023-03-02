@@ -174,65 +174,7 @@ export async function updateMatchesAll(eventId, divId, div) {
 export async function updateMatches(page, eventId) {
 	disableDivisionSelect.set(true);
 
-	// if ($division == "all") {
 	await updateMatchesAll(eventId, -1000, {});
-	return;
-	// }
-
-	let response = await (
-		await fetch(
-			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${$division}/matches?page=${page}`,
-			{
-				headers: {
-					accept: "application/json",
-					Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
-				},
-			}
-		)
-	).json();
-
-
-	let tempMatchInfo = $eventMatches
-	if (!tempMatchInfo) {
-		tempMatchInfo = {
-			qualifications: [],
-			r16: [],
-			"quarter-finals": [],
-			"semi-finals": [],
-			final: [],
-		}
-	}
-	if (!tempMatchInfo.qualifications) tempMatchInfo.qualifications = []
-	if (!tempMatchInfo.r16) tempMatchInfo.r16 = []
-	if (!tempMatchInfo["quarter-finals"]) tempMatchInfo["quarter-finals"] = []
-	if (!tempMatchInfo["semi-finals"]) tempMatchInfo["semi-finals"] = []
-	if (!tempMatchInfo.final) tempMatchInfo.final = []
-
-	for (let match of response.data) {
-		let round = match.round
-		if (round == 2) {
-			tempMatchInfo.qualifications.push(match)
-		}
-		else if (round == 6) {
-			tempMatchInfo.r16.push(match)
-		}
-		else if (round == 3) {
-			tempMatchInfo["quarter-finals"].push(match)
-		}
-		else if (round == 4) {
-			tempMatchInfo["semi-finals"].push(match)
-		}
-		else if (round == 5) {
-			tempMatchInfo.final.push(match)
-		}
-	}
-	updateDb(`events/${$event}`, tempMatchInfo)
-
-	if (response.meta.current_page != response.meta.last_page) {
-		await updateMatches(page + 1, eventId);
-	}
-
-	disableDivisionSelect.set(false);
 }
 
 const callbacks = [];

@@ -36,13 +36,13 @@
         updating = true;
         let updateButton = document.getElementById("update");
 
-        updateDb(`events/${$event}`, {
-            qualifications: [],
-            r16: [],
-            "quarter-finals": [],
-            "semi-finals": [],
-            finals: [],
-        });
+        // updateDb(`events/${$event}`, {
+        //     qualifications: [],
+        //     r16: [],
+        //     "quarter-finals": [],
+        //     "semi-finals": [],
+        //     finals: [],
+        // });
 
         if (updateButton) {
             updateButton.innerHTML = "updating";

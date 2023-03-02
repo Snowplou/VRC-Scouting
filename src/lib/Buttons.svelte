@@ -1,5 +1,5 @@
 <script>
-    import { teams, updateDb, team, event, division, getDivisions } from "../database";
+    import { teams, updateDb, team, event, division, getDivisions, getDivisionsFromDb } from "../database";
     export let showCategories = false;
     export let showNotes = false;
     export let selectedOption = "";
@@ -113,7 +113,7 @@
         }
 
         if ($division == "all") {
-            let divs = await getDivisions($event);
+            let divs = await getDivisionsFromDb($event);
             divs = divs.divisions;
             for (let div of divs) {
                 await getRankings(1, $event, div.id);

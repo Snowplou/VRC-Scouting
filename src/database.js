@@ -77,6 +77,11 @@ export async function getDivisionsFromDb() {
 
 export async function getDivisions(eventId) {
 	let response = await (await fetch(`https://www.robotevents.com/api/v2/events/${eventId}`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
+	let divs = []
+	for(let div of response.divisions){
+		divs[div.name]= div.id
+	}
+	updateDb(`accounts/${$team}/events/${$event}/divisions`, divs)
 	return response
 }
 

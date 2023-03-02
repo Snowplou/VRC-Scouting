@@ -113,7 +113,7 @@
         }
 
         if ($division == "all") {
-            let divs = await getDivisionsFromDb($event);
+            let divs = await getDivisions($event);
             divs = divs.divisions;
             for (let div of divs) {
                 await getRankings(1, $event, div.id);

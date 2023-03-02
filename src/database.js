@@ -14,7 +14,13 @@ export let division = writable(localStorage.getItem("division"));
 let $division;
 division.subscribe(v => $division = v);
 export let disableDivisionSelect = writable(false);
-export let eventMatches = writable({});
+export let eventMatches = writable({
+	qualifications: [],
+	r16: [],
+	"quarter-finals": [],
+	"semi-finals": [],
+	finals: [],
+});
 let $eventMatches;
 eventMatches.subscribe(v => $eventMatches = v);
 let startingType = localStorage.getItem("sortingType")

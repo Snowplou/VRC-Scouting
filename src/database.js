@@ -87,7 +87,7 @@ export async function getDivisions(eventId) {
 	for (let div of response.divisions) {
 		divs[div.name] = div.id
 	}
-	updateDb(`accounts/${$team}/events/${$event}/divisions`, divs)
+	updateDb(`accounts/${$team}/events/${eventId}/divisions`, divs)
 	return response
 }
 

@@ -159,8 +159,10 @@
         for (let div of divisions.divisions) {
             await getDivTeams(eventId, div.id, progressBar);
         }
+        console.log(teamDivs)
         for (let div of Object.keys(teamDivs)) {
             for (let teamDiv of teamDivs[div]) {
+                if(!teamsInfo[teamDiv]) teamsInfo[teamDiv] = {}
                 teamsInfo[teamDiv].Division = div;
             }
         }

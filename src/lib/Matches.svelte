@@ -36,21 +36,13 @@
         updating = true;
         let updateButton = document.getElementById("update");
 
-        // updateDb(`events/${$event}`, {
-        //     qualifications: [],
-        //     r16: [],
-        //     "quarter-finals": [],
-        //     "semi-finals": [],
-        //     finals: [],
-        // });
-
         if (updateButton) {
             updateButton.innerHTML = "updating";
             updateButton.style.cursor = "default";
         }
 
-        await updateMatches(1, $event);
-
+        await updateMatches();
+        
         let lastMatch = 0;
         if ($eventMatches) {
             if ($eventMatches.qualifications) {

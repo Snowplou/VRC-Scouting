@@ -30,10 +30,10 @@
     }
 
     let teamRankings = {};
-    async function getRankings(page, eventId, div) {
+    async function getRankings(eventId, div) {
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${$event}/divisions/${div}/rankings?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${div}/rankings?per_page=99999`,
                 {
                     headers: {
                         accept: "application/json",
@@ -47,9 +47,6 @@
             teamRankings[ranking.team.name] = ranking.rank;
         }
 
-        if (response.meta.current_page != response.meta.last_page) {
-            await getRankings(page + 1, eventId, div);
-        }
     }
 
     async function updateInfo() {
@@ -116,10 +113,10 @@
             let divs = await getDivisions($event);
             divs = divs.divisions;
             for (let div of divs) {
-                await getRankings(1, $event, div.id);
+                await getRankings($event, div.id);
             }
         } else {
-            await getRankings(1, $event, $division);
+            await getRankings($event, $division);
         }
 
         for (let ranking of Object.keys(teamRankings)) {

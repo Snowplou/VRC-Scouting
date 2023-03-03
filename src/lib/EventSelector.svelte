@@ -21,10 +21,10 @@
     let teamList = [];
     let teamsInfo = [];
 
-    async function addTeams(page, eventId, progressBar) {
+    async function addTeams(eventId, progressBar) {
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/teams?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/teams?per_page=99999`,
                 {
                     headers: {
                         accept: "application/json",
@@ -34,7 +34,7 @@
             )
         ).json();
 
-        progressBar.innerHTML = `Getting Teams... ${page}/${response.meta.last_page}`;
+        progressBar.innerHTML = "Getting Teams...";
 
         for (let eventTeams of response.data) {
             teamsInfo[eventTeams.number] = {
@@ -47,17 +47,13 @@
             };
             teamList.push(eventTeams.number);
         }
-        if (response.meta.current_page != response.meta.last_page) {
-            await addTeams(page + 1, eventId, progressBar);
-        }
     }
 
     let teamRankings = {};
-    let getRankingsMultiplier = 0;
-    async function getRankings(page, eventId, division, progressBar) {
+    async function getRankings(eventId, division, progressBar) {
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${division}/rankings?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${division}/rankings?per_page=99999`,
                 {
                     headers: {
                         accept: "application/json",
@@ -67,27 +63,18 @@
             )
         ).json();
 
-        progressBar.innerHTML = `Getting Team Rankings... ${
-            page + response.meta.last_page * getRankingsMultiplier
-        }/${response.meta.last_page * divisions.divisions.length}`;
+        progressBar.innerHTML = "Getting Team Rankings...";
 
         for (let ranking of response.data) {
             teamRankings[ranking.team.name] = ranking.rank;
         }
-
-        if (response.meta.current_page != response.meta.last_page) {
-            await getRankings(page + 1, eventId, division, progressBar);
-        } else {
-            getRankingsMultiplier++;
-        }
     }
 
     let teamDivs = {};
-    let getDivTeamsMultiplier = 0;
-    async function getDivTeams(page, eventId, divId, progressBar) {
+    async function getDivTeams(eventId, divId, progressBar) {
         let response = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/rankings?page=${page}`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/rankings?per_page=99999`,
                 {
                     headers: {
                         accept: "application/json",
@@ -97,20 +84,11 @@
             )
         ).json();
 
-        progressBar.innerHTML = `Sorting Teams Into Divisions... ${
-            page + response.meta.last_page * getDivTeamsMultiplier
-        }/${response.meta.last_page * divisions.divisions.length}`;
+        progressBar.innerHTML = "Sorting Teams Into Divisions...";
 
-        if (page == 1) teamDivs[divId] = [];
-
+        teamDivs[divId] = []
         for (let ranking of response.data) {
             teamDivs[divId].push(ranking.team.name);
-        }
-
-        if (response.meta.current_page != response.meta.last_page) {
-            await getDivTeams(page + 1, eventId, divId, progressBar);
-        } else {
-            getDivTeamsMultiplier++;
         }
     }
 
@@ -130,10 +108,10 @@
         }
 
         let progressBar = document.getElementById("progress");
-        progressBar.innerHTML = "Getting Teams... 1/?";
-        await addTeams(1, eventId, progressBar);
+        progressBar.innerHTML = "Getting Teams...";
+        await addTeams(eventId, progressBar);
 
-        progressBar.innerHTML = "Getting Skills Rankings... 1/2";
+        progressBar.innerHTML = "Getting Skills Rankings...";
 
         let middleSkillsRankings = await (
             await fetch(
@@ -147,7 +125,7 @@
             )
         ).json();
 
-        progressBar.innerHTML = "Getting Skills Rankings... 2/2";
+        progressBar.innerHTML = "Getting Skills Rankings...";
 
         let highSkillsRankings = await (
             await fetch(`https://www.robotevents.com/api/seasons/173/skills`, {
@@ -176,10 +154,10 @@
             }
         }
 
-        progressBar.innerHTML = "Sorting Teams Into Divisions... 1/?";
+        progressBar.innerHTML = "Sorting Teams Into Divisions...";
 
         for (let div of divisions.divisions) {
-            await getDivTeams(1, eventId, div.id, progressBar);
+            await getDivTeams(eventId, div.id, progressBar);
         }
         for (let div of Object.keys(teamDivs)) {
             for (let teamDiv of teamDivs[div]) {
@@ -187,11 +165,11 @@
             }
         }
 
-        progressBar.innerHTML = "Getting Rankings... 1/?";
+        progressBar.innerHTML = "Getting Rankings...";
 
         for (let div of Object.keys(teamDivs)) {
             teamRankings = {};
-            await getRankings(1, eventId, div, progressBar);
+            await getRankings(eventId, div, progressBar);
 
             for (let ranking of Object.keys(teamRankings)) {
                 teamsInfo[ranking].Ranking = teamRankings[ranking];

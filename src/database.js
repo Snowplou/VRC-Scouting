@@ -69,7 +69,7 @@ export function updateDb(path, data) {
 }
 
 export async function getEvents(teamId) {
-	let response = await (await fetch(`https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=173`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
+	let response = await (await fetch(`https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=173&per_page=99999`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
 	return response
 }
 
@@ -82,19 +82,19 @@ export async function getDivisionsFromDb() {
 }
 
 export async function getDivisions(eventId) {
-	let response = await (await fetch(`https://www.robotevents.com/api/v2/events/${eventId}`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
+	let response = await (await fetch(`https://www.robotevents.com/api/v2/events/${eventId}?per_page=99999`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
 	let divs = []
-	for(let div of response.divisions){
-		divs[div.name]= div.id
+	for (let div of response.divisions) {
+		divs[div.name] = div.id
 	}
 	updateDb(`accounts/${$team}/events/${$event}/divisions`, divs)
 	return response
 }
 
-export async function getMatchesAll(page, eventId, divId) {
+export async function getMatches(eventId, divId) {
 	let response = await (
 		await fetch(
-			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/matches?page=${page}`,
+			`https://www.robotevents.com/api/v2/events/${eventId}/divisions/${divId}/matches?per_page=99999`,
 			{
 				headers: {
 					accept: "application/json",
@@ -104,9 +104,8 @@ export async function getMatchesAll(page, eventId, divId) {
 		)
 	).json();
 
-
+	let tempMatchInfo = $eventMatches
 	for (let match of response.data) {
-		let tempMatchInfo = $eventMatches
 		if (!tempMatchInfo) {
 			tempMatchInfo = {
 				qualifications: [],
@@ -139,53 +138,61 @@ export async function getMatchesAll(page, eventId, divId) {
 			tempMatchInfo.finals.push(match)
 		}
 
-		updateDb(`events/${$event}`, tempMatchInfo)
 	}
-
-	if (response.meta.current_page != response.meta.last_page) {
-		await getMatchesAll(page + 1, eventId, divId);
-	}
+	await updateDb(`events/${$event}`, tempMatchInfo)
 }
 
-let matchDivisions;
-export async function updateMatchesAll(eventId, divId, div) {
-	if (divId == -1000) {
-		matchDivisions = await getDivisions($event)
-		matchDivisions = matchDivisions.divisions
-
-		div = matchDivisions[0]
-		divId = div.id
-	}
-	else {
-		div = matchDivisions[matchDivisions.indexOf(div) + 1]
-		if (!div) {
-
-			let tempMatches = $eventMatches
-			for (let round of Object.keys(tempMatches)) {
-				tempMatches[round] = tempMatches[round].sort((a, b) => {
-					if (a.instance > b.instance || a.matchnum > b.matchnum) return 1;
-					else if (a.instance < b.instance || a.matchnum < b.matchnum) return -1;
-					else return 0;
-				})
-			}
-
-			updateDb(`events/${$event}`, tempMatches)
-
-			disableDivisionSelect.set(false);
-			return;
-		}
-		divId = div.id
-	}
-
-	await getMatchesAll(1, eventId, divId)
-
-	updateMatchesAll(eventId, divId, div)
-}
-
-export async function updateMatches(page, eventId) {
+export async function updateMatches() {
 	disableDivisionSelect.set(true);
 
-	await updateMatchesAll(eventId, -1000, {});
+	await updateDb(`events/${$event}`, null)
+	let divs = await getDivisionsFromDb();
+	let matches = $eventMatches
+	if (!matches) {
+		matches = {
+			qualifications: [],
+			r16: [],
+			"quarter-finals": [],
+			"semi-finals": [],
+			finals: [],
+		}
+	}
+	for (let div of Object.values(divs)) {
+		let response = await (
+			await fetch(
+				`https://www.robotevents.com/api/v2/events/${$event}/divisions/${div}/matches?per_page=99999`,
+				{
+					headers: {
+						accept: "application/json",
+						Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+					},
+				}
+			)
+		).json();
+
+		for (let match of response.data) {
+			let round = match.round
+			if (round == 2) {
+				matches.qualifications.push(match)
+			}
+			else if (round == 6) {
+				matches.r16.push(match)
+			}
+			else if (round == 3) {
+				matches["quarter-finals"].push(match)
+			}
+			else if (round == 4) {
+				matches["semi-finals"].push(match)
+			}
+			else if (round == 5) {
+				matches.finals.push(match)
+			}
+		}
+	}
+
+	updateDb(`events/${$event}`, matches)
+
+	disableDivisionSelect.set(false);
 }
 
 const callbacks = [];

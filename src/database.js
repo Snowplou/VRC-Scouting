@@ -145,17 +145,13 @@ export async function getMatches(eventId, divId) {
 export async function updateMatches() {
 	disableDivisionSelect.set(true);
 
-	await updateDb(`events/${$event}`, null)
 	let divs = await getDivisionsFromDb();
-	let matches = $eventMatches
-	if (!matches) {
-		matches = {
-			qualifications: [],
-			r16: [],
-			"quarter-finals": [],
-			"semi-finals": [],
-			finals: [],
-		}
+	let matches = {
+		qualifications: [],
+		r16: [],
+		"quarter-finals": [],
+		"semi-finals": [],
+		finals: [],
 	}
 	for (let div of Object.values(divs)) {
 		let response = await (

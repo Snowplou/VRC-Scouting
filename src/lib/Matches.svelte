@@ -42,7 +42,7 @@
         }
 
         await updateMatches();
-        
+
         let lastMatch = 0;
         if ($eventMatches) {
             if ($eventMatches.qualifications) {
@@ -117,99 +117,86 @@
 
 <div id="scrolling">
     {#if $eventMatches}
-        {#if $eventMatches.qualifications}
-            {#if $eventMatches.finals}
-                {#if !Object.keys($eventMatches.qualifications).length && !Object.keys($eventMatches.finals).length}
-                    <p style="text-align: center; font-size: 200%">
-                        The matches have not been scheduled yet.
-                    </p>
-                {:else}
-                    {#each ["qualifications", "r16", "quarter-finals", "semi-finals", "finals"] as round}
-  
-                    {#if show[round]}
-                            {#if Object.keys($eventMatches[round]).length}
-                                <p class="roundTitle">{round}</p>
-                            {/if}
-
-                            {#key matchFilter}
-                                {#key $eventMatches}
-                                    {#each Object.values($eventMatches[round]) as match}
-                                        {#if (match.alliances[0].teams[0].team.name.includes(matchFilter) || match.alliances[0].teams[1].team.name.includes(matchFilter) || match.alliances[1].teams[0].team.name.includes(matchFilter) || match.alliances[1].teams[1].team.name.includes(matchFilter)) && (match.division.id == $division || $division == "all")}
-                                            <div class="match">
-                                                {match.name}<br />
-                                                {match.division.name}
-                                                <div class="teams">
-                                                    <div class="red">
-                                                        {match.alliances[1]
-                                                            .teams[0].team
-                                                            .name}<br />
-                                                        {match.alliances[1]
-                                                            .teams[1].team.name}
-                                                    </div>
-                                                    <div
-                                                        style="margin-top: 1.5%;"
-                                                    >
-                                                        <div class="score">
-                                                            {#if match.started}
-                                                                {match
-                                                                    .alliances[1]
-                                                                    .score} -
-                                                                {match
-                                                                    .alliances[0]
-                                                                    .score}
-                                                            {:else}
-                                                                Not Started
-                                                            {/if}
-                                                        </div>
-                                                        {#if match.field}
-                                                            <div class="field">
-                                                                {match.field}
-                                                            </div>
-                                                        {/if}
-                                                    </div>
-                                                    <div class="blue">
-                                                        {match.alliances[0]
-                                                            .teams[0].team
-                                                            .name}<br />
-                                                        {match.alliances[0]
-                                                            .teams[1].team.name}
-                                                    </div>
-                                                </div>
-                                                <div class="times">
-                                                    {#key timeBehind}
-                                                        {#if match.scheduled}
-                                                            TM Time: {utcToTime(
-                                                                match.scheduled
-                                                            )}
-                                                            <br />
-                                                            {#if match.started}
-                                                                Actual Time: {utcToTime(
-                                                                    match.started
-                                                                )}
-                                                            {:else}
-                                                                Estimated Time: {timeToOffset(
-                                                                    utcToTime(
-                                                                        match.scheduled
-                                                                    )
-                                                                )}
-                                                            {/if}
-                                                        {:else if match.started}
-                                                            Time Started: {utcToTime(
-                                                                match.started
-                                                            )}
-                                                        {/if}
-                                                    {/key}
-                                                </div>
-                                            </div>
-                                        {/if}
-                                    {/each}
-                                {/key}
-                            {/key}
-                        {/if}
-                    {/each}
+        {#each ["qualifications", "r16", "quarter-finals", "semi-finals", "finals"] as round}
+            {#if show[round]}
+                {#if $eventMatches[round]}
+                    {#if Object.keys($eventMatches[round]).length}
+                        <p class="roundTitle">{round}</p>
+                    {/if}
                 {/if}
+
+                {#key matchFilter}
+                    {#key $eventMatches}
+                        {#if $eventMatches[round]}
+                            {#each Object.values($eventMatches[round]) as match}
+                                {#if (match.alliances[0].teams[0].team.name.includes(matchFilter) || match.alliances[0].teams[1].team.name.includes(matchFilter) || match.alliances[1].teams[0].team.name.includes(matchFilter) || match.alliances[1].teams[1].team.name.includes(matchFilter)) && (match.division.id == $division || $division == "all")}
+                                    <div class="match">
+                                        {match.name}<br />
+                                        {match.division.name}
+                                        <div class="teams">
+                                            <div class="red">
+                                                {match.alliances[1].teams[0]
+                                                    .team.name}<br />
+                                                {match.alliances[1].teams[1]
+                                                    .team.name}
+                                            </div>
+                                            <div style="margin-top: 1.5%;">
+                                                <div class="score">
+                                                    {#if match.started}
+                                                        {match.alliances[1]
+                                                            .score} -
+                                                        {match.alliances[0]
+                                                            .score}
+                                                    {:else}
+                                                        Not Started
+                                                    {/if}
+                                                </div>
+                                                {#if match.field}
+                                                    <div class="field">
+                                                        {match.field}
+                                                    </div>
+                                                {/if}
+                                            </div>
+                                            <div class="blue">
+                                                {match.alliances[0].teams[0]
+                                                    .team.name}<br />
+                                                {match.alliances[0].teams[1]
+                                                    .team.name}
+                                            </div>
+                                        </div>
+                                        <div class="times">
+                                            {#key timeBehind}
+                                                {#if match.scheduled}
+                                                    TM Time: {utcToTime(
+                                                        match.scheduled
+                                                    )}
+                                                    <br />
+                                                    {#if match.started}
+                                                        Actual Time: {utcToTime(
+                                                            match.started
+                                                        )}
+                                                    {:else}
+                                                        Estimated Time: {timeToOffset(
+                                                            utcToTime(
+                                                                match.scheduled
+                                                            )
+                                                        )}
+                                                    {/if}
+                                                {:else if match.started}
+                                                    Time Started: {utcToTime(
+                                                        match.started
+                                                    )}
+                                                {/if}
+                                            {/key}
+                                        </div>
+                                    </div>
+                                {/if}
+                            {/each}
+                        {/if}
+                    {/key}
+                {/key}
             {/if}
-        {/if}
+        {/each}
     {/if}
 </div>
 

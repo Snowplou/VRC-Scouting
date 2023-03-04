@@ -54,8 +54,6 @@
                 }
             }
 
-            console.log(lastMatch)
-
             if ($eventMatches.qualifications[lastMatch]) {
                 let timeScheduled = utcToTime(
                     $eventMatches.qualifications[lastMatch].scheduled

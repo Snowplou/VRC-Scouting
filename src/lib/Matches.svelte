@@ -47,7 +47,29 @@
         if ($eventMatches) {
             if ($eventMatches.qualifications) {
                 for (let match of Object.values($eventMatches.qualifications)) {
-                    if (!match.started && !Object.values($eventMatches.qualifications)[Object.values($eventMatches.qualifications).indexOf(match) + 1].started && match.division.id == $division) {
+                    if (
+                        !Object.values($eventMatches.qualifications)[
+                            Object.values($eventMatches.qualifications).indexOf(
+                                match
+                            ) + 1
+                        ]
+                    ) {
+                        if (updateButton) {
+                            updateButton.innerHTML = "Update";
+                            updateButton.style.cursor = "pointer";
+                        }
+                        updating = false;
+                        return;
+                    }
+                    if (
+                        !match.started &&
+                        !Object.values($eventMatches.qualifications)[
+                            Object.values($eventMatches.qualifications).indexOf(
+                                match
+                            ) + 1
+                        ].started &&
+                        match.division.id == $division
+                    ) {
                         lastMatch = match.matchnum - 1;
                         break;
                     }

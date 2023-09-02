@@ -69,7 +69,7 @@ export function updateDb(path, data) {
 }
 
 export async function getEvents(teamId) {
-	let response = await (await fetch(`https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=173&per_page=99999`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
+	let response = await (await fetch(`https://www.robotevents.com/api/v2/teams/${teamId}/events?season%5B%5D=181&per_page=99999`, { headers: { "accept": "application/json", "Authorization": `Bearer ${ROBOT_EVENTS_KEY}` } })).json()
 	return response
 }
 

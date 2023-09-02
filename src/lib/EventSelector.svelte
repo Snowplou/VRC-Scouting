@@ -115,7 +115,7 @@
 
         let middleSkillsRankings = await (
             await fetch(
-                `https://www.robotevents.com/api/seasons/173/skills?grade_level=Middle+School`,
+                `https://www.robotevents.com/api/seasons/181/skills?grade_level=Middle+School`,
                 {
                     headers: {
                         accept: "application/json",
@@ -128,7 +128,7 @@
         progressBar.innerHTML = "Getting Skills Rankings...";
 
         let highSkillsRankings = await (
-            await fetch(`https://www.robotevents.com/api/seasons/173/skills`, {
+            await fetch(`https://www.robotevents.com/api/seasons/181/skills`, {
                 headers: {
                     accept: "application/json",
                     Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,

@@ -38,10 +38,10 @@
         updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
     }
 
-    function getImgBBSupport(fileExtension){
+    function getImgBBSupport(fileName){
         let allowedExtensions = ["jpg", "png", "bmp", "gif","webp", "heic", "tiff"]
         for(let i = 0; i < allowedExtensions.length; i++){
-            if(fileExtension.includes(allowedExtensions[i])) return true
+            if(fileName.includes(allowedExtensions[i])) return true
         }
         return false
     }
@@ -68,7 +68,7 @@
             });
         }
         else{
-            alert("File type not supported")
+            alert("File type not supported\nCurrent file uploaded: " + file.name)
             // remove the file from the input
             elm.target.value = null;
         }

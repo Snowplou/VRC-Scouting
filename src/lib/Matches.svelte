@@ -340,11 +340,13 @@
     .blue {
         color: blue;
         font-size: 150%;
+        cursor: pointer;
     }
 
     .red {
         color: red;
         font-size: 150%;
+        cursor: pointer;
     }
 
     .selection {

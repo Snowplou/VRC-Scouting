@@ -210,7 +210,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {#each team_Ranks as teamInfo}
+                                {#each team_Ranks as teamInfo, i}
                                     {#if teamInfo.Division == $division || $division == "all"}
                                         <tr
                                             on:click={(elm) =>
@@ -231,7 +231,7 @@
                                         >
                                             {#each categoryList as category}
                                                 {#if category == "Team Number"}
-                                                    <td class="semibold"
+                                                    <td class="semibold" style="background-color: {i % 2 == 0 ? "#ffffff" : "#f3f3f3"}"
                                                         >{teamInfo[
                                                             category
                                                         ]}</td
@@ -304,6 +304,13 @@
         font-weight: 700;
     }
 
+    /* Make the team numbers stay on the screen */
+    .styled-table tbody tr td:first-child {
+        position: sticky;
+        left: 0;
+        background: #ffffff;
+    }
+
     .fixTableHead {
         overflow-y: auto;
         height: 77vh;
@@ -313,6 +320,7 @@
         top: 0;
         font-family: "Outfit", sans-serif;
         font-weight: 600;
+        z-index: 2;
     }
     table {
         border-collapse: collapse;

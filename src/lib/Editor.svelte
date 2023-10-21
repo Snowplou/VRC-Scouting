@@ -170,6 +170,7 @@
         overflow-y: auto;
         border-radius: 10px;
         padding-left: 0;
+        z-index: 2;
     }
 
     #imageInput {

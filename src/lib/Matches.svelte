@@ -154,7 +154,7 @@
     />
 </div>
 
-<div id="scrolling" in:fly={{y: 100, duration: 1000, delay: 500}} out:fly={{y: 100, duration: 1000}}>
+<div id="scrolling">
     {#if $eventMatches}
         {#each ["qualifications", "r16", "quarter-finals", "semi-finals", "finals"] as round}
             {#if show[round]}

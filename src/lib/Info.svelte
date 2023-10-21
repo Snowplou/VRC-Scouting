@@ -202,7 +202,7 @@
             {#key $sortingType}
                 {#key $removedTeams}
                     {#key team_Ranks}
-                        <table class="styled-table" in:fly={{ y: -100, duration: 1000 }} out:fly={{ y: -100, duration: 500 }}>
+                        <table class="styled-table">
                             <thead>
                                 <tr>
                                     {#each categoryList as category}

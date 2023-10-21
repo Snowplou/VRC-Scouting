@@ -13,11 +13,13 @@
         division.set(elm.target.value)
         localStorage.setItem("division", $division)
     }
+
+    division.set("all")
 </script>
 
 
 <div id="division">
-    Division: <select value={$division} on:change={(elm) => updateDiv(elm)} disabled={$disableDivisionSelect}>
+    Division: <select value="all" on:change={(elm) => updateDiv(elm)} disabled={$disableDivisionSelect}>
         {#each Object.keys(divisions) as div}
             <option value={div}>{divisions[div]}</option>
         {/each}

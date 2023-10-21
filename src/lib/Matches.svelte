@@ -160,7 +160,9 @@
             {#if show[round]}
                 {#if $eventMatches[round]}
                     {#if Object.keys($eventMatches[round]).length}
+                    <div class="roundTitleSticky">
                         <p class="roundTitle">{round}</p>
+                    </div>
                     {/if}
                 {/if}
 
@@ -273,6 +275,20 @@
     .times {
         font-size: 75%;
         margin: 0.5%;
+    }
+
+    .roundTitleSticky {
+        position: sticky;
+        top: 0;
+        background: #5e5e5e;
+        z-index: 1;
+        border-radius: 10px;
+    }
+
+    .roundTitle {
+        text-align: center;
+        text-transform: capitalize;
+        color: white;
     }
 
     #matchFilter {

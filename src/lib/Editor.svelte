@@ -1,6 +1,7 @@
 <script>
     export let teamSelected = "";
     import { teams, removedTeams, categories, updateDb, dbUpdated, team, event } from "../database";
+    let imgbbApiKey = "da8b4bf1847073505720c55d1387ebae"
 
     let categoryList = []
     dbUpdated(() => {
@@ -35,6 +36,42 @@
         if(value) temp.push(teamSelected)
         else temp.splice(temp.indexOf(teamSelected), 1)
         updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
+    }
+
+    function getImgBBSupport(fileExtension){
+        let allowedExtensions = ["jpg", "png", "bmp", "gif","webp", "heic", "tiff"]
+        for(let i = 0; i < allowedExtensions.length; i++){
+            if(fileExtension.includes(allowedExtensions[i])) return true
+        }
+        return false
+    }
+
+    function imageAdded(elm){
+        // get the file name
+        let file = elm.target.files[0];
+        if(!file) return
+        if(getImgBBSupport(file.name)){
+            let url = `https://api.imgbb.com/1/upload?key=${imgbbApiKey}`
+            let formData = new FormData();
+            formData.append("image", file);
+            fetch(url, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                let url = data.data.url
+                updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/Image`, url)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+        else{
+            alert("File type not supported")
+            // remove the file from the input
+            elm.target.value = null;
+        }
     }
 
 </script>
@@ -88,6 +125,13 @@
         {/key}
         {/key}
         <div class="edit">
+            Add/Change Image:
+            <input id="imageInput" type="file" on:change={(elm) => imageAdded(elm)} accept="image/*">
+        </div>
+        {#if $teams[teamSelected].Image}
+            <img class="robotImage" src={$teams[teamSelected].Image} alt="Robot"/>
+        {/if}
+        <div class="edit">
             Remove: <input type="checkbox" on:change={(elm) => remove(elm)} checked={$removedTeams ? $removedTeams.includes(teamSelected) : false} style="cursor: pointer; scale: 1.25;">
         </div>
     </div>
@@ -122,7 +166,22 @@
         transform: translate(10%, 10%);
         background-color: rgba(128, 128, 128, 90%);
         width: 80vw;
-        height: 85vh;
+        height: 80vh;
+        overflow-y: auto;
         border-radius: 10px;
+        padding-left: 0;
+    }
+
+    #imageInput {
+        margin-left: 1%;
+        width: 100%;
+    }
+
+    .robotImage {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+        width: 75vw;
     }
 </style>

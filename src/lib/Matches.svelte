@@ -19,6 +19,7 @@
     let updating = false;
     let timeBehind = 0;
     let matchFilter = "";
+    if(localStorage.getItem("matchFilter")) matchFilter = localStorage.getItem("matchFilter")
 
     function utcToTime(time) {
         var localTime = moment.utc(time).local().format("h:mm A");
@@ -138,10 +139,13 @@
     <input
         id="filteredTeam"
         type="text"
-        on:input={() =>
-            (matchFilter = document
+        value="{matchFilter}"
+        on:input={() => {
+            matchFilter = document
                 .getElementById("filteredTeam")
-                .value.toUpperCase())}
+                .value.toUpperCase()
+            localStorage.setItem("matchFilter", matchFilter);
+        }}
     />
 </div>
 

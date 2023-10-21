@@ -44,7 +44,8 @@ window.addEventListener('beforeunload', onBeforeUnload);
       {#if showMatches}
         <GoToTeams bind:showMatches />
         <SignOut />
-        <Matches />
+        <Matches bind:teamSelected/>
+        <Editor bind:teamSelected />
       {:else if showNotes}
       <GoToTeams bind:showMatches />
       <SignOut />

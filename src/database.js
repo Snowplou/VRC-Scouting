@@ -217,6 +217,12 @@ onValue(dbRefTeams, snapshot => {
 	}
 });
 
+export function runDbUpdatedCallbacks() {
+	for (let i = 0; i < callbacks.length; i++) {
+		callbacks[i]()
+	}
+}
+
 const dbRefRemovedTeams = ref(db, `accounts/${$team}/events/${$event}/removedTeams`)
 onValue(dbRefRemovedTeams, snapshot => {
 	removedTeams.set(snapshot.val())

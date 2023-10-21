@@ -11,7 +11,10 @@
         getDivisions,
         getEvents,
         updateDb,
+        runDbUpdatedCallbacks
     } from "../database";
+
+    export let teamSelected = "";
 
     let updating = false;
     let timeBehind = 0;
@@ -104,6 +107,11 @@
         "semi-finals": true,
         finals: true,
     };
+
+    function teamClicked(elm) {
+        teamSelected = elm.target.innerHTML;
+        runDbUpdatedCallbacks();
+    }
 </script>
 
 <button id="update" on:click={() => update()} on:keypress={() => update()}
@@ -157,10 +165,25 @@
                                         {match.division.name}
                                         <div class="teams">
                                             <div class="red">
-                                                {match.alliances[1].teams[0]
-                                                    .team.name}<br />
-                                                {match.alliances[1].teams[1]
-                                                    .team.name}
+                                                <span
+                                                    on:click={(elm) =>
+                                                        teamClicked(elm)}
+                                                    on:keypress={(elm) =>
+                                                        teamClicked(elm)}
+                                                >
+                                                    {match.alliances[1].teams[0]
+                                                        .team.name}
+                                                </span>
+                                                <br />
+                                                <span
+                                                    on:click={(elm) =>
+                                                        teamClicked(elm)}
+                                                    on:keypress={(elm) =>
+                                                        teamClicked(elm)}
+                                                >
+                                                    {match.alliances[1].teams[1]
+                                                        .team.name}
+                                                </span>
                                             </div>
                                             <div style="margin-top: 1.5%;">
                                                 <div class="score">
@@ -180,10 +203,25 @@
                                                 {/if}
                                             </div>
                                             <div class="blue">
-                                                {match.alliances[0].teams[0]
-                                                    .team.name}<br />
-                                                {match.alliances[0].teams[1]
-                                                    .team.name}
+                                                <span
+                                                    on:click={(elm) =>
+                                                        teamClicked(elm)}
+                                                    on:keypress={(elm) =>
+                                                        teamClicked(elm)}
+                                                    >{match.alliances[0]
+                                                        .teams[0].team
+                                                        .name}</span
+                                                >
+                                                <br />
+                                                <span
+                                                    on:click={(elm) =>
+                                                        teamClicked(elm)}
+                                                    on:keypress={(elm) =>
+                                                        teamClicked(elm)}
+                                                >
+                                                    {match.alliances[0].teams[1]
+                                                        .team.name}
+                                                </span>
                                             </div>
                                         </div>
                                         <div class="times">

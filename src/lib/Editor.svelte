@@ -39,7 +39,7 @@
     }
 
     function getImgBBSupport(fileName){
-        let allowedExtensions = ["jpg", "png", "bmp", "gif","webp", "heic", "tiff"]
+        let allowedExtensions = ["jpg", "jpeg", "png", "bmp", "gif","webp", "heic", "tiff"]
         for(let i = 0; i < allowedExtensions.length; i++){
             if(fileName.includes(allowedExtensions[i])) return true
         }

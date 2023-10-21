@@ -19,7 +19,6 @@
     let updating = false;
     let timeBehind = 0;
     let matchFilter = "";
-    if(localStorage.getItem("matchFilter")) matchFilter = localStorage.getItem("matchFilter")
 
     function utcToTime(time) {
         var localTime = moment.utc(time).local().format("h:mm A");
@@ -109,6 +108,10 @@
         finals: true,
     };
 
+    if (localStorage.getItem("show")) {
+        show = JSON.parse(localStorage.getItem("show"));
+    }
+
     function teamClicked(elm) {
         teamSelected = elm.target.innerHTML;
         runDbUpdatedCallbacks();
@@ -126,8 +129,10 @@
                 {round}:
                 <input
                     type="checkbox"
-                    on:change={() => (show[round] = !show[round])}
-                    checked={true}
+                    on:change={() => {show[round] = !show[round]
+                    localStorage.setItem("show", JSON.stringify(show));
+                    }}
+                    checked={show[round]}
                 />
             </p>
         </div>

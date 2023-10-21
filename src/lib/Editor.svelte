@@ -54,13 +54,17 @@
         {#key $teams}
         {#key $categories}
         {#each categoryList as info}
-            <div class="edit">
+            <div class="edit" style="{info == "Notes" ? "padding-top: 5px; padding-bottom: 5px;" : ""}">
                 {info}:
                 {#if type(info) == "String"}
+                    {#if info != "Notes"}
                     <input type="text" value={value(info)} on:change={(element) => update(info, element)} style="width: 80%; margin-left: 1%;"/>
+                    {:else}
+                    <textarea value={value(info)} on:change={(element) => update(info, element)} style="width: 80%; margin-left: 1%; resize: none; height: 8vh;"></textarea>
+                    {/if}
                 {/if}
                 {#if type(info) == "Number"}
-                    <input type="number" value={value(info)} on:change={(element) => update(info, element)} style="margin-left: 1%;" />
+                    <input type="number" value={value(info)} on:change={(element) => update(info, element)} style="margin-left: 1%;"/>
                 {/if}
                 {#if type(info) == "Dropdown"}
                     <select value={value(info)} on:change={(element) => update(info, element)}>

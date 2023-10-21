@@ -333,6 +333,22 @@
         font-weight: 600;
         z-index: 2;
     }
+
+    .fixTableHead thead th:first-child {
+        left: 0;
+        z-index: 3;
+    }
+    /* Make a border to the right of the team numbers header */
+    .fixTableHead thead th:first-child::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -1px;
+        height: 100%;
+        width: 2px;
+        background-color: rgb(208, 211, 218);
+    }
+
     table {
         border-collapse: collapse;
     }

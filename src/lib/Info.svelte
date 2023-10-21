@@ -308,7 +308,17 @@
     .styled-table tbody tr td:first-child {
         position: sticky;
         left: 0;
-        background: #ffffff;
+    }
+
+    /* Make a border to the right of the team numbers that doesn't scroll with the rest of the table */
+    .styled-table tbody tr td:first-child::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -1px;
+        height: 100%;
+        width: 1px;
+        background-color: rgb(208, 211, 218);
     }
 
     .fixTableHead {

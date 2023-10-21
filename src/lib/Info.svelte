@@ -1,4 +1,5 @@
 <script>
+    import { fly } from "svelte/transition";
     import {
         team,
         event,
@@ -201,7 +202,7 @@
             {#key $sortingType}
                 {#key $removedTeams}
                     {#key team_Ranks}
-                        <table class="styled-table">
+                        <table class="styled-table" in:fly={{ y: -100, duration: 1000 }} out:fly={{ y: -100, duration: 500 }}>
                             <thead>
                                 <tr>
                                     {#each categoryList as category}

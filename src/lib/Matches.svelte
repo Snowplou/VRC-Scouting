@@ -1,6 +1,6 @@
 <script>
     import moment from "moment";
-    import { schedule_update } from "svelte/internal";
+    import { fly } from "svelte/transition";
     import {
         teams,
         team,
@@ -154,7 +154,7 @@
     />
 </div>
 
-<div id="scrolling">
+<div id="scrolling" in:fly={{y: 100, duration: 1000, delay: 500}} out:fly={{y: 100, duration: 1000}}>
     {#if $eventMatches}
         {#each ["qualifications", "r16", "quarter-finals", "semi-finals", "finals"] as round}
             {#if show[round]}

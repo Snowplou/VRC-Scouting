@@ -258,6 +258,6 @@
         width: 80vw;
         height: 85vh;
         border-radius: 10px;
-        z-index: 2;
+        z-index: 3;
     }
 </style>

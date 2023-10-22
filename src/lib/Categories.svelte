@@ -183,7 +183,7 @@
     }
 
     .scrollCategory {
-        overflow-y: scroll;
+        /* overflow-y: scroll; */
         position: relative;
         bottom: 100px;
         height: 68vh;
@@ -253,6 +253,7 @@
         position: absolute;
         left: 0%;
         top: 0%;
+        overflow-y: scroll;
         transform: translate(10%, 10%);
         background-color: rgba(128, 128, 128, 90%);
         width: 80vw;

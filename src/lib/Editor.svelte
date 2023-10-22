@@ -81,6 +81,7 @@
         <div id="topEditor">
             <p id="titleEditor"><b>Team Editor</b><br />Team {teamSelected}</p>
             <img
+                id="closeEditor"
                 src="redX.png"
                 alt="Close Editor"
                 on:click={() => (teamSelected = "")}
@@ -147,7 +148,11 @@
     img {
         margin: 2%;
         cursor: pointer;
-        width: 15%;
+        width: 5vh;
+    }
+
+    #closeEditor {
+        height: 5vh;
     }
 
     #titleEditor {

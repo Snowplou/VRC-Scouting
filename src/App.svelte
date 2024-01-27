@@ -17,43 +17,43 @@
   import { team, event, saving } from "./database";
   import Matches from "./lib/Matches.svelte";
   import GoToTeams from "./lib/GoToTeams.svelte";
-    import GoToMatches from "./lib/GoToMatches.svelte";
-    import DivisionSelector from "./lib/DivisionSelector.svelte";
-    import Saving from "./lib/Saving.svelte";
-    import Notes from "./lib/Notes.svelte";
+  import GoToMatches from "./lib/GoToMatches.svelte";
+  import DivisionSelector from "./lib/DivisionSelector.svelte";
+  import Saving from "./lib/Saving.svelte";
+  import Notes from "./lib/Notes.svelte";
+  import TeamAdder from "./lib/TeamAdder.svelte";
   export let showMatches = false;
-  export let creatingEvent = false
+  export let creatingEvent = false;
 
   function onBeforeUnload(e) {
     if ($saving && !creatingEvent) {
-        e.preventDefault();
-        e.returnValue = '';
-        return;
+      e.preventDefault();
+      e.returnValue = "";
+      return;
     }
-}
+  }
 
-window.addEventListener('beforeunload', onBeforeUnload);
-
+  window.addEventListener("beforeunload", onBeforeUnload);
 </script>
 
 <main>
   {#if $team}
     {#if $event}
       <Saving />
-      <DivisionSelector/>
+      <DivisionSelector />
       {#if showMatches}
         <GoToTeams bind:showMatches />
         <SignOut />
-        <Matches bind:teamSelected/>
+        <Matches bind:teamSelected />
         <Editor bind:teamSelected />
       {:else if showNotes}
-      <GoToTeams bind:showMatches />
-      <SignOut />
-      <Notes />
+        <GoToTeams bind:showMatches />
+        <SignOut />
+        <Notes />
       {:else}
         <GoToEvents />
         <SignOut />
-        <GoToMatches bind:showMatches/>
+        <GoToMatches bind:showMatches />
         <Buttons
           bind:showCategories
           bind:showNotes
@@ -75,9 +75,10 @@ window.addEventListener('beforeunload', onBeforeUnload);
         />
         <Options bind:selectedOption />
         <Filters bind:selectedFilter />
+        <TeamAdder />
       {/if}
     {:else}
-      <EventSelector bind:creatingEvent/>
+      <EventSelector bind:creatingEvent />
     {/if}
   {:else}
     <SignIn />

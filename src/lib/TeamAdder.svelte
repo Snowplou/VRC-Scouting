@@ -8,15 +8,20 @@
     }
 
     async function addTeam() {
-        let teamNumber = prompt("Enter team number:").toUpperCase()
+        let teamNumber = prompt("Enter team number:")
 
         // If the number is empty, return
         if (!teamNumber) {
+            return;
+        }
+        teamNumber = teamNumber.toUpperCase()
+        // If the number contains a character that is not a number or letter, return
+        if (!teamNumber.match(/^[0-9a-zA-Z]+$/)) {
             alertInvalidTeamName();
             return;
         }
-        // If the number contains a character that is not a number or letter, return
-        if (!teamNumber.match(/^[0-9a-zA-Z]+$/)) {
+        // If there are no letters, return
+        if (!teamNumber.match(/[a-zA-Z]/g)) {
             alertInvalidTeamName();
             return;
         }

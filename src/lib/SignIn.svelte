@@ -16,6 +16,21 @@
         return hash;
     }
 
+    // Focuses on the password input when the enter key is pressed
+    function numberEnter(elm) {
+        if (elm.key != "Enter") return;
+        elm.target.parentNode.parentNode.children[1].children[1].focus();
+    }
+
+    // Focuses on the sign in button when the enter key is pressed
+    function passwordEnter(elm) {
+        if (elm.key != "Enter") return;
+        // Wait 100ms before focusing on the button so that it doesn't recognize the enter key as the enter key for the button
+        setTimeout(() => {
+        elm.target.parentNode.parentNode.children[2].focus();
+        }, 100);
+    }
+
     function signIn(elm){
         let children = elm.target.parentNode.children;
         let teamNumber = children[0].children[1].value;
@@ -78,11 +93,11 @@
 <div id="signIn">
     <div class="section">
         <p>Team Number:</p>
-        <input type="text" />
+        <input type="text" on:keydown={(elm) => numberEnter(elm)}/>
     </div>
     <div class="section">
         <p>Password:</p>
-        <input type="password" />
+        <input type="password" on:keydown={(elm) => passwordEnter(elm)}/>
     </div>
     <button on:click={(elm) => signIn(elm)} on:keypress={(elm) => signIn(elm)}>Sign In</button>
     <button on:click={(elm) => signUp(elm)} on:keypress={(elm) => signUp(elm)}

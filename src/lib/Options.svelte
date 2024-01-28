@@ -2,6 +2,12 @@
     import { teams, categories, updateDb, team, event } from "../database";
     export let selectedOption = "";
 
+    function addOptionEnter(elm) {
+        // If enter is not pressed, return
+        if (elm.key != "Enter") return;
+        addOption(elm);
+    }
+
     function addOption(elm) {
         let name = elm.target.parentNode.children[0].value;
         if (!name) return;
@@ -67,6 +73,7 @@
                 type="text"
                 id="addOption"
                 style="text-align: center; width: 50%; height: 25px; margin: 2%;"
+                on:keydown={(elm) => addOptionEnter(elm)}
             />
             <button
                 id="add"

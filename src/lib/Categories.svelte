@@ -5,8 +5,9 @@
     export let selectedFilter = "";
 
     async function invalid(elm) {
-        elm.innerHTML = "Invalid";
-        setTimeout(() => (elm.innerHTML = "Add"), 1000);
+        let button = elm.parentNode.children[1];
+        button.innerHTML = "Invalid";
+        setTimeout(() => (button.innerHTML = "Add"), 1000);
     }
 
     function optionPressed(category) {
@@ -17,6 +18,14 @@
     function filterPressed(category) {
         selectedFilter = category;
         showCategories = false;
+    }
+
+    function addCategoryEnter(elm){
+        // If the enter key was not pressed, return
+        if (elm.key != "Enter") return;
+
+        // Run the addCategory function. It can pass in the input element because it has the same parent as the button
+        addCategory(elm);
     }
 
     function addCategory(elm) {
@@ -108,7 +117,7 @@
         </div>
 
         <div id="addCategory">
-            <input type="text" style="width: 50%; height: 25px; margin: 2%" />
+            <input type="text" style="width: 50%; height: 25px; margin: 2%" on:keydown={(elm) => addCategoryEnter(elm)} />
             <button
                 id="add"
                 on:click={(elm) => addCategory(elm)}

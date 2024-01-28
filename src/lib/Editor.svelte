@@ -1,6 +1,6 @@
 <script>
     export let teamSelected = "";
-    import { teams, removedTeams, categories, updateDb, dbUpdated, team, event, uploadImage } from "../database";
+    import { teams, removedTeams, categories, updateDb, dbUpdated, team, event, uploadImage, saving } from "../database";
 
     let categoryList = []
     dbUpdated(() => {
@@ -45,7 +45,9 @@
         if(!file) return
 
         // Upload the image to firebase storage
+        saving.update((val) => val + 1)
         let imageUrl = await uploadImage(`accounts/${$team}/events/${$event}/teams/${teamSelected}`, file)
+        saving.update((val) => val - 1)
 
         // Update the database with the image url
         updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/Image`, imageUrl)        

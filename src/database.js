@@ -1,7 +1,7 @@
 import { FirebaseError, initializeApp } from "firebase/app";
 import { getDatabase, ref, set as set_firebase, get, onValue, push, child } from "firebase/database";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
-import { writable } from 'svelte/store';
+import { writable, get as writeableGet } from 'svelte/store';
 export let team = writable(localStorage.getItem("accountNumber"));
 let $team;
 team.subscribe(v => $team = v);
@@ -10,7 +10,7 @@ export let notes = writable({})
 export let event = writable(localStorage.getItem("event"));
 let $event;
 event.subscribe(v => $event = v);
-export let saving = writable(false);
+export let saving = writable(0);
 export let division = writable(localStorage.getItem("division"));
 let $division;
 division.subscribe(v => $division = v);
@@ -65,9 +65,9 @@ export let categories = writable({})
 export let accounts = writable({})
 
 export function updateDb(path, data) {
-	saving.set(true)
+	saving.update(n => n + 1);
 	set_firebase(ref(db, path), data).then(() => {
-		saving.set(false);
+		saving.update(n => n - 1);
 	})
 }
 

@@ -46,50 +46,16 @@
 
         await updateMatches();
 
-        let lastMatch = 0;
-        if ($eventMatches) {
-            if ($eventMatches.qualifications) {
-                for (let match of Object.values($eventMatches.qualifications)) {
-                    if (
-                        !Object.values($eventMatches.qualifications)[
-                            Object.values($eventMatches.qualifications).indexOf(
-                                match
-                            ) + 1
-                        ]
-                    ) {
-                        if (updateButton) {
-                            updateButton.innerHTML = "Update";
-                            updateButton.style.cursor = "pointer";
-                        }
-                        updating = false;
-                        return;
-                    }
-                    if (
-                        !match.started &&
-                        !Object.values($eventMatches.qualifications)[
-                            Object.values($eventMatches.qualifications).indexOf(
-                                match
-                            ) + 1
-                        ].started &&
-                        match.division.id == $division
-                    ) {
-                        lastMatch = match.matchnum - 1;
+        if($eventMatches){
+            if($eventMatches.qualifications){
+                let matches = Object.values($eventMatches.qualifications);
+                for(let i = matches.length - 1; i >= 0; i--){
+                    if(matches[i].started && (matches[i].division.id == $division || $division == "all")){
+                        timeBehind = moment(utcToTime(matches[i].started), "h:mm A").diff(moment(utcToTime(matches[i].scheduled), "h:mm A"));
+                        timeBehind /= 1000 * 60; // Milliseconds to minutes
                         break;
                     }
                 }
-            }
-
-            if ($eventMatches.qualifications[lastMatch]) {
-                let timeScheduled = utcToTime(
-                    $eventMatches.qualifications[lastMatch].scheduled
-                );
-                let timeStarted = utcToTime(
-                    $eventMatches.qualifications[lastMatch].started
-                );
-                timeBehind = moment(timeStarted, "h:mm A").diff(
-                    moment(timeScheduled, "h:mm A")
-                );
-                timeBehind /= 1000 * 60; // Milliseconds to minutes
             }
         }
 
@@ -238,7 +204,7 @@
                                         <div class="times">
                                             {#key timeBehind}
                                                 {#if match.scheduled}
-                                                    TM Time: {utcToTime(
+                                                    Scheduled Time: {utcToTime(
                                                         match.scheduled
                                                     )}
                                                     <br />

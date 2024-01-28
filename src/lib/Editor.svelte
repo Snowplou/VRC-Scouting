@@ -1,7 +1,6 @@
 <script>
     export let teamSelected = "";
-    import { teams, removedTeams, categories, updateDb, dbUpdated, team, event } from "../database";
-    let imgbbApiKey = "da8b4bf1847073505720c55d1387ebae"
+    import { teams, removedTeams, categories, updateDb, dbUpdated, team, event, uploadImage } from "../database";
 
     let categoryList = []
     dbUpdated(() => {
@@ -38,40 +37,18 @@
         updateDb(`accounts/${$team}/events/${$event}/removedTeams`, temp)
     }
 
-    function getImgBBSupport(fileName){
-        let allowedExtensions = ["jpg", "jpeg", "png", "bmp", "gif","webp", "heic", "tiff"]
-        for(let i = 0; i < allowedExtensions.length; i++){
-            if(fileName.includes(allowedExtensions[i])) return true
-        }
-        return false
-    }
-
-    function imageAdded(elm){
-        // get the file name
+    async function imageAdded(elm){
+        // Get the image file
         let file = elm.target.files[0];
+
+        // Return if no file was selected
         if(!file) return
-        if(getImgBBSupport(file.name)){
-            let url = `https://api.imgbb.com/1/upload?key=${imgbbApiKey}`
-            let formData = new FormData();
-            formData.append("image", file);
-            fetch(url, {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                let url = data.data.url
-                updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/Image`, url)
-            })
-            .catch(error => {
-                console.error(error);
-            });
-        }
-        else{
-            alert("File type not supported\nCurrent file uploaded: " + file.name)
-            // remove the file from the input
-            elm.target.value = null;
-        }
+
+        // Upload the image to firebase storage
+        let imageUrl = await uploadImage(`accounts/${$team}/events/${$event}/teams/${teamSelected}`, file)
+
+        // Update the database with the image url
+        updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/Image`, imageUrl)        
     }
 
 </script>

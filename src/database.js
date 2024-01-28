@@ -1,5 +1,6 @@
 import { FirebaseError, initializeApp } from "firebase/app";
 import { getDatabase, ref, set as set_firebase, get, onValue, push, child } from "firebase/database";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import { writable } from 'svelte/store';
 export let team = writable(localStorage.getItem("accountNumber"));
 let $team;
@@ -50,6 +51,8 @@ const app = initializeApp(firebaseConfig);
 // Initialize Realtime Database and get a reference to the service
 const db = getDatabase();
 
+const storage = getStorage(app);
+
 (async () => {
 	if ($division || !$event) return
 	division.set(Object.values(await getDivisionsFromDb())[0])
@@ -66,6 +69,16 @@ export function updateDb(path, data) {
 	set_firebase(ref(db, path), data).then(() => {
 		saving.set(false);
 	})
+}
+
+export async function uploadImage(path, data){
+	let val;
+	await uploadBytes(storageRef(storage, path), data).then(async (snapshot) => {
+		await getDownloadURL(snapshot.ref).then((url) => {
+			val = url
+		})
+	})
+	return val
 }
 
 export async function getEvents(teamId) {

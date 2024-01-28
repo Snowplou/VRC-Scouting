@@ -133,8 +133,8 @@
                             on:change={(elm) => updateType(category, elm)}
                         >
                             <option value="Number">Number</option>
-                            <option value="String">String</option>
-                            <option value="Boolean">Boolean</option>
+                            <option value="String">Text</option>
+                            <option value="Boolean">Yes/No</option>
                             <option value="Dropdown">Dropdown</option>
                         </select>
                             <button

@@ -77,7 +77,7 @@
                     {#if info != "Notes"}
                     <input type="text" value={value(info)} on:change={(element) => update(info, element)} style="width: 80%; margin-left: 1%;"/>
                     {:else}
-                    <textarea value={value(info)} on:change={(element) => update(info, element)} style="width: 80%; margin-left: 1%; resize: none; height: 8vh;"></textarea>
+                    <textarea value={value(info)} on:change={(element) => update(info, element)} style="width: 95%; margin-left: 1%; resize: vertical; min-height: 8vh;"></textarea>
                     {/if}
                 {/if}
                 {#if type(info) == "Number"}
@@ -126,7 +126,6 @@
 
     img {
         margin: 2%;
-        cursor: pointer;
         width: 5vh;
     }
 

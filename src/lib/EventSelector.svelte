@@ -268,17 +268,20 @@
 
 <style>
     #scrolling {
+        position: absolute;
+        top: 0;
+        left: 5vw;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        width: 100%;
-        height: 100%;
+        height: 100vh;
+        width: 90vw;
         overflow-y: scroll;
     }
 
     button {
         margin-bottom: 1%;
-        width: 20%;
+        width: max(20%, 70px);
         height: 20%;
         border-radius: 10px;
         border: none;
@@ -313,7 +316,7 @@
         background-color: rgb(84, 121, 215);
         color: white;
         width: 75vw;
-        height: 30vh;
+        min-height: max(30vh, 280px);
         border-radius: 10px;
         cursor: pointer;
     }

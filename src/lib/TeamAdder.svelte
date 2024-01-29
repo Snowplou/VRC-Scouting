@@ -124,7 +124,7 @@
         top: 0.5vmin;
         right: 0.5vmin;
         width: min(16vw, 100px);
-        height: max(4vh, 30px);
+        height: max(4vh, 33px);
         background-color: rgb(84, 121, 215);
         color: white;
         font-family: "Outfit", sans-serif;

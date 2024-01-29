@@ -285,7 +285,7 @@
 
     #sortingType {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         justify-content: space-evenly;
         margin-top: -3%;
         margin-bottom: -1%;

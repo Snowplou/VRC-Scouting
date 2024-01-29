@@ -168,14 +168,6 @@
         justify-content: space-between;
     }
 
-    .scrollOptions {
-        overflow-y: scroll;
-        position: relative;
-        bottom: 100px;
-        height: 68vh;
-        top: -1vh;
-    }
-
     #flexCategory {
         position: absolute;
         left: 0%;
@@ -186,5 +178,6 @@
         height: 85vh;
         border-radius: 10px;
         z-index: 3;
+        overflow-y: auto;
     }
 </style>

@@ -34,6 +34,7 @@
     function signIn(elm){
         let children = elm.target.parentNode.children;
         let teamNumber = children[0].children[1].value;
+        if(teamNumber) teamNumber = teamNumber.toUpperCase()
         let password = children[1].children[1].value;
 
         if ($accounts) {
@@ -56,6 +57,7 @@
     async function signUp(elm) {
         let children = elm.target.parentNode.children;
         let teamNumber = children[0].children[1].value;
+        if(teamNumber) teamNumber = teamNumber.toUpperCase()
         let password = children[1].children[1].value;
 
         if (!teamNumber || !password) {

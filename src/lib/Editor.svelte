@@ -53,6 +53,27 @@
         updateDb(`accounts/${$team}/events/${$event}/teams/${teamSelected}/Image`, imageUrl)        
     }
 
+    // let notesHeight = 20
+    let lastNoteContent = ""
+    setInterval(() => {
+        let element = document.getElementById("noteTextAreaEditor")
+        if(element){
+            let notes = String($teams[teamSelected].Notes)
+            if(notes != lastNoteContent){
+                lastNoteContent = notes
+                element.style.height = "5px"
+                element.style.height = (element.scrollHeight)+"px"
+            }
+        }
+    }, 250)
+    function updateTextAreaSize(elm){
+        let notes = String($teams[teamSelected].Notes)
+        let newNotes = elm.target.value
+        if(notes != newNotes){
+            elm.target.style.height = "5px"
+            elm.target.style.height = (elm.target.scrollHeight)+"px"
+        }
+    }
 </script>
 
 {#if teamSelected != ""}
@@ -77,7 +98,7 @@
                     {#if info != "Notes"}
                     <input type="text" value={value(info)} on:change={(element) => update(info, element)} style="width: 80%; margin-left: 1%;"/>
                     {:else}
-                    <textarea value={value(info)} on:change={(element) => update(info, element)} style="width: 95%; margin-left: 1%; resize: vertical; min-height: 8vh;"></textarea>
+                    <textarea id="noteTextAreaEditor" value={value(info)} on:input={(elm) => updateTextAreaSize(elm)} on:change={(element) => update(info, element)} style="width: 95%; margin-left: 1%; resize: none;"></textarea>
                     {/if}
                 {/if}
                 {#if type(info) == "Number"}

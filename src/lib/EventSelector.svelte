@@ -13,6 +13,7 @@
         event,
         division,
         getDivisions,
+        asyncUpdateDb,
     } from "../database";
     export let creatingEvent = false;
     let creating = false;
@@ -22,9 +23,42 @@
     let teamsInfo = [];
 
     async function addTeams(eventId, progressBar) {
-        let response = await (
+        let response1 = await (
             await fetch(
-                `https://www.robotevents.com/api/v2/events/${eventId}/teams?per_page=99999`,
+                `https://www.robotevents.com/api/v2/events/${eventId}/teams?per_page=250`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+        let response2 = await (
+            await fetch(
+                `https://www.robotevents.com/api/v2/events/${eventId}/teams?per_page=250&page=2`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+        let response3 = await (
+            await fetch(
+                `https://www.robotevents.com/api/v2/events/${eventId}/teams?per_page=250&page=3`,
+                {
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${ROBOT_EVENTS_KEY}`,
+                    },
+                }
+            )
+        ).json();
+        let response4 = await (
+            await fetch(
+                `https://www.robotevents.com/api/v2/events/${eventId}/teams?per_page=250&page=4`,
                 {
                     headers: {
                         accept: "application/json",
@@ -34,9 +68,16 @@
             )
         ).json();
 
+        let responseData = [
+            ...response1.data,
+            ...response2.data,
+            ...response3.data,
+            ...response4.data,
+        ];
+
         progressBar.innerHTML = "Getting Teams...";
 
-        for (let eventTeams of response.data) {
+        for (let eventTeams of responseData) {
             teamsInfo[eventTeams.number] = {
                 Id: eventTeams.id,
                 Notes: "",
@@ -186,11 +227,12 @@
 
         progressBar.innerHTML = "Done!";
 
-        updateDb(`accounts/${$team}/events/${eventId}`, eventInfo);
-        localStorage.setItem("event", eventId);
-        event.set(eventId);
-        creatingEvent = true;
-        location.reload();
+        asyncUpdateDb(`accounts/${$team}/events/${eventId}`, eventInfo).then(() => {
+            localStorage.setItem("event", eventId);
+            event.set(eventId);
+            creatingEvent = true;
+            location.reload();
+        });
     }
 
     function deleteEvent(selectedEvent, eventName) {

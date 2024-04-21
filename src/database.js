@@ -71,6 +71,10 @@ export function updateDb(path, data) {
 	})
 }
 
+export async function asyncUpdateDb(path, data) {
+	await set_firebase(ref(db, path), data)
+}
+
 export async function uploadImage(path, data){
 	let val;
 	await uploadBytes(storageRef(storage, path), data).then(async (snapshot) => {

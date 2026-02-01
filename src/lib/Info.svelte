@@ -364,7 +364,7 @@
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         margin-left: auto;
         margin-right: auto;
-        margin-top: 0;
+        margin-top: 35px;
         width: 85%;
     }
 
